@@ -1,5 +1,5 @@
 # BeRec a.k.a. BURP
-## Benobis Universal Music Recorder & Player
+## Benobis Universal Recorder & Player
 
 A digital music recorder behaving like an old music tape.    
 
