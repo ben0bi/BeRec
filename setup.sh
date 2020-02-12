@@ -3,8 +3,9 @@
 # Setup for BURP
 # Install all dependencies.
 
-# python pip
-apt-get install python-pip
+# python pip, ffmpeg
+apt-get install python-pip ffmpeg
 
 # GPIO library
 pip install RPi.GPIO
+

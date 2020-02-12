@@ -28,6 +28,8 @@ def BURP_Init():
 	return
 
 def BURP_UPDATE():
+	# buttons are set to GND and have pull-up resistors.
+	# so, 0 is pressed and 1 is released!
 	pp=GPIO.input(globals.BTN_PLAYPAUSE)
 	fw=GPIO.input(globals.BTN_FWD)
 	rw=GPIO.input(globals.BTN_REW)
@@ -38,7 +40,7 @@ def BURP_UPDATE():
 	an=GPIO.input(globals.BTN_ANYTHING)
 	print(pp,fw,rw,st,rc,vu,vd,an)
 
-# check if record was pressed.
+	# check if record was pressed.
 	if(rc==0 and globals.PRESS_REC==0):
 		globals.PRESS_REC = 1
 		if(globals.BURP_STATE!=globals.BURPSTATE_REC and globals.BURP_STATE!=globals.BURPSTATE_RECPAUSE):
@@ -55,7 +57,7 @@ def BURP_UPDATE():
 		globals.PRESS_REC = 0
 	sleep(0.25)
 
-# check if playpause was pressed.
+	# check if playpause was pressed.
 	if(pp==0 and globals.PRESS_PP==0):
 		globals.PRESS_PP = 1
 		# pause record
@@ -75,8 +77,24 @@ def BURP_UPDATE():
 			print("START/CONTINUE PLAY")
 			globals.BURP_STATE=globals.BURPSTATE_PLAY
 	if(pp==1):
-        globals.PRESS_PP = 0
+		globals.PRESS_PP = 0
 
+	# check if rew or fwd were pressed
+	# forward button pressed
+	if(fw==0):
+		print("FORWARD-->")
+		globals.PRESS_FWD = 1
+
+	if(fw==1):
+		globals.PRESS_FWD = 0
+
+	# rewind button pressed
+	if(rw==0):
+		print("<--REWIND")
+		globals.PRESS_REW = 1
+
+	if(rw==1):
+		globals.PRESS_REW = 0
 BURP_Init()
 
 try:
