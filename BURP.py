@@ -17,14 +17,14 @@ BURPos = 0
 
 def BURP_Init():
 	GPIO.setmode(GPIO.BCM)
-	GPIO.setup(globals.BTN_PLAYPAUSE, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-	GPIO.setup(globals.BTN_STOP, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-	GPIO.setup(globals.BTN_FWD, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-	GPIO.setup(globals.BTN_REW, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-	GPIO.setup(globals.BTN_REC, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-	GPIO.setup(globals.BTN_VOLUP, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-	GPIO.setup(globals.BTN_VOLDOWN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-	GPIO.setup(globals.BTN_ANYTHING, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+	GPIO.setup(globals.PBTN_1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+	GPIO.setup(globals.PBTN_2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+	GPIO.setup(globals.PBTN_3, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+	GPIO.setup(globals.PBTN_4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+	GPIO.setup(globals.PBTN_5, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+	GPIO.setup(globals.PBTN_6, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+	GPIO.setup(globals.PBTN_7, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+	GPIO.setup(globals.PBTN_8, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 	return
 
 def BURP_UPDATE():
@@ -37,8 +37,8 @@ def BURP_UPDATE():
 	rc=GPIO.input(globals.BTN_REC)
 	vu=GPIO.input(globals.BTN_VOLUP)
 	vd=GPIO.input(globals.BTN_VOLDOWN)
-	an=GPIO.input(globals.BTN_ANYTHING)
-	print(pp,fw,rw,st,rc,vu,vd,an)
+#	an=GPIO.input(globals.BTN_ANYTHING)
+	print(pp,fw,rw,st,rc,vu,vd)
 
 	# check if record was pressed.
 	if(rc==0 and globals.PRESS_REC==0):

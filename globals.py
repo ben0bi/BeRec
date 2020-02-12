@@ -1,14 +1,27 @@
 # Button BCM Values.
-# BURP buttons: The standard tape buttons.
-BTN_PLAYPAUSE = BTN_PP = 14
-BTN_STOP = 15
-BTN_FWD = 18
-BTN_REW = 17
+# Define the ports for some unspecific buttons so you
+# can fiddle with the configuration without having to
+# remember all BCM values.
 
-BTN_VOLUP = 21
-BTN_VOLDOWN = 20
-BTN_REC = 16
-BTN_ANYTHING = 26 # there is an 8th button on my pads.
+PBTN_1 = 14
+PBTN_2 = 15
+PBTN_3 = 16
+PBTN_4 = 17
+PBTN_5 = 18
+PBTN_6 = 20
+PBTN_7 = 21
+PBTN_8 = 26
+
+# BURP buttons: The standard tape buttons.
+BTN_PLAYPAUSE = BTN_PP = PBTN_1 # confirmed
+BTN_STOP = PBTN_5 # confirmed
+BTN_FWD = PBTN_4 # confirmed
+BTN_REW = PBTN_2
+
+BTN_VOLUP = PBTN_3
+BTN_VOLDOWN = PBTN_6
+BTN_REC = PBTN_7 # confirmed
+# BTN_ANYTHING = 26 # there is an 8th button on my pads.
 
 # The button-is-pressed flags.
 PRESS_PP = 0
@@ -24,7 +37,7 @@ PRESS_REC = 0
 
 # File Tape FT does record to several files, one for each recording.
 # FT also is the MP3 Player which reads full files from the SD-cards.
-# FT mode does not recognize the ET file and 
+# FT mode does not recognize the ET file and
 # ET mode ONLY recognizes the ET file.
 BURPMODE_ET = 0
 BURPMODE_FT = 1
