@@ -48,11 +48,11 @@ def BURP_UPDATE():
 				# TODO: stop the playing
 				print("play stopped")
 			globals.BURP_STATE = globals.BURPSTATE_REC
-			print "RECORD"
+			print "o RECORD"
 		else:
 			# TODO: stop and save record
 			globals.BURP_STATE = globals.BURPSTATE_PAUSE
-			print "STOP RECORD"
+			print "o STOP RECORD"
 	if(rc==1):
 		globals.PRESS_REC = 0
 	sleep(0.25)
@@ -62,27 +62,46 @@ def BURP_UPDATE():
 		globals.PRESS_PP = 1
 		# pause record
 		if(globals.BURP_STATE==globals.BURPSTATE_REC):
-			print("PAUSE RECORD")
+			# TODO: pause record
+			print(":> PAUSE RECORD")
 			globals.BURP_STATE = globals.BURPSTATE_RECPAUSE
 		# pause play
 		elif(globals.BURP_STATE==globals.BURPSTATE_PLAY):
-			print("PAUSE PLAY")
+			# TODO: pause play
+			print(":> PAUSE PLAY")
 			globals.BURP_STATE = globals.BURPSTATE_PAUSE
 		# continue record
 		elif(globals.BURP_STATE==globals.BURPSTATE_RECPAUSE):
-			print("CONTINUE RECORD")
+			# TODO: continue record
+			print(":> CONTINUE RECORD")
 			globals.BURP_STATE=globals.BURPSTATE_REC
 		# continue play
 		elif(globals.BURP_STATE!=globals.BURPSTATE_RECPAUSE and globals.BURP_STATE!=globals.BURPSTATE_PLAY):
-			print("START/CONTINUE PLAY")
+			# TODO: play
+			print(":> START/CONTINUE PLAY")
 			globals.BURP_STATE=globals.BURPSTATE_PLAY
 	if(pp==1):
 		globals.PRESS_PP = 0
 
+	# check if stop was pressed
+	if(st==0 and globals.PRESS_STOP==0):
+		globals.PRESS_STOP = 1
+		if(globals.BURP_STATE == globals.BURPSTATE_PLAY or globals.BURP_STATE == globals.BURPSTATE_PAUSE):
+			# TODO: stop play, set to 0
+			globals.BURP_STATE = globals.BURPSTATE_PAUSE
+			print("[] STOP PLAY, SET TO 0")
+		elif(globals.BURP_STATE==globals.BURPSTATE_REC or globals.BURP_STATE == globals.BURPSTATE_RECPAUSE):
+			# TODO: stop and save record.
+			globals.BURP_STATE = globals.BURPSTATE_PAUSE
+			print("[] STOP RECORD")
+	if(st==1):
+		globals.PRESS_STOP = 0
+
 	# check if rew or fwd were pressed
 	# forward button pressed
 	if(fw==0):
-		print("FORWARD-->")
+		# TODO: fast forward
+		print(">> FORWARD")
 		globals.PRESS_FWD = 1
 
 	if(fw==1):
@@ -90,7 +109,8 @@ def BURP_UPDATE():
 
 	# rewind button pressed
 	if(rw==0):
-		print("<--REWIND")
+		# TODO: fast backward
+		print("<< REWIND")
 		globals.PRESS_REW = 1
 
 	if(rw==1):

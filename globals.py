@@ -24,8 +24,11 @@ BTN_REC = PBTN_7 # confirmed
 # BTN_ANYTHING = 26 # there is an 8th button on my pads.
 
 # The button-is-pressed flags.
-PRESS_PP = 0
+PRESS_PP = 0 # play/pause
 PRESS_REC = 0
+PRESS_FWD = 0
+PRESS_REW = 0
+PRESS_STOP = 0
 
 # global values for BURP
 
