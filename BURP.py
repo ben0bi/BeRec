@@ -6,8 +6,10 @@
 # by Oki Wan Ben0bi in 2020
 # https://github.com/ben0bi/BeRec.github
 
-from pydub import AudioSegment
-from pydub.playback import play
+#from pydub import AudioSegment
+#from pydub.playback import play
+
+from soundplayer/soundplayer import SoundPlayer
 
 import RPi.GPIO as GPIO
 
@@ -16,8 +18,8 @@ import globals
 from time import sleep
 
 #test
-globals.BURP_Song = AudioSegment.from_file('MUSIC/american_high.mp3','mp3')
-play(globals.BURP_Song)
+#globals.BURP_Song = AudioSegment.from_file('MUSIC/american_high.mp3','mp3')
+#play(globals.BURP_Song)
 #endof test
 
 # play function
