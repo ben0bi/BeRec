@@ -4,14 +4,15 @@
 # Install all dependencies.
 
 # pip, ffmpeg
-apt-get install python-pip ffmpeg
+sudo apt-get install python-pip ffmpeg
 
 # GPIO library
 pip install RPi.GPIO
 
-# using pydub for playing
-
 # ffmpeg bindings for python
 pip install ffmpeg-python
+
+# using pydub for playing all sorts of sound files.
+pip install pydub
 
 # using sounddevice for recording
