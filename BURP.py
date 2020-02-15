@@ -20,6 +20,10 @@ globals.BURP_Song = AudioSegment.from_file('MUSIC/american_high.mp3','mp3')
 play(globals.BURP_Song)
 #endof test
 
+# play function
+def BURP_Play()
+	# it's an mp3 file, first convert it.
+
 
 # the actual position of the endless tape
 BURPos = 0
