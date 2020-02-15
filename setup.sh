@@ -4,7 +4,7 @@
 # Install all dependencies.
 
 # pip, ffmpeg
-sudo apt-get install python-pip ffmpeg
+sudo apt-get install python-pip ffmpeg libavcodec-extra
 
 # GPIO library
 pip install RPi.GPIO

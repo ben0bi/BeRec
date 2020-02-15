@@ -6,11 +6,20 @@
 # by Oki Wan Ben0bi in 2020
 # https://github.com/ben0bi/BeRec.github
 
+from pydub import AudioSegment
+from pydub.playback import play
+
 import RPi.GPIO as GPIO
 
 import globals
 
 from time import sleep
+
+#test
+globals.BURP_Song = AudioSegment.from_file('MUSIC/american_high.mp3','mp3')
+play(globals.BURP_Song)
+#endof test
+
 
 # the actual position of the endless tape
 BURPos = 0
@@ -39,6 +48,23 @@ def BURP_UPDATE():
 	vd=GPIO.input(globals.BTN_VOLDOWN)
 #	an=GPIO.input(globals.BTN_ANYTHING)
 	print(pp,fw,rw,st,rc,vu,vd)
+
+	# check if volup or voldown were pressed
+	# volup
+	if(vu==0 and globals.PRESS_VOLUP == 0 and vd != 0): # vd must be != vu !!!
+		# TODO: volume up
+		globals.PRESS_VOLUP = 1
+
+	if(vu==1):
+		globals.PRESS_VOLUP = 0
+
+	# voldown
+	if(vd==0 and globals.PRESS_VOLDOWN == 0 and vu != 0): # vd must be != vu !!!
+		# TODO: volume down
+		globals.PRESS_VOLDOWN = 1
+
+	if(vd==1):
+		globals.PRESS_VOLDOWN = 0
 
 	# check if record was pressed.
 	if(rc==0 and globals.PRESS_REC==0):

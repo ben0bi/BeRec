@@ -58,3 +58,7 @@ BURPSTATE_REW = 5 # fast backward
 
 # the actual burpstate
 BURP_STATE = BURPSTATE_PAUSE
+
+
+# the actual track.
+BURP_Song = 0
