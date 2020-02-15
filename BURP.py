@@ -9,7 +9,7 @@
 #from pydub import AudioSegment
 #from pydub.playback import play
 
-from soundplayer/soundplayer import SoundPlayer
+from soundplayer.soundplayer import SoundPlayer as SP
 
 import RPi.GPIO as GPIO
 
@@ -23,9 +23,9 @@ from time import sleep
 #endof test
 
 # play function
-def BURP_Play()
+def BURP_Play():
 	# it's an mp3 file, first convert it.
-
+	print("HEAVO")
 
 # the actual position of the endless tape
 BURPos = 0
