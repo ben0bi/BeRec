@@ -62,3 +62,7 @@ BURP_STATE = BURPSTATE_STOP
 
 # the actual track.
 BURP_Song = 0
+
+# the index of the filename in the list for the actual track.
+BURP_fileIDX = -1
+BURP_actualDir = "MUSIC/"

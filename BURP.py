@@ -11,6 +11,9 @@
 
 from soundplayer.soundplayer import SoundPlayer as SP
 
+from os import listdir
+from os.path import isfile, join
+
 import RPi.GPIO as GPIO
 
 import globals
@@ -22,10 +25,21 @@ from time import sleep
 #play(globals.BURP_Song)
 #endof test
 
-globals.BURP_Song = SP("MUSIC/american_high.mp3",1)
+def getFiles(path):
+	onlyfiles = [f for f in listdir(path) if isfile(join(path, f))]
+	return onlyfiles
 
-# the actual position of the endless tape
-BURPos = 0
+print("FILETEST")
+files = getFiles(globals.BURP_actualDir)
+for f in files:
+	globals.BURP_fileIDX=0
+	print(f)
+
+# get the song with the given idx.
+if globals.BURP_fileIDX >= 0:
+	print("Set Track to: "+files[globals.BURP_fileIDX])
+	globals.BURP_Song = SP(globals.BURP_actualDir+files[globals.BURP_fileIDX],1)
+print("ENDOF FILETEST")
 
 def BURP_Init():
 	GPIO.setmode(GPIO.BCM)
