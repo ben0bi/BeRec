@@ -35,10 +35,6 @@ for f in files:
 	globals.BURP_fileIDX=0
 	print(f)
 
-# get the song with the given idx.
-if globals.BURP_fileIDX >= 0:
-	print("Set Track to: "+files[globals.BURP_fileIDX])
-	globals.BURP_Song = SP(globals.BURP_actualDir+files[globals.BURP_fileIDX],1)
 print("ENDOF FILETEST")
 
 def BURP_Init():
@@ -53,10 +49,46 @@ def BURP_Init():
 	GPIO.setup(globals.PBTN_8, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 	return
 
-def BURP_UPDATE():
-	# check if song is playing
-	if(not globals.BURP_Song.isPlaying() and globals.BURP_STATE == globals.BURPSTATE_PLAY):
+# get the next track if there is one.
+def BURP_checkForNextTrack():
+	global files
+	# increase idx
+	globals.BURP_fileIDX = globals.BURP_fileIDX + 1
+	# check if idx is in array or reset to 0
+	if globals.BURP_fileIDX >= len(files):
+		globals.BURP_fileIDX = 0
+	# check if array has members, anyway, and stop if not.
+	if len(files) <= 0:
+		globals.BURP_fileIDX = -1
 		globals.BURP_STATE = globals.BURPSTATE_STOP
+	# get the song with the given idx and play it.
+	if globals.BURP_fileIDX >= 0:
+		print("Set Track to: "+files[globals.BURP_fileIDX])
+		globals.BURP_Song = SP(globals.BURP_actualDir+files[globals.BURP_fileIDX],1)
+
+# play the inserted track
+def BURP_Play():
+	if(globals.BURP_Song != 0):
+		globals.BURP_Song.play()
+		globals.BURP_STATE = globals.BURPSTATE_PLAY
+	else:
+		globals.BURP_STATE = globals.BURPSTATE_STOP
+
+
+def BURP_UPDATE():
+	# check if song is playing or get next one if play mode is set.
+	if(globals.BURP_Song != 0):
+		# its stopped but state is play, so song has ended.
+		# get next one and play it.
+		if(not globals.BURP_Song.isPlaying() and globals.BURP_STATE == globals.BURPSTATE_PLAY):
+			BURP_checkForNextTrack()
+			BURP_Play()
+	else:
+		# there is no track inserted. try to load the next one.
+		# but do not play it.
+		BURP_checkForNextTrack()
+		if globals.BURP_STATE != globals.BURPSTATE_REC and globals.BURP_STATE != globals.BURPSTATE_RECPAUSE:
+			globals.BURP_STATE = globals.BURPSTATE_STOP
 
 	# buttons are set to GND and have pull-up resistors.
 	# so, 0 is pressed and 1 is released!
@@ -127,15 +159,17 @@ def BURP_UPDATE():
 			if(globals.BURP_Song.isPlaying()):
 				globals.BURP_Song.pause()
 				globals.BURP_STATE = globals.BURPSTATE_PAUSE
-#			else:
-#				globals.BURP_Song.stop()
-#				globals.BURP_STATE = globals.BURPSTATE_STOP
+			else:
+				# it's not playing so set mode to stop.
+				# this should never happen but...it could.
+				globals.BURP_Song.stop()
+				globals.BURP_STATE = globals.BURPSTATE_STOP
 			print(":> PAUSE PLAY")
 		# continue play
 		elif(globals.BURP_STATE!=globals.BURPSTATE_RECPAUSE and globals.BURP_STATE!=globals.BURPSTATE_PLAY):
 			# play
 			if(globals.BURP_STATE==globals.BURPSTATE_STOP):
-				globals.BURP_Song.play()
+				BURP_Play()
 				print(":> START PLAY")
 			elif(globals.BURP_STATE==globals.BURPSTATE_PAUSE):
 				globals.BURP_Song.resume()
