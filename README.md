@@ -44,3 +44,10 @@ Stop will stop playing/recording and set the position to 0.
 - i know, the mechanics - but now?)
 
 Another button or (UI-)mechanic will switch to a normal MP3-Player. More on that if the above works.
+
+## Non-Ben0bi-Code / External Contributions
+The player actually uses the SoundPlayer-module found here:    
+http://www.python-exemplarisch.ch/raspi/de/sound.inc.php    
+
+It's a wrapper for the SoX sound API.    
+Use setup.sh for installing it.
