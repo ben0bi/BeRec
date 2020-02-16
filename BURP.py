@@ -22,10 +22,7 @@ from time import sleep
 #play(globals.BURP_Song)
 #endof test
 
-# play function
-def BURP_Play():
-	# it's an mp3 file, first convert it.
-	print("HEAVO")
+globals.BURP_Song = SP("MUSIC/american_high.mp3",1)
 
 # the actual position of the endless tape
 BURPos = 0
@@ -43,6 +40,10 @@ def BURP_Init():
 	return
 
 def BURP_UPDATE():
+	# check if song is playing
+	if(not globals.BURP_Song.isPlaying() and globals.BURP_STATE == globals.BURPSTATE_PLAY):
+		globals.BURP_STATE = globals.BURPSTATE_STOP
+
 	# buttons are set to GND and have pull-up resistors.
 	# so, 0 is pressed and 1 is released!
 	pp=GPIO.input(globals.BTN_PLAYPAUSE)
@@ -59,6 +60,7 @@ def BURP_UPDATE():
 	# volup
 	if(vu==0 and globals.PRESS_VOLUP == 0 and vd != 0): # vd must be != vu !!!
 		# TODO: volume up
+		print("VOLUP")
 		globals.PRESS_VOLUP = 1
 
 	if(vu==1):
@@ -67,6 +69,7 @@ def BURP_UPDATE():
 	# voldown
 	if(vd==0 and globals.PRESS_VOLDOWN == 0 and vu != 0): # vd must be != vu !!!
 		# TODO: volume down
+		print("VOLDOWN")
 		globals.PRESS_VOLDOWN = 1
 
 	if(vd==1):
@@ -75,16 +78,18 @@ def BURP_UPDATE():
 	# check if record was pressed.
 	if(rc==0 and globals.PRESS_REC==0):
 		globals.PRESS_REC = 1
+		# maybe stop the actual song from playing.
+		if(globals.BURP_Song.isPlaying()):
+			globals.BURP_Song.stop()
+		# record
 		if(globals.BURP_STATE!=globals.BURPSTATE_REC and globals.BURP_STATE!=globals.BURPSTATE_RECPAUSE):
-			if(globals.BURP_STATE==globals.BURPSTATE_PLAY):
-				# TODO: stop the playing
-				print("play stopped")
 			globals.BURP_STATE = globals.BURPSTATE_REC
-			print "o RECORD"
+			# TODO: record
+			print "TODO: o RECORD"
 		else:
 			# TODO: stop and save record
-			globals.BURP_STATE = globals.BURPSTATE_PAUSE
-			print "o STOP RECORD"
+			globals.BURP_STATE = globals.BURPSTATE_STOP
+			print "TODO: o STOP RECORD"
 	if(rc==1):
 		globals.PRESS_REC = 0
 	sleep(0.25)
@@ -97,20 +102,30 @@ def BURP_UPDATE():
 			# TODO: pause record
 			print(":> PAUSE RECORD")
 			globals.BURP_STATE = globals.BURPSTATE_RECPAUSE
-		# pause play
-		elif(globals.BURP_STATE==globals.BURPSTATE_PLAY):
-			# TODO: pause play
-			print(":> PAUSE PLAY")
-			globals.BURP_STATE = globals.BURPSTATE_PAUSE
 		# continue record
 		elif(globals.BURP_STATE==globals.BURPSTATE_RECPAUSE):
 			# TODO: continue record
 			print(":> CONTINUE RECORD")
 			globals.BURP_STATE=globals.BURPSTATE_REC
+		# pause play
+		elif(globals.BURP_STATE==globals.BURPSTATE_PLAY):
+			# pause play
+			if(globals.BURP_Song.isPlaying()):
+				globals.BURP_Song.pause()
+				globals.BURP_STATE = globals.BURPSTATE_PAUSE
+#			else:
+#				globals.BURP_Song.stop()
+#				globals.BURP_STATE = globals.BURPSTATE_STOP
+			print(":> PAUSE PLAY")
 		# continue play
 		elif(globals.BURP_STATE!=globals.BURPSTATE_RECPAUSE and globals.BURP_STATE!=globals.BURPSTATE_PLAY):
-			# TODO: play
-			print(":> START/CONTINUE PLAY")
+			# play
+			if(globals.BURP_STATE==globals.BURPSTATE_STOP):
+				globals.BURP_Song.play()
+				print(":> START PLAY")
+			elif(globals.BURP_STATE==globals.BURPSTATE_PAUSE):
+				globals.BURP_Song.resume()
+				print(":> RESUME PLAY")
 			globals.BURP_STATE=globals.BURPSTATE_PLAY
 	if(pp==1):
 		globals.PRESS_PP = 0
@@ -119,12 +134,13 @@ def BURP_UPDATE():
 	if(st==0 and globals.PRESS_STOP==0):
 		globals.PRESS_STOP = 1
 		if(globals.BURP_STATE == globals.BURPSTATE_PLAY or globals.BURP_STATE == globals.BURPSTATE_PAUSE):
-			# TODO: stop play, set to 0
-			globals.BURP_STATE = globals.BURPSTATE_PAUSE
+			if(globals.BURP_Song.isPlaying()):
+				globals.BURP_Song.stop()
+			globals.BURP_STATE = globals.BURPSTATE_STOP
 			print("[] STOP PLAY, SET TO 0")
 		elif(globals.BURP_STATE==globals.BURPSTATE_REC or globals.BURP_STATE == globals.BURPSTATE_RECPAUSE):
 			# TODO: stop and save record.
-			globals.BURP_STATE = globals.BURPSTATE_PAUSE
+			globals.BURP_STATE = globals.BURPSTATE_STOP
 			print("[] STOP RECORD")
 	if(st==1):
 		globals.PRESS_STOP = 0

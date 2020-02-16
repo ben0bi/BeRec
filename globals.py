@@ -49,16 +49,16 @@ BURP_MODE = BURPMODE_ET
 
 # The several states of the player.
 # If there is a REC state, you cannot FWD and REW.
-BURPSTATE_PAUSE = 0 # default state is not playing
-BURPSTATE_PLAY = 1 # playing
-BURPSTATE_REC = 2 # recording
-BURPSTATE_RECPAUSE = 3 # pause record
-BURPSTATE_FWD = 4 # fast forward
-BURPSTATE_REW = 5 # fast backward
+BURPSTATE_STOP = BURPSTATE_STOPPED = 0 # default state is stopped.
+BURPSTATE_PAUSE = 1 # resumeable pause song.
+BURPSTATE_PLAY = 2 # playing
+BURPSTATE_REC = 3 # recording
+BURPSTATE_RECPAUSE = 4 # pause record
+BURPSTATE_FWD = 5 # fast forward
+BURPSTATE_REW = 6 # fast backward
 
 # the actual burpstate
-BURP_STATE = BURPSTATE_PAUSE
-
+BURP_STATE = BURPSTATE_STOP
 
 # the actual track.
 BURP_Song = 0
