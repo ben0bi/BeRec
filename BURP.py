@@ -31,8 +31,8 @@ for root, subdirs, fs in os.walk(globals.BURP_rootDir):
 		fpath = os.path.join(root, filename)
 		# maybe rename the file
 		newpath = filename.replace(' ', '_')
-		newpath = newpath.replace('(','')
-		newpath = newpath.replace(')','')
+		newpath = newpath.replace('(','[')
+		newpath = newpath.replace(')',']')
 		newpath = os.path.join(root, newpath)
 		if(newpath!=fpath):
 			print "RENAMING "+filename+" TO "+newpath
