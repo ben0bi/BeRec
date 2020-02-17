@@ -29,8 +29,17 @@ for root, subdirs, fs in os.walk(globals.BURP_rootDir):
 		print('\t- subdir '+subdir)
 	for filename in fs:
 		fpath = os.path.join(root, filename)
-		print('\t- file %s (full path %s)' % (filename, fpath))
-		files.append(fpath)
+		# maybe rename the file
+		newpath = filename.replace(' ', '_')
+		newpath = newpath.replace('(','')
+		newpath = newpath.replace(')','')
+		newpath = os.path.join(root, newpath)
+		if(newpath!=fpath):
+			print "RENAMING "+filename+" TO "+newpath
+			os.rename(fpath, newpath)
+		#	fpath = newpath
+		print('\t- file %s (full path %s)' % (filename, newpath))
+		files.append(newpath)
 
 if len(files) <= 0:
 	print("!! NO FILES FOUND, CHECK DIRECTORIES !!")
