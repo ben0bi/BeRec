@@ -21,7 +21,12 @@ BTN_REW = PBTN_2
 BTN_VOLUP = PBTN_3
 BTN_VOLDOWN = PBTN_6
 BTN_REC = PBTN_7 # confirmed
-# BTN_ANYTHING = 26 # there is an 8th button on my pads.
+BTN_MODECHANGE = PBTN_8  # change the mode, get to the menu etc,
+# we need 7 buttons for direct access on the player
+# which are: playpause, stop, fwd, rew, rec, volup and voldown
+# it would be great if volup and voldown could be realized with a poti.
+# and with this 6th button we can change the mode
+# and then use those buttons for other stuff.
 
 # The button-is-pressed flags.
 PRESS_PP = 0 # play/pause
@@ -65,4 +70,5 @@ BURP_Song = 0
 
 # the index of the filename in the list for the actual track.
 BURP_fileIDX = -1
-BURP_actualDir = "MUSIC/"
+BURP_rootDir = "/var/www/html/MUSIC/FILESYS"
+BURP_actualDir = "/"

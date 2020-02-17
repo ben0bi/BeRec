@@ -11,7 +11,7 @@
 
 from soundplayer.soundplayer import SoundPlayer as SP
 
-from os import listdir
+import os, sys
 from os.path import isfile, join
 
 import RPi.GPIO as GPIO
@@ -20,23 +20,24 @@ import globals
 
 from time import sleep
 
-#test
-#globals.BURP_Song = AudioSegment.from_file('MUSIC/american_high.mp3','mp3')
-#play(globals.BURP_Song)
-#endof test
-
-def getFiles(path):
-	onlyfiles = [f for f in listdir(path) if isfile(join(path, f))]
-	return onlyfiles
-
 print("FILETEST")
-files = getFiles(globals.BURP_actualDir)
-for f in files:
-	globals.BURP_fileIDX=0
-	print(f)
+files = []
+# get all files in the root dir and its sub dirs.
+for root, subdirs, fs in os.walk(globals.BURP_rootDir):
+	print('--\nroot = '+root)
+	for subdir in subdirs:
+		print('\t- subdir '+subdir)
+	for filename in fs:
+		fpath = os.path.join(root, filename)
+		print('\t- file %s (full path %s)' % (filename, fpath))
+		files.append(fpath)
 
+if len(files) <= 0:
+	print("!! NO FILES FOUND, CHECK DIRECTORIES !!")
+	print("Root directory: "+globals.BURP_rootDir)
 print("ENDOF FILETEST")
 
+# initialize gpio and stuff.
 def BURP_Init():
 	GPIO.setmode(GPIO.BCM)
 	GPIO.setup(globals.PBTN_1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -99,8 +100,9 @@ def BURP_UPDATE():
 	rc=GPIO.input(globals.BTN_REC)
 	vu=GPIO.input(globals.BTN_VOLUP)
 	vd=GPIO.input(globals.BTN_VOLDOWN)
+	md=GPIO.input(globals.BTN_MODECHANGE)
 #	an=GPIO.input(globals.BTN_ANYTHING)
-	print(pp,fw,rw,st,rc,vu,vd)
+#	print(pp,fw,rw,st,rc,vu,vd,md)
 
 	# check if volup or voldown were pressed
 	# volup
@@ -138,7 +140,6 @@ def BURP_UPDATE():
 			print "TODO: o STOP RECORD"
 	if(rc==1):
 		globals.PRESS_REC = 0
-	sleep(0.25)
 
 	# check if playpause was pressed.
 	if(pp==0 and globals.PRESS_PP==0):
@@ -211,6 +212,10 @@ def BURP_UPDATE():
 
 	if(rw==1):
 		globals.PRESS_REW = 0
+
+	# wait some time to save processor time.
+	sleep(0.1)
+
 BURP_Init()
 
 try:
