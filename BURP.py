@@ -20,6 +20,18 @@ import globals
 
 from time import sleep
 
+# play a blocking beep sound.
+def BURP_Bebeep():
+	dev = 1
+	SP.playTone(420, 0.025, True, dev)
+	sleep(0.05)
+	SP.playTone(210, 0.1, True, dev)
+
+# play a normal beep sound.
+def BURP_Beep():
+	dev = 1
+	SP.playTone(210, 0.025, True, dev)
+
 print("Reading files..")
 files = []
 # get all files in the root dir and its sub dirs.
@@ -57,14 +69,6 @@ if len(files) <= 0:
 	print("!! NO FILES FOUND, CHECK DIRECTORIES !!")
 	print("Root directory: "+globals.BURP_rootDir)
 print("ENDOF Readfiles")
-
-# play a blocking beep sound.
-def BURP_Bebeep():
-	dev = 1
-	SP.playTone(420, 0.05, True, dev)
-	sleep(0.05)
-	SP.playTone(420, 0.05, True, dev)
-
 
 # initialize gpio and stuff.
 def BURP_Init():
@@ -106,9 +110,11 @@ def BURP_checkForNextTrack(reverse = 0):
 def BURP_Play():
 	try:
 		if(globals.BURP_Song != 0):
+			print("PLAY START")
 			globals.BURP_Song.play()
 			globals.BURP_STATE = globals.BURPSTATE_PLAY
 		else:
+			print("ERROR: SONG IS null")
 			globals.BURP_STATE = globals.BURPSTATE_STOP
 	except:
 		print("ERROR: COULD NOT PLAY TRACK")
@@ -120,9 +126,11 @@ def BURP_UPDATE():
 		# its stopped but state is play, so song has ended.
 		# get next one and play it.
 		if(not globals.BURP_Song.isPlaying() and globals.BURP_STATE == globals.BURPSTATE_PLAY):
+			print("PLAY MODE, SONG ENDED, GET NEXT..")
 			BURP_checkForNextTrack()
 			BURP_Play()
 	else:
+		print("TRACK IS null, INSERTING...")
 		# there is no track inserted. try to load the next one.
 		# but do not play it.
 		BURP_checkForNextTrack()
@@ -251,7 +259,9 @@ def BURP_UPDATE():
 		if(globals.BURP_STATE==globals.BURPSTATE_PLAY):
 			BURP_Play()
 		else:
-			BURP_Bebeep()
+			if(globals.BURP_STATE!=globals.BURPSTATE_REC and globals.BURP_STATE!=globals.BURPSTATE_RECPAUSE):
+				globals.BURP_STATE = globals.BURPSTATE_STOP
+			BURP_Beep()
 
 	if(fw==1):
 		globals.PRESS_FWD = 0
@@ -259,16 +269,24 @@ def BURP_UPDATE():
 	# rewind button pressed
 	if(rw==0):
 		print("<< REWIND")
-		globals.PRESS_REW = 1
-		if(globals.BURP_Song.isPlaying()):
+		if(globals.PRESS_REW == 0 and globals.BURP_Song.isPlaying()):
 			globals.BURP_Song.stop()
-		# get next track
+		# get previous track
+#		if globals.PRESS_REW==0:
 		BURP_checkForNextTrack(1)
 		# if state was play: play ;)
-		if(globals.BURP_STATE==globals.BURPSTATE_PLAY):
+		if(globals.BURP_STATE==globals.BURPSTATE_PLAY or globals.BURP_STATE==globals.BURPSTATE_PAUSE):
+			print("Try to play new track..")
+			globals.BURP_STATE = globals.BURPSTATE_STOP
+			if(globals.BURP_Song.isPlaying()):
+				globals.BURP_Song.stop()
 			BURP_Play()
+			sleep(2.1)
 		else:
-			BURP_Bebeep()
+			if(globals.BURP_STATE!=globals.BURPSTATE_REC and globals.BURP_STATE!=globals.BURPSTATE_RECPAUSE):
+				globals.BURP_STATE = globals.BURPSTATE_STOP
+			BURP_Beep()
+		globals.PRESS_REW = 1
 
 	if(rw==1):
 		globals.PRESS_REW = 0
