@@ -20,31 +20,51 @@ import globals
 
 from time import sleep
 
-print("FILETEST")
+print("Reading files..")
 files = []
 # get all files in the root dir and its sub dirs.
 for root, subdirs, fs in os.walk(globals.BURP_rootDir):
 	print('--\nroot = '+root)
 	for subdir in subdirs:
 		print('\t- subdir '+subdir)
+		sd = subdir.replace(' ', '_')
+		if(sd!=subdir):
+			print "RENAMING DIRECTORY "+subdir+" TO "+sd
+			od = os.path.join(root,subdir)
+			nd = os.path.join(root, sd)
+			print("("+od+" -> "+nd+")")
+			os.rename(od, nd)
+
 	for filename in fs:
 		fpath = os.path.join(root, filename)
 		# maybe rename the file
 		newpath = filename.replace(' ', '_')
 		newpath = newpath.replace('(','[')
 		newpath = newpath.replace(')',']')
+		newpath = newpath.replace('{','[')
+		newpath = newpath.replace('}',']')
 		newpath = os.path.join(root, newpath)
 		if(newpath!=fpath):
 			print "RENAMING "+filename+" TO "+newpath
 			os.rename(fpath, newpath)
 		#	fpath = newpath
-		print('\t- file %s (full path %s)' % (filename, newpath))
+		print('\t- file %s' % (filename))
+		# check if file can be played and maybe add it to the list.
+		#if(SP.canPlay(newpath)):
 		files.append(newpath)
 
 if len(files) <= 0:
 	print("!! NO FILES FOUND, CHECK DIRECTORIES !!")
 	print("Root directory: "+globals.BURP_rootDir)
-print("ENDOF FILETEST")
+print("ENDOF Readfiles")
+
+# play a blocking beep sound.
+def BURP_Bebeep():
+	dev = 1
+	SP.playTone(420, 0.05, True, dev)
+	sleep(0.05)
+	SP.playTone(420, 0.05, True, dev)
+
 
 # initialize gpio and stuff.
 def BURP_Init():
@@ -60,13 +80,19 @@ def BURP_Init():
 	return
 
 # get the next track if there is one.
-def BURP_checkForNextTrack():
+def BURP_checkForNextTrack(reverse = 0):
 	global files
-	# increase idx
-	globals.BURP_fileIDX = globals.BURP_fileIDX + 1
+	# increase or decrease
+	if reverse==0:
+		globals.BURP_fileIDX = globals.BURP_fileIDX + 1
+	else:
+		globals.BURP_fileIDX = globals.BURP_fileIDX - 1
 	# check if idx is in array or reset to 0
 	if globals.BURP_fileIDX >= len(files):
 		globals.BURP_fileIDX = 0
+	# and vice versa
+	if(globals.BURP_fileIDX < 0):
+		globals.BURP_fileIDX = len(files)-1
 	# check if array has members, anyway, and stop if not.
 	if len(files) <= 0:
 		globals.BURP_fileIDX = -1
@@ -78,12 +104,15 @@ def BURP_checkForNextTrack():
 
 # play the inserted track
 def BURP_Play():
-	if(globals.BURP_Song != 0):
-		globals.BURP_Song.play()
-		globals.BURP_STATE = globals.BURPSTATE_PLAY
-	else:
+	try:
+		if(globals.BURP_Song != 0):
+			globals.BURP_Song.play()
+			globals.BURP_STATE = globals.BURPSTATE_PLAY
+		else:
+			globals.BURP_STATE = globals.BURPSTATE_STOP
+	except:
+		print("ERROR: COULD NOT PLAY TRACK")
 		globals.BURP_STATE = globals.BURPSTATE_STOP
-
 
 def BURP_UPDATE():
 	# check if song is playing or get next one if play mode is set.
@@ -141,6 +170,7 @@ def BURP_UPDATE():
 		# record
 		if(globals.BURP_STATE!=globals.BURPSTATE_REC and globals.BURP_STATE!=globals.BURPSTATE_RECPAUSE):
 			globals.BURP_STATE = globals.BURPSTATE_REC
+#			BURP_Beep()
 			# TODO: record
 			print "TODO: o RECORD"
 		else:
@@ -174,6 +204,7 @@ def BURP_UPDATE():
 				# this should never happen but...it could.
 				globals.BURP_Song.stop()
 				globals.BURP_STATE = globals.BURPSTATE_STOP
+				BURP_Bebeep()
 			print(":> PAUSE PLAY")
 		# continue play
 		elif(globals.BURP_STATE!=globals.BURPSTATE_RECPAUSE and globals.BURP_STATE!=globals.BURPSTATE_PLAY):
@@ -195,29 +226,49 @@ def BURP_UPDATE():
 			if(globals.BURP_Song.isPlaying()):
 				globals.BURP_Song.stop()
 			globals.BURP_STATE = globals.BURPSTATE_STOP
-			print("[] STOP PLAY, SET TO 0")
+			print("[] STOP PLAY")
 		elif(globals.BURP_STATE==globals.BURPSTATE_REC or globals.BURP_STATE == globals.BURPSTATE_RECPAUSE):
 			# TODO: stop and save record.
 			globals.BURP_STATE = globals.BURPSTATE_STOP
 			print("[] STOP RECORD")
+		else:
+			# already stopped, beep
+			BURP_Bebeep()
 	if(st==1):
 		globals.PRESS_STOP = 0
 
 	# check if rew or fwd were pressed
 	# forward button pressed
 	if(fw==0):
-		# TODO: fast forward
 		print(">> FORWARD")
 		globals.PRESS_FWD = 1
+		# maybe stop song from playing
+		if(globals.BURP_Song.isPlaying()):
+			globals.BURP_Song.stop()
+		# get next track
+		BURP_checkForNextTrack()
+		# if state was play: play ;)
+		if(globals.BURP_STATE==globals.BURPSTATE_PLAY):
+			BURP_Play()
+		else:
+			BURP_Bebeep()
 
 	if(fw==1):
 		globals.PRESS_FWD = 0
 
 	# rewind button pressed
 	if(rw==0):
-		# TODO: fast backward
 		print("<< REWIND")
 		globals.PRESS_REW = 1
+		if(globals.BURP_Song.isPlaying()):
+			globals.BURP_Song.stop()
+		# get next track
+		BURP_checkForNextTrack(1)
+		# if state was play: play ;)
+		if(globals.BURP_STATE==globals.BURPSTATE_PLAY):
+			BURP_Play()
+		else:
+			BURP_Bebeep()
 
 	if(rw==1):
 		globals.PRESS_REW = 0

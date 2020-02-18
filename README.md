@@ -1,6 +1,14 @@
 # BeRec a.k.a. BURP
 ## Benobis Universal Recorder & Player
 
+Updates: MP3 Player almost fully working.    
+Renames all files and directories for convenience (replaces spaces with _)     
+You need to:    
+
+sudo python BURP.py
+
+That the renaming works without hassle.
+
 A digital music recorder behaving like an old music tape.    
 
 I miss the times when we put in a cassette, listen to the radio and when we liked a song,
