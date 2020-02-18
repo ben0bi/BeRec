@@ -27,6 +27,13 @@ def BURP_Bebeep():
 	sleep(0.05)
 	SP.playTone(210, 0.1, True, dev)
 
+# play a blocking beep sound.
+def BURP_Bebeep2():
+	dev = 1
+	SP.playTone(210, 0.1, True, dev)
+	sleep(0.05)
+	SP.playTone(420, 0.025, True, dev)
+
 # play a normal beep sound.
 def BURP_Beep():
 	dev = 1
@@ -115,10 +122,21 @@ def BURP_Play():
 			globals.BURP_STATE = globals.BURPSTATE_PLAY
 		else:
 			print("ERROR: SONG IS null")
-			globals.BURP_STATE = globals.BURPSTATE_STOP
+			BURP_Stop()
 	except:
 		print("ERROR: COULD NOT PLAY TRACK")
-		globals.BURP_STATE = globals.BURPSTATE_STOP
+		BURP_Stop()
+
+# stop the inserted track.
+def BURP_Stop():
+	globals.BURP_STATE = globals.BURPSTATE_STOP
+	try:
+		if(globals.BURP_Song!=0):
+			if(globals.BURP_Song.isPlaying()):
+				globals.BURP_Song.stop()
+				sleep(0.5)
+	except:
+		print("ERROR: COULD NOT STOP TRACK.")
 
 def BURP_UPDATE():
 	# check if song is playing or get next one if play mode is set.
@@ -135,7 +153,7 @@ def BURP_UPDATE():
 		# but do not play it.
 		BURP_checkForNextTrack()
 		if globals.BURP_STATE != globals.BURPSTATE_REC and globals.BURP_STATE != globals.BURPSTATE_RECPAUSE:
-			globals.BURP_STATE = globals.BURPSTATE_STOP
+			BURP_Stop()
 
 	# buttons are set to GND and have pull-up resistors.
 	# so, 0 is pressed and 1 is released!
@@ -183,7 +201,7 @@ def BURP_UPDATE():
 			print "TODO: o RECORD"
 		else:
 			# TODO: stop and save record
-			globals.BURP_STATE = globals.BURPSTATE_STOP
+			BURP_Stop()
 			print "TODO: o STOP RECORD"
 	if(rc==1):
 		globals.PRESS_REC = 0
@@ -196,6 +214,7 @@ def BURP_UPDATE():
 			# TODO: pause record
 			print(":> PAUSE RECORD")
 			globals.BURP_STATE = globals.BURPSTATE_RECPAUSE
+			BURP_Bebeep2()
 		# continue record
 		elif(globals.BURP_STATE==globals.BURPSTATE_RECPAUSE):
 			# TODO: continue record
@@ -207,11 +226,11 @@ def BURP_UPDATE():
 			if(globals.BURP_Song.isPlaying()):
 				globals.BURP_Song.pause()
 				globals.BURP_STATE = globals.BURPSTATE_PAUSE
+				BURP_Bebeep2()
 			else:
 				# it's not playing so set mode to stop.
 				# this should never happen but...it could.
-				globals.BURP_Song.stop()
-				globals.BURP_STATE = globals.BURPSTATE_STOP
+				BURP_Stop()
 				BURP_Bebeep()
 			print(":> PAUSE PLAY")
 		# continue play
@@ -231,14 +250,14 @@ def BURP_UPDATE():
 	if(st==0 and globals.PRESS_STOP==0):
 		globals.PRESS_STOP = 1
 		if(globals.BURP_STATE == globals.BURPSTATE_PLAY or globals.BURP_STATE == globals.BURPSTATE_PAUSE):
-			if(globals.BURP_Song.isPlaying()):
-				globals.BURP_Song.stop()
-			globals.BURP_STATE = globals.BURPSTATE_STOP
 			print("[] STOP PLAY")
+			BURP_Stop()
+			BURP_Bebeep2()
 		elif(globals.BURP_STATE==globals.BURPSTATE_REC or globals.BURP_STATE == globals.BURPSTATE_RECPAUSE):
 			# TODO: stop and save record.
-			globals.BURP_STATE = globals.BURPSTATE_STOP
 			print("[] STOP RECORD")
+			BURP_Stop()
+			BURP_Bebeep2()
 		else:
 			# already stopped, beep
 			BURP_Bebeep()
@@ -260,7 +279,7 @@ def BURP_UPDATE():
 			BURP_Play()
 		else:
 			if(globals.BURP_STATE!=globals.BURPSTATE_REC and globals.BURP_STATE!=globals.BURPSTATE_RECPAUSE):
-				globals.BURP_STATE = globals.BURPSTATE_STOP
+				BURP_Stop()
 			BURP_Beep()
 
 	if(fw==1):
@@ -273,18 +292,17 @@ def BURP_UPDATE():
 			globals.BURP_Song.stop()
 		# get previous track
 #		if globals.PRESS_REW==0:
-		BURP_checkForNextTrack(1)
+		if(globals.PRESS_REW == 0 or globals.BURP_STATE!=globals.BURPSTATE_PLAY):
+			BURP_checkForNextTrack(1)
+
 		# if state was play: play ;)
-		if(globals.BURP_STATE==globals.BURPSTATE_PLAY or globals.BURP_STATE==globals.BURPSTATE_PAUSE):
+		if(globals.PRESS_REW == 0 and (globals.BURP_STATE==globals.BURPSTATE_PLAY or globals.BURP_STATE==globals.BURPSTATE_PAUSE)):
 			print("Try to play new track..")
-			globals.BURP_STATE = globals.BURPSTATE_STOP
-			if(globals.BURP_Song.isPlaying()):
-				globals.BURP_Song.stop()
+			BURP_Stop()
 			BURP_Play()
-			sleep(2.1)
-		else:
+		elif(globals.PRESS_REW==1 and globals.BURP_STATE!=globals.BURPSTATE_PLAY and globals.BURP_STATE!=globals.BURPSTATE_PAUSE):
 			if(globals.BURP_STATE!=globals.BURPSTATE_REC and globals.BURP_STATE!=globals.BURPSTATE_RECPAUSE):
-				globals.BURP_STATE = globals.BURPSTATE_STOP
+				BURP_Stop()
 			BURP_Beep()
 		globals.PRESS_REW = 1
 
