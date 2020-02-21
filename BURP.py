@@ -44,11 +44,54 @@ def BURP_Beep():
 	dev = 1
 	SP.playTone(210, 0.025, True, dev)
 
+# set a specific color for the display.
 def BURP_DICOL(red, green, blue):
 	global lcd
+	global BURP_DIAR, BURP_DIAG, BURP_DIAB
+	BURP_DIAR=red
+	BURP_DIAG=green
+	BURP_DIAB=blue
 	lcd.setPWM(0x04, red)
 	lcd.setPWM(0x03, green)
 	lcd.setPWM(0x02, blue)
+
+# set a specific color for the display and save it.
+def BURP_SETDICOL(red, green, blue):
+	global BURP_DIR, BURP_DIG, BURP_DIB
+	BURP_DIR=red
+	BURP_DIG=green
+	BURP_DIB=blue
+	BURP_DICOL(red,green,blue)
+
+# display color for resetting.
+BURP_DIR = 0
+BURP_DIG = 63
+BURP_DIB = 0
+# actual display color.
+BURP_DIAR = 0
+BURP_DIAG = 63
+BURP_DIAB = 0
+
+# fade the display out after some time.
+BURP_DITIME = 5 # display time until it fades out.
+BURP_DION = 1
+BURP_DITIME_ACTUAL = 0.0
+def BURP_DIFADE_OUT(time):
+	global BURP_DITIME
+	global BURP_DITIME_ACTUAL
+	global BURP_DIAR, BURP_DIAG, BURP_DIAB
+	if(BURP_DION==1):
+		BURP_DITIME_ACTUAL=BURP_DITIME_ACTUAL+time
+		if(BURP_DITIME_ACTUAL>=BURP_DITIME):
+			if(BURP_DIAR>0):
+				BURP_DIAR=BURP_DIAR-1
+			if(BURP_DIAG>0):
+				BURP_DIAG=BURP_DIAG-1
+			if(BURP_DIAB>0):
+				BURP_DIAB=BURP_DIAB-1
+			BURP_DICOL(BURP_DIAR,BURP_DIAG,BURP_DIAB)
+		if(BURP_DIAR<=0 and BURP_DIAG<=0 and BURP_DIAB<=0)
+			BURP_DION=0
 
 BURP_Bebeep2()
 
