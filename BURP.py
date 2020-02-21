@@ -14,9 +14,8 @@ from soundplayer.soundplayer import SoundPlayer as SP
 import os, sys
 from os.path import isfile, join
 
-# import the stuff for the display
-sys.path.append('./')
-import rgb1602
+# display library.
+import BURPdi as D
 
 # GPIO stuff.
 import RPi.GPIO as GPIO
@@ -43,55 +42,6 @@ def BURP_Bebeep2():
 def BURP_Beep():
 	dev = 1
 	SP.playTone(210, 0.025, True, dev)
-
-# set a specific color for the display.
-def BURP_DICOL(red, green, blue):
-	global lcd
-	global BURP_DIAR, BURP_DIAG, BURP_DIAB
-	BURP_DIAR=red
-	BURP_DIAG=green
-	BURP_DIAB=blue
-	lcd.setPWM(0x04, red)
-	lcd.setPWM(0x03, green)
-	lcd.setPWM(0x02, blue)
-
-# set a specific color for the display and save it.
-def BURP_SETDICOL(red, green, blue):
-	global BURP_DIR, BURP_DIG, BURP_DIB
-	BURP_DIR=red
-	BURP_DIG=green
-	BURP_DIB=blue
-	BURP_DICOL(red,green,blue)
-
-# display color for resetting.
-BURP_DIR = 0
-BURP_DIG = 63
-BURP_DIB = 0
-# actual display color.
-BURP_DIAR = 0
-BURP_DIAG = 63
-BURP_DIAB = 0
-
-# fade the display out after some time.
-BURP_DITIME = 5 # display time until it fades out.
-BURP_DION = 1
-BURP_DITIME_ACTUAL = 0.0
-def BURP_DIFADE_OUT(time):
-	global BURP_DITIME
-	global BURP_DITIME_ACTUAL
-	global BURP_DIAR, BURP_DIAG, BURP_DIAB
-	if(BURP_DION==1):
-		BURP_DITIME_ACTUAL=BURP_DITIME_ACTUAL+time
-		if(BURP_DITIME_ACTUAL>=BURP_DITIME):
-			if(BURP_DIAR>0):
-				BURP_DIAR=BURP_DIAR-1
-			if(BURP_DIAG>0):
-				BURP_DIAG=BURP_DIAG-1
-			if(BURP_DIAB>0):
-				BURP_DIAB=BURP_DIAB-1
-			BURP_DICOL(BURP_DIAR,BURP_DIAG,BURP_DIAB)
-		if(BURP_DIAR<=0 and BURP_DIAG<=0 and BURP_DIAB<=0)
-			BURP_DION=0
 
 BURP_Bebeep2()
 
@@ -139,47 +89,28 @@ BURP_Bebeep2()
 lcd = 0
 # initialize gpio and stuff.
 def BURP_Init():
-	global lcd
-	lcd=rgb1602.RGB1602(16,2) #create LCD object,specify col and row
-
-	BURP_DICOL(0,63,0)
-	lcd.setCursor(0,0)
-	lcd.printout("Welcome to BURP!")
+    D.DI_INIT()
+	D.color(0,63,0)
+	D.lcd.setCursor(0,0)
+	D.lcd.printout("Welcome to BURP!")
 
 # arrows
-	lcd.customSymbol(globals.DIREF_UPARROW, globals.DISYM_UPARROW)
-	lcd.customSymbol(globals.DIREF_DOWNARROW, globals.DISYM_DOWNARROW)
-	lcd.customSymbol(globals.DIREF_LEFTARROW, globals.DISYM_LEFTARROW)
-	lcd.customSymbol(globals.DIREF_RIGHTARROW, globals.DISYM_RIGHTARROW)
+	D.lcd.customSymbol(D.DIREF_UPARROW, D.DISYM_UPARROW)
+	D.lcd.customSymbol(D.DIREF_DOWNARROW, D.DISYM_DOWNARROW)
+	D.lcd.customSymbol(D.DIREF_LEFTARROW, D.DISYM_LEFTARROW)
+	D.lcd.customSymbol(D.DIREF_RIGHTARROW, D.DISYM_RIGHTARROW)
 
 # play pause rec stop
-	lcd.customSymbol(globals.DIREF_STOP, globals.DISYM_STOP)
-	lcd.customSymbol(globals.DIREF_PAUSE, globals.DISYM_PAUSE)
-	lcd.customSymbol(globals.DIREF_PLAY, globals.DISYM_PLAY)
-	lcd.customSymbol(globals.DIREF_REC, globals.DISYM_REC)
+	D.lcd.customSymbol(D.DIREF_STOP, D.DISYM_STOP)
+	D.lcd.customSymbol(D.DIREF_PAUSE, D.DISYM_PAUSE)
+	D.lcd.customSymbol(D.DIREF_PLAY, D.DISYM_PLAY)
+	D.lcd.customSymbol(D.DIREF_REC, D.DISYM_REC)
 # there seems to be a maximum of 8 different symbols for this display,
-# this one will be set to index 0
+# this one would be set to index 0 but DIREF_RECPAUSE is 8...
 #	lcd.customSymbol(globals.DIREF_RECPAUSE, globals.DISYM_RECPAUSE)
 
-# show menu
-	lcd.setCursor(0,1)
-	lcd.write(globals.DIREF_UPARROW)
-	lcd.printout(":")
-	lcd.write(globals.DIREF_PLAY)
-	lcd.write(globals.DIREF_PAUSE)
-	lcd.printout(" ")
-	lcd.write(globals.DIREF_DOWNARROW)
-	lcd.printout(":")
-	lcd.write(globals.DIREF_STOP)
-	lcd.printout(" ")
-	lcd.write(globals.DIREF_LEFTARROW)
-	lcd.printout(":")
-	lcd.write(globals.DIREF_LEFTARROW)
-	lcd.printout(" ")
-	lcd.write(globals.DIREF_RIGHTARROW)
-	lcd.printout(":")
-	lcd.write(globals.DIREF_RIGHTARROW)
-
+    D.showPlayMenu()
+    
 # set gpios
 	GPIO.setmode(GPIO.BCM)
 	GPIO.setup(globals.PBTN_1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
