@@ -132,6 +132,7 @@ def BURP_Init():
     lcd.printOut(":")
     lcd.write(globals.DIREF_RIGHTARROW)
 
+# set gpios
 	GPIO.setmode(GPIO.BCM)
 	GPIO.setup(globals.PBTN_1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 	GPIO.setup(globals.PBTN_2, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
