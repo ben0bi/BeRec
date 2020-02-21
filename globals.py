@@ -80,3 +80,57 @@ BURP_Song = 0
 BURP_fileIDX = -1
 BURP_rootDir = "/var/www/html/MUSIC/FILESYS"
 BURP_actualDir = "/"
+
+
+# Display Symbols
+# make some custom characters:
+DISYM_STOP = [
+  0b00000,
+  0b11111,
+  0b10001,
+  0b10001,
+  0b10001,
+  0b11111,
+  0b00000,
+  0b00000
+]
+DISYM_PAUSE = [
+  0b00000,
+  0b11011,
+  0b11011,
+  0b11011,
+  0b11011,
+  0b11011,
+  0b00000,
+  0b00000
+]
+DISYM_PLAY = [
+  0b00000,
+  0b11000,
+  0b11110,
+  0b11111,
+  0b11110,
+  0b11000,
+  0b00000,
+  0b00000
+]
+DISYM_REC = [
+  0b00000,
+  0b00100,
+  0b01110,
+  0b11111,
+  0b01110,
+  0b00100,
+  0b00000,
+  0b00000
+]
+DISYM_RECPAUSE = [
+  0b00000,
+  0b00100,
+  0b01010,
+  0b10001,
+  0b01010,
+  0b00100,
+  0b00000,
+  0b00000
+]

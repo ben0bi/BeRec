@@ -17,6 +17,7 @@ sudo apt-get install sox libsox-fmt-mp3
 
 # GPIO library
 pip install RPi.GPIO
+pip install wiringpi
 
 # ffmpeg bindings for python
 #pip install ffmpeg-python

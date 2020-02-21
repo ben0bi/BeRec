@@ -14,11 +14,16 @@ from soundplayer.soundplayer import SoundPlayer as SP
 import os, sys
 from os.path import isfile, join
 
+# import the stuff for the display
+sys.path.append('./')
+import rgb1602
+
+# GPIO stuff.
 import RPi.GPIO as GPIO
 
-import globals
-
 from time import sleep
+
+import globals
 
 # play a blocking beep sound.
 def BURP_Bebeep():
@@ -82,8 +87,23 @@ if len(files) <= 0:
 	print("Root directory: "+globals.BURP_rootDir)
 print("ENDOF Readfiles")
 
+lcd = 0
 # initialize gpio and stuff.
 def BURP_Init():
+    global lcd
+    lcd=rgb1602.RGB1602(16,2) #create LCD object,specify col and row
+    lcd.setCursor(0,0)
+    lcd.printout("Welcome to BURP!")
+    
+    lcd.customSymbol(0, globals.DISYM_STOP)
+    lcd.customSymbol(1, globals.DISYM_PAUSE)
+    lcd.customSymbol(2, globals.DISYM_PLAY)
+    lcd.customSymbol(3, globals.DISYM_REC)
+    lcd.customSymbol(4, globals.DISYM_RECPAUSE)
+    
+    lcd.setCursor(0,1)
+    lcd.write(0)
+
 	GPIO.setmode(GPIO.BCM)
 	GPIO.setup(globals.PBTN_1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 	GPIO.setup(globals.PBTN_2, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
