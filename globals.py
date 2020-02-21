@@ -83,7 +83,7 @@ BURP_actualDir = "/"
 
 
 # Display Symbols
-# make some custom characters and their reference ids 
+# make some custom characters and their reference ids
 # for the display character table:
 DIREF_UPARROW = 0
 DISYM_UPARROW = [
@@ -97,7 +97,7 @@ DISYM_UPARROW = [
   0b00000
 ]
 DIREF_DOWNARROW = 1
-DISYM_DOWNARROW
+DISYM_DOWNARROW = [
   0b00000,
   0b00100,
   0b00100,
@@ -108,7 +108,7 @@ DISYM_DOWNARROW
   0b00000
 ]
 DIREF_RIGHTARROW = 2
-DISYM_RIGHTARROW
+DISYM_RIGHTARROW = [
   0b00000,
   0b00100,
   0b00010,
@@ -119,7 +119,7 @@ DISYM_RIGHTARROW
   0b00000
 ]
 DIREF_LEFTARROW = 3
-DISYM_LEFTARROW
+DISYM_LEFTARROW = [
   0b00000,
   0b00100,
   0b01000,

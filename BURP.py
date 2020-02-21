@@ -44,11 +44,12 @@ def BURP_Beep():
 	dev = 1
 	SP.playTone(210, 0.025, True, dev)
 
-# play BURP start sound.
-BURP_Bebeep()
-sleep(0.1)
-BURP_Bebeep()
-sleep(0.1)
+def BURP_DICOL(red, green, blue):
+	global lcd
+	lcd.setPWM(0x04, red)
+	lcd.setPWM(0x03, green)
+	lcd.setPWM(0x02, blue)
+
 BURP_Bebeep2()
 
 print("Reading files..")
@@ -85,7 +86,7 @@ for root, subdirs, fs in os.walk(globals.BURP_rootDir):
 		files.append(newpath)
 
 if len(files) <= 0:
-    BURP_Bebeep()
+	BURP_Bebeep()
 	print("!! NO FILES FOUND, CHECK DIRECTORIES !!")
 	print("Root directory: "+globals.BURP_rootDir)
 print("ENDOF Readfiles")
@@ -97,6 +98,8 @@ lcd = 0
 def BURP_Init():
 	global lcd
 	lcd=rgb1602.RGB1602(16,2) #create LCD object,specify col and row
+
+	BURP_DICOL(0,63,0)
 	lcd.setCursor(0,0)
 	lcd.printout("Welcome to BURP!")
 
@@ -105,32 +108,34 @@ def BURP_Init():
 	lcd.customSymbol(globals.DIREF_DOWNARROW, globals.DISYM_DOWNARROW)
 	lcd.customSymbol(globals.DIREF_LEFTARROW, globals.DISYM_LEFTARROW)
 	lcd.customSymbol(globals.DIREF_RIGHTARROW, globals.DISYM_RIGHTARROW)
-    
+
 # play pause rec stop
 	lcd.customSymbol(globals.DIREF_STOP, globals.DISYM_STOP)
 	lcd.customSymbol(globals.DIREF_PAUSE, globals.DISYM_PAUSE)
 	lcd.customSymbol(globals.DIREF_PLAY, globals.DISYM_PLAY)
 	lcd.customSymbol(globals.DIREF_REC, globals.DISYM_REC)
-	lcd.customSymbol(globals.DIREF_RECPAUSE, globals.DISYM_RECPAUSE)
+# there seems to be a maximum of 8 different symbols for this display,
+# this one will be set to index 0
+#	lcd.customSymbol(globals.DIREF_RECPAUSE, globals.DISYM_RECPAUSE)
 
 # show menu
 	lcd.setCursor(0,1)
 	lcd.write(globals.DIREF_UPARROW)
-    lcd.printOut(":")
-    lcd.write(globals.DIREF_PLAY)
-    lcd.write(globals.DIREF_PAUSE)
-    lcd.printOut(" ")
-    lcd.write(globals.DIREF_DOWNARROW)
-    lcd.printOut(":")
-    lcd.write(globals.DIREF_STOP)
-    lcd.printOut(" ")
-    lcd.write(globals.DIREF_LEFTARROW)
-    lcd.printOut(":")
-    lcd.write(globals.DIREF_LEFTARROW)
-    lcd.printOut(" ")
-    lcd.write(globals.DIREF_RIGHTARROW)
-    lcd.printOut(":")
-    lcd.write(globals.DIREF_RIGHTARROW)
+	lcd.printout(":")
+	lcd.write(globals.DIREF_PLAY)
+	lcd.write(globals.DIREF_PAUSE)
+	lcd.printout(" ")
+	lcd.write(globals.DIREF_DOWNARROW)
+	lcd.printout(":")
+	lcd.write(globals.DIREF_STOP)
+	lcd.printout(" ")
+	lcd.write(globals.DIREF_LEFTARROW)
+	lcd.printout(":")
+	lcd.write(globals.DIREF_LEFTARROW)
+	lcd.printout(" ")
+	lcd.write(globals.DIREF_RIGHTARROW)
+	lcd.printout(":")
+	lcd.write(globals.DIREF_RIGHTARROW)
 
 # set gpios
 	GPIO.setmode(GPIO.BCM)
@@ -384,5 +389,14 @@ except KeyboardInterrupt:
         print("User exit.")
 
 finally:
+	# clear display
+	lcd.setCursor(0,0)
+	lcd.printout("                ")
+	lcd.setCursor(0,1)
+	lcd.printout("                ")
+	lcd.setPWM(0x02,0)
+	lcd.setPWM(0x03,0)
+	lcd.setPWM(0x04,0)
+
 	GPIO.cleanup()
 	print("done")
