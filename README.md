@@ -7,9 +7,14 @@ You need to:
 
 sudo python BURP.py
 
-That the renaming works without hassle.
+(using sudo)    
+..so that the renaming works without hassle.
 
-A digital music recorder behaving like an old music tape.    
+Working now with this display-button-HAT:    
+https://www.pi-shop.ch/iic-16x2-rgb-lcd-keypad-hat-v1-0    
+https://wiki.dfrobot.com/IIC_16X2_RGB_LCD_KeyPad_HAT_1.0)_SKU%3ADFR0514%2FDFR0603    
+
+## A digital music recorder behaving like an old music tape.    
 
 I miss the times when we put in a cassette, listen to the radio and when we liked a song,
 we just pressed on the record button and got it for ourselves. Then we used another tape

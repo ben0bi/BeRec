@@ -3,25 +3,25 @@
 # can fiddle with the configuration without having to
 # remember all BCM values.
 
-PBTN_1 = 14
-PBTN_2 = 15
-PBTN_3 = 16
-PBTN_4 = 17
-PBTN_5 = 18
-PBTN_6 = 20
-PBTN_7 = 21
-PBTN_8 = 26
+PBTN_1 = 16
+PBTN_2 = 17
+PBTN_3 = 18
+PBTN_4 = 19
+PBTN_5 = 20
+#PBTN_6 = 20
+#PBTN_7 = 21
+#PBTN_8 = 26
 
 # BURP buttons: The standard tape buttons.
-BTN_PLAYPAUSE = BTN_PP = PBTN_1 # confirmed
-BTN_STOP = PBTN_5 # confirmed
-BTN_FWD = PBTN_4 # confirmed
-BTN_REW = PBTN_2
+BTN_PLAYPAUSE = BTN_PP = PBTN_2
+BTN_STOP = PBTN_3
+BTN_FWD = PBTN_5
+BTN_REW = PBTN_4
 
-BTN_VOLUP = PBTN_3
-BTN_VOLDOWN = PBTN_6
-BTN_REC = PBTN_7 # confirmed
-BTN_MODECHANGE = PBTN_8  # change the mode, get to the menu etc,
+#BTN_VOLUP = -10
+#BTN_VOLDOWN = -20
+BTN_REC = PBTN_1
+# BTN_MODECHANGE = PBTN_8  # change the mode, get to the menu etc,
 # we need 7 buttons for direct access on the player
 # which are: playpause, stop, fwd, rew, rec, volup and voldown
 # it would be great if volup and voldown could be realized with a poti.
@@ -35,9 +35,17 @@ PRESS_FWD = 0
 PRESS_REW = 0
 PRESS_STOP = 0
 
+PRESS_VOLDOWN = 0
+PRESS_VOLUP = 0
+
 # global values for BURP
 
 # BURP states.
+
+# first the button states.
+# if it is with pulldown, button down is 1, with pullup it is 0
+BUTTON_DOWN = 1
+BUTTON_UP = 0
 
 # Endless Tape ET is one single file where all the stuff will be recorded to.
 # ET only has this one file and does not recognize other (MP3-)Files.

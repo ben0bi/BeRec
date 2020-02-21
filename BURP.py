@@ -27,7 +27,7 @@ def BURP_Bebeep():
 	sleep(0.05)
 	SP.playTone(210, 0.1, True, dev)
 
-# play a blocking beep sound.
+# play an unblocking beep sound.
 def BURP_Bebeep2():
 	dev = 1
 	SP.playTone(210, 0.1, True, dev)
@@ -38,6 +38,11 @@ def BURP_Bebeep2():
 def BURP_Beep():
 	dev = 1
 	SP.playTone(210, 0.025, True, dev)
+
+# play BURP start sound.
+BURP_Bebeep()
+BURP_Bebeep()
+BURP_Bebeep2()
 
 print("Reading files..")
 files = []
@@ -80,14 +85,14 @@ print("ENDOF Readfiles")
 # initialize gpio and stuff.
 def BURP_Init():
 	GPIO.setmode(GPIO.BCM)
-	GPIO.setup(globals.PBTN_1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-	GPIO.setup(globals.PBTN_2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-	GPIO.setup(globals.PBTN_3, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-	GPIO.setup(globals.PBTN_4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-	GPIO.setup(globals.PBTN_5, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-	GPIO.setup(globals.PBTN_6, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-	GPIO.setup(globals.PBTN_7, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-	GPIO.setup(globals.PBTN_8, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+	GPIO.setup(globals.PBTN_1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+	GPIO.setup(globals.PBTN_2, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+	GPIO.setup(globals.PBTN_3, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+	GPIO.setup(globals.PBTN_4, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+	GPIO.setup(globals.PBTN_5, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+#	GPIO.setup(globals.PBTN_6, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+#	GPIO.setup(globals.PBTN_7, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+#	GPIO.setup(globals.PBTN_8, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 	return
 
 # get the next track if there is one.
@@ -162,24 +167,30 @@ def BURP_UPDATE():
 	rw=GPIO.input(globals.BTN_REW)
 	st=GPIO.input(globals.BTN_STOP)
 	rc=GPIO.input(globals.BTN_REC)
-	vu=GPIO.input(globals.BTN_VOLUP)
-	vd=GPIO.input(globals.BTN_VOLDOWN)
-	md=GPIO.input(globals.BTN_MODECHANGE)
+#	vu=GPIO.input(globals.BTN_VOLUP)
+#	vd=GPIO.input(globals.BTN_VOLDOWN)
+#	md=GPIO.input(globals.BTN_MODECHANGE)
 #	an=GPIO.input(globals.BTN_ANYTHING)
-#	print(pp,fw,rw,st,rc,vu,vd,md)
+
+# button test
+#	print(pp,fw,rw,st,rc) #,vu,vd,md)
+
+# test
+	vu = globals.BUTTON_UP
+	vd = globals.BUTTON_UP
 
 	# check if volup or voldown were pressed
 	# volup
-	if(vu==0 and globals.PRESS_VOLUP == 0 and vd != 0): # vd must be != vu !!!
+	if(vu==globals.BUTTON_DOWN and globals.PRESS_VOLUP == 0 and vd != globals.BUTTON_DOWN): # vd must be != vu !!!
 		# TODO: volume up
 		print("VOLUP")
 		globals.PRESS_VOLUP = 1
 
-	if(vu==1):
+	if(vu==globals.BUTTON_UP):
 		globals.PRESS_VOLUP = 0
 
 	# voldown
-	if(vd==0 and globals.PRESS_VOLDOWN == 0 and vu != 0): # vd must be != vu !!!
+	if(vd==globals.BUTTON_DOWN and globals.PRESS_VOLDOWN == 0 and vu != globals.BUTTON_DOWN): # vd must be != vu !!!
 		# TODO: volume down
 		print("VOLDOWN")
 		globals.PRESS_VOLDOWN = 1
@@ -188,7 +199,7 @@ def BURP_UPDATE():
 		globals.PRESS_VOLDOWN = 0
 
 	# check if record was pressed.
-	if(rc==0 and globals.PRESS_REC==0):
+	if(rc==globals.BUTTON_DOWN and globals.PRESS_REC==0):
 		globals.PRESS_REC = 1
 		# maybe stop the actual song from playing.
 		if(globals.BURP_Song.isPlaying()):
@@ -203,11 +214,11 @@ def BURP_UPDATE():
 			# TODO: stop and save record
 			BURP_Stop()
 			print "TODO: o STOP RECORD"
-	if(rc==1):
+	if(rc==globals.BUTTON_UP):
 		globals.PRESS_REC = 0
 
 	# check if playpause was pressed.
-	if(pp==0 and globals.PRESS_PP==0):
+	if(pp==globals.BUTTON_DOWN and globals.PRESS_PP==0):
 		globals.PRESS_PP = 1
 		# pause record
 		if(globals.BURP_STATE==globals.BURPSTATE_REC):
@@ -243,11 +254,11 @@ def BURP_UPDATE():
 				globals.BURP_Song.resume()
 				print(":> RESUME PLAY")
 			globals.BURP_STATE=globals.BURPSTATE_PLAY
-	if(pp==1):
+	if(pp==globals.BUTTON_UP):
 		globals.PRESS_PP = 0
 
 	# check if stop was pressed
-	if(st==0 and globals.PRESS_STOP==0):
+	if(st==globals.BUTTON_DOWN and globals.PRESS_STOP==0):
 		globals.PRESS_STOP = 1
 		if(globals.BURP_STATE == globals.BURPSTATE_PLAY or globals.BURP_STATE == globals.BURPSTATE_PAUSE):
 			print("[] STOP PLAY")
@@ -261,40 +272,42 @@ def BURP_UPDATE():
 		else:
 			# already stopped, beep
 			BURP_Bebeep()
-	if(st==1):
+	if(st==globals.BUTTON_UP):
 		globals.PRESS_STOP = 0
 
 	# check if rew or fwd were pressed
 	# forward button pressed
-	if(fw==0):
+	if(fw==globals.BUTTON_DOWN and rw!=globals.BUTTON_DOWN):
 		print(">> FORWARD")
 		globals.PRESS_FWD = 1
 		# maybe stop song from playing
-		if(globals.BURP_Song.isPlaying()):
+		if(globals.PRESS_FWD==0 and globals.BURP_Song.isPlaying()):
 			globals.BURP_Song.stop()
 		# get next track
-		BURP_checkForNextTrack()
+		if(globals.PRESS_FWD == 0 or globals.BURP_STATE!=globals.BURPSTATE_PLAY):
+			BURP_checkForNextTrack(0)
 		# if state was play: play ;)
-		if(globals.BURP_STATE==globals.BURPSTATE_PLAY):
+		if(globals.PRESS_FWD == 0 and (globals.BURP_STATE==globals.BURPSTATE_PLAY or globals.BURP_STATE==globals.BURPSTATE_PAUSE)):
+			print("Try to play new track..")
+			BURP_Stop()
 			BURP_Play()
-		else:
+		elif(globals.PRESS_FWD==1 and globals.BURP_STATE!=globals.BURPSTATE_PLAY and globals.BURP_STATE!=globals.BURPSTATE_PAUSE):
 			if(globals.BURP_STATE!=globals.BURPSTATE_REC and globals.BURP_STATE!=globals.BURPSTATE_RECPAUSE):
 				BURP_Stop()
 			BURP_Beep()
+		globals.PRESS_FWD = 1
 
-	if(fw==1):
+	if(fw==globals.BUTTON_UP):
 		globals.PRESS_FWD = 0
 
 	# rewind button pressed
-	if(rw==0):
+	if(rw==globals.BUTTON_DOWN and fw != globals.BUTTON_DOWN):
 		print("<< REWIND")
 		if(globals.PRESS_REW == 0 and globals.BURP_Song.isPlaying()):
 			globals.BURP_Song.stop()
 		# get previous track
-#		if globals.PRESS_REW==0:
 		if(globals.PRESS_REW == 0 or globals.BURP_STATE!=globals.BURPSTATE_PLAY):
 			BURP_checkForNextTrack(1)
-
 		# if state was play: play ;)
 		if(globals.PRESS_REW == 0 and (globals.BURP_STATE==globals.BURPSTATE_PLAY or globals.BURP_STATE==globals.BURPSTATE_PAUSE)):
 			print("Try to play new track..")
@@ -306,7 +319,7 @@ def BURP_UPDATE():
 			BURP_Beep()
 		globals.PRESS_REW = 1
 
-	if(rw==1):
+	if(rw==globals.BUTTON_UP):
 		globals.PRESS_REW = 0
 
 	# wait some time to save processor time.
