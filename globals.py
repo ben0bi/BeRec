@@ -83,7 +83,53 @@ BURP_actualDir = "/"
 
 
 # Display Symbols
-# make some custom characters:
+# make some custom characters and their reference ids 
+# for the display character table:
+DIREF_UPARROW = 0
+DISYM_UPARROW = [
+  0b00000,
+  0b00100,
+  0b01110,
+  0b10101,
+  0b00100,
+  0b00100,
+  0b00000,
+  0b00000
+]
+DIREF_DOWNARROW = 1
+DISYM_DOWNARROW
+  0b00000,
+  0b00100,
+  0b00100,
+  0b10101,
+  0b01110,
+  0b00100,
+  0b00000,
+  0b00000
+]
+DIREF_RIGHTARROW = 2
+DISYM_RIGHTARROW
+  0b00000,
+  0b00100,
+  0b00010,
+  0b11111,
+  0b00010,
+  0b00100,
+  0b00000,
+  0b00000
+]
+DIREF_LEFTARROW = 3
+DISYM_LEFTARROW
+  0b00000,
+  0b00100,
+  0b01000,
+  0b11111,
+  0b01000,
+  0b00100,
+  0b00000,
+  0b00000
+]
+DIREF_STOP = 4
 DISYM_STOP = [
   0b00000,
   0b11111,
@@ -94,6 +140,7 @@ DISYM_STOP = [
   0b00000,
   0b00000
 ]
+DIREF_PAUSE = 5
 DISYM_PAUSE = [
   0b00000,
   0b11011,
@@ -104,6 +151,7 @@ DISYM_PAUSE = [
   0b00000,
   0b00000
 ]
+DIREF_PLAY = 6
 DISYM_PLAY = [
   0b00000,
   0b11000,
@@ -114,6 +162,7 @@ DISYM_PLAY = [
   0b00000,
   0b00000
 ]
+DIREF_REC = 7
 DISYM_REC = [
   0b00000,
   0b00100,
@@ -124,6 +173,7 @@ DISYM_REC = [
   0b00000,
   0b00000
 ]
+DIREF_RECPAUSE = 8
 DISYM_RECPAUSE = [
   0b00000,
   0b00100,

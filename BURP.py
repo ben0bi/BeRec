@@ -46,7 +46,9 @@ def BURP_Beep():
 
 # play BURP start sound.
 BURP_Bebeep()
+sleep(0.1)
 BURP_Bebeep()
+sleep(0.1)
 BURP_Bebeep2()
 
 print("Reading files..")
@@ -83,9 +85,12 @@ for root, subdirs, fs in os.walk(globals.BURP_rootDir):
 		files.append(newpath)
 
 if len(files) <= 0:
+    BURP_Bebeep()
 	print("!! NO FILES FOUND, CHECK DIRECTORIES !!")
 	print("Root directory: "+globals.BURP_rootDir)
 print("ENDOF Readfiles")
+BURP_Beep()
+BURP_Bebeep2()
 
 lcd = 0
 # initialize gpio and stuff.
@@ -95,14 +100,37 @@ def BURP_Init():
 	lcd.setCursor(0,0)
 	lcd.printout("Welcome to BURP!")
 
-	lcd.customSymbol(0, globals.DISYM_STOP)
-	lcd.customSymbol(1, globals.DISYM_PAUSE)
-	lcd.customSymbol(2, globals.DISYM_PLAY)
-	lcd.customSymbol(3, globals.DISYM_REC)
-	lcd.customSymbol(4, globals.DISYM_RECPAUSE)
+# arrows
+	lcd.customSymbol(globals.DIREF_UPARROW, globals.DISYM_UPARROW)
+	lcd.customSymbol(globals.DIREF_DOWNARROW, globals.DISYM_DOWNARROW)
+	lcd.customSymbol(globals.DIREF_LEFTARROW, globals.DISYM_LEFTARROW)
+	lcd.customSymbol(globals.DIREF_RIGHTARROW, globals.DISYM_RIGHTARROW)
+    
+# play pause rec stop
+	lcd.customSymbol(globals.DIREF_STOP, globals.DISYM_STOP)
+	lcd.customSymbol(globals.DIREF_PAUSE, globals.DISYM_PAUSE)
+	lcd.customSymbol(globals.DIREF_PLAY, globals.DISYM_PLAY)
+	lcd.customSymbol(globals.DIREF_REC, globals.DISYM_REC)
+	lcd.customSymbol(globals.DIREF_RECPAUSE, globals.DISYM_RECPAUSE)
 
+# show menu
 	lcd.setCursor(0,1)
-	lcd.write(0)
+	lcd.write(globals.DIREF_UPARROW)
+    lcd.printOut(":")
+    lcd.write(globals.DIREF_PLAY)
+    lcd.write(globals.DIREF_PAUSE)
+    lcd.printOut(" ")
+    lcd.write(globals.DIREF_DOWNARROW)
+    lcd.printOut(":")
+    lcd.write(globals.DIREF_STOP)
+    lcd.printOut(" ")
+    lcd.write(globals.DIREF_LEFTARROW)
+    lcd.printOut(":")
+    lcd.write(globals.DIREF_LEFTARROW)
+    lcd.printOut(" ")
+    lcd.write(globals.DIREF_RIGHTARROW)
+    lcd.printOut(":")
+    lcd.write(globals.DIREF_RIGHTARROW)
 
 	GPIO.setmode(GPIO.BCM)
 	GPIO.setup(globals.PBTN_1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
