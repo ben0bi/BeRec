@@ -89,10 +89,10 @@ BURP_Bebeep2()
 lcd = 0
 # initialize gpio and stuff.
 def BURP_Init():
-    D.DI_INIT()
+	D.DI_INIT()
 	D.color(0,63,0)
-	D.lcd.setCursor(0,0)
-	D.lcd.printout("Welcome to BURP!")
+	D.lcd.setCursor(1,0)
+	D.lcd.printout("Welcome to BURP")
 
 # arrows
 	D.lcd.customSymbol(D.DIREF_UPARROW, D.DISYM_UPARROW)
@@ -109,8 +109,9 @@ def BURP_Init():
 # this one would be set to index 0 but DIREF_RECPAUSE is 8...
 #	lcd.customSymbol(globals.DIREF_RECPAUSE, globals.DISYM_RECPAUSE)
 
-    D.showPlayMenu()
-    
+	D.showPlayMenu()
+	D.DI_ON() # turn the display on for x seconds.
+
 # set gpios
 	GPIO.setmode(GPIO.BCM)
 	GPIO.setup(globals.PBTN_1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
@@ -150,6 +151,7 @@ def BURP_checkForNextTrack(reverse = 0):
 def BURP_Play():
 	try:
 		if(globals.BURP_Song != 0):
+			D.symbol(D.DIREF_PLAY)
 			print("PLAY START")
 			globals.BURP_Song.play()
 			globals.BURP_STATE = globals.BURPSTATE_PLAY
@@ -163,6 +165,7 @@ def BURP_Play():
 # stop the inserted track.
 def BURP_Stop():
 	globals.BURP_STATE = globals.BURPSTATE_STOP
+	D.symbol(D.DIREF_STOP)
 	try:
 		if(globals.BURP_Song!=0):
 			if(globals.BURP_Song.isPlaying()):
@@ -194,10 +197,10 @@ def BURP_UPDATE():
 	fw=GPIO.input(globals.BTN_FWD)
 	rw=GPIO.input(globals.BTN_REW)
 	st=GPIO.input(globals.BTN_STOP)
-	rc=GPIO.input(globals.BTN_REC)
+#	rc=GPIO.input(globals.BTN_REC)
 #	vu=GPIO.input(globals.BTN_VOLUP)
 #	vd=GPIO.input(globals.BTN_VOLDOWN)
-#	md=GPIO.input(globals.BTN_MODECHANGE)
+	mc=GPIO.input(globals.BTN_MODECHANGE)
 #	an=GPIO.input(globals.BTN_ANYTHING)
 
 # button test
@@ -211,6 +214,7 @@ def BURP_UPDATE():
 	# volup
 	if(vu==globals.BUTTON_DOWN and globals.PRESS_VOLUP == 0 and vd != globals.BUTTON_DOWN): # vd must be != vu !!!
 		# TODO: volume up
+		D.DI_ON()
 		print("VOLUP")
 		globals.PRESS_VOLUP = 1
 
@@ -219,6 +223,7 @@ def BURP_UPDATE():
 
 	# voldown
 	if(vd==globals.BUTTON_DOWN and globals.PRESS_VOLDOWN == 0 and vu != globals.BUTTON_DOWN): # vd must be != vu !!!
+		D.DI_ON()
 		# TODO: volume down
 		print("VOLDOWN")
 		globals.PRESS_VOLDOWN = 1
@@ -226,27 +231,38 @@ def BURP_UPDATE():
 	if(vd==1):
 		globals.PRESS_VOLDOWN = 0
 
+	# check if modechange was pressed.
+	if(mc==globals.BUTTON_DOWN and globals.PRESS_MODECHANGE==0):
+		globals.PRESS_MODECHANGE=1
+		D.DI_ON()
+
+	if(mc==globals.BUTTON_UP):
+		globals.PRESS_MODECHANGE=0
+
 	# check if record was pressed.
-	if(rc==globals.BUTTON_DOWN and globals.PRESS_REC==0):
-		globals.PRESS_REC = 1
-		# maybe stop the actual song from playing.
-		if(globals.BURP_Song.isPlaying()):
-			globals.BURP_Song.stop()
-		# record
-		if(globals.BURP_STATE!=globals.BURPSTATE_REC and globals.BURP_STATE!=globals.BURPSTATE_RECPAUSE):
-			globals.BURP_STATE = globals.BURPSTATE_REC
-#			BURP_Beep()
-			# TODO: record
-			print "TODO: o RECORD"
-		else:
-			# TODO: stop and save record
-			BURP_Stop()
-			print "TODO: o STOP RECORD"
-	if(rc==globals.BUTTON_UP):
-		globals.PRESS_REC = 0
+#	if(rc==globals.BUTTON_DOWN and globals.PRESS_REC==0):
+#		globals.PRESS_REC = 1
+#		# maybe stop the actual song from playing.
+#		if(globals.BURP_Song.isPlaying()):
+#			globals.BURP_Song.stop()
+#		# record
+#		if(globals.BURP_STATE!=globals.BURPSTATE_REC and globals.BURP_STATE!=globals.BURPSTATE_RECPAUSE):
+#			globals.BURP_STATE = globals.BURPSTATE_REC
+#			# TODO: record
+#			D.setcolor(128,0,0)
+#			D.symbol(D.DIREF_REC)
+#			print "TODO: o RECORD"
+#		else:
+#			# TODO: stop and save record
+#			D.setcolor(0,128,0)
+#			BURP_Stop()
+#			print "TODO: o STOP RECORD"
+#	if(rc==globals.BUTTON_UP):
+#		globals.PRESS_REC = 0
 
 	# check if playpause was pressed.
 	if(pp==globals.BUTTON_DOWN and globals.PRESS_PP==0):
+		D.DI_ON()
 		globals.PRESS_PP = 1
 		# pause record
 		if(globals.BURP_STATE==globals.BURPSTATE_REC):
@@ -258,6 +274,7 @@ def BURP_UPDATE():
 		elif(globals.BURP_STATE==globals.BURPSTATE_RECPAUSE):
 			# TODO: continue record
 			print(":> CONTINUE RECORD")
+			D.symbol(D.DIREF_REC)
 			globals.BURP_STATE=globals.BURPSTATE_REC
 		# pause play
 		elif(globals.BURP_STATE==globals.BURPSTATE_PLAY):
@@ -265,21 +282,25 @@ def BURP_UPDATE():
 			if(globals.BURP_Song.isPlaying()):
 				globals.BURP_Song.pause()
 				globals.BURP_STATE = globals.BURPSTATE_PAUSE
-				BURP_Bebeep2()
+				D.setcolor(128,64,0)
+				D.symbol(D.DIREF_PAUSE)
 			else:
 				# it's not playing so set mode to stop.
 				# this should never happen but...it could.
+				D.setcolor(0,128,0)
 				BURP_Stop()
 				BURP_Bebeep()
 			print(":> PAUSE PLAY")
 		# continue play
 		elif(globals.BURP_STATE!=globals.BURPSTATE_RECPAUSE and globals.BURP_STATE!=globals.BURPSTATE_PLAY):
 			# play
+			D.setcolor(0,128,0)
 			if(globals.BURP_STATE==globals.BURPSTATE_STOP):
 				BURP_Play()
 				print(":> START PLAY")
 			elif(globals.BURP_STATE==globals.BURPSTATE_PAUSE):
 				globals.BURP_Song.resume()
+				D.symbol(D.DIREF_PLAY)
 				print(":> RESUME PLAY")
 			globals.BURP_STATE=globals.BURPSTATE_PLAY
 	if(pp==globals.BUTTON_UP):
@@ -287,6 +308,8 @@ def BURP_UPDATE():
 
 	# check if stop was pressed
 	if(st==globals.BUTTON_DOWN and globals.PRESS_STOP==0):
+		D.setcolor(0,128,0)
+		D.DI_ON()
 		globals.PRESS_STOP = 1
 		if(globals.BURP_STATE == globals.BURPSTATE_PLAY or globals.BURP_STATE == globals.BURPSTATE_PAUSE):
 			print("[] STOP PLAY")
@@ -306,6 +329,7 @@ def BURP_UPDATE():
 	# check if rew or fwd were pressed
 	# forward button pressed
 	if(fw==globals.BUTTON_DOWN and rw!=globals.BUTTON_DOWN):
+		D.DI_ON()
 		print(">> FORWARD")
 		globals.PRESS_FWD = 1
 		# maybe stop song from playing
@@ -330,6 +354,7 @@ def BURP_UPDATE():
 
 	# rewind button pressed
 	if(rw==globals.BUTTON_DOWN and fw != globals.BUTTON_DOWN):
+		D.DI_ON()
 		print("<< REWIND")
 		if(globals.PRESS_REW == 0 and globals.BURP_Song.isPlaying()):
 			globals.BURP_Song.stop()
@@ -352,6 +377,7 @@ def BURP_UPDATE():
 
 	# wait some time to save processor time.
 	sleep(0.1)
+	D.DI_FADE_OUT(0.1) # maybe fade out the display.
 
 BURP_Init()
 
@@ -364,13 +390,13 @@ except KeyboardInterrupt:
 
 finally:
 	# clear display
-	lcd.setCursor(0,0)
-	lcd.printout("                ")
-	lcd.setCursor(0,1)
-	lcd.printout("                ")
-	lcd.setPWM(0x02,0)
-	lcd.setPWM(0x03,0)
-	lcd.setPWM(0x04,0)
+	D.lcd.setCursor(0,0)
+	D.lcd.printout("                ")
+	D.lcd.setCursor(0,1)
+	D.lcd.printout("                ")
+	D.lcd.setPWM(0x02,0)
+	D.lcd.setPWM(0x03,0)
+	D.lcd.setPWM(0x04,0)
 
 	GPIO.cleanup()
 	print("done")

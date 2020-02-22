@@ -2,6 +2,7 @@
 # BURP + Benobis Universal Recorder & Player
 
 # import the stuff for the display
+import sys
 sys.path.append('./')
 import rgb1602
 
@@ -41,39 +42,52 @@ def setcolor(red, green, blue):
 DITIME = 5 # display time until it fades out, in seconds.
 DION = 1 # is the display on?
 DITIME_ACTUAL = 0.0
-def DIFADE_OUT(frametime):
+def DI_FADE_OUT(frametime):
 	global DITIME, DITIME_ACTUAL, DION
 	global DIAR, DIAG, DIAB
 	if(DION==1):
 		DITIME_ACTUAL=DITIME_ACTUAL+frametime
 		if(DITIME_ACTUAL>=DITIME):
 			if(DIAR>0):
-				DIAR=DIAR-1
+				DIAR=DIAR-3
 			if(DIAG>0):
-				DIAG=DIAG-1
+				DIAG=DIAG-3
 			if(DIAB>0):
-				DIAB=DIAB-1
+				DIAB=DIAB-3
+			if(DIAR<0):
+				DIAR=0
+			if(DIAG<0):
+				DIAG=0
+			if(DIAB<0):
+				DIAB=0
 			color(DIAR,DIAG,DIAB)
-		if(DIAR<=0 and DIAG<=0 and DIAB<=0)
+		if(DIAR<=0 and DIAG<=0 and DIAB<=0):
 			DION=0
-            DITIME_ACTUAL=0.0
+			DITIME_ACTUAL=0.0
 
-# turn the display on with the actual color.            
+# turn the display on with the actual color.
 def DI_ON():
     global DIR, DIG, DIB
-    global DION, DITIME_ACTUAL§
+    global DION, DITIME_ACTUAL
     color(DIR, DIG, DIB)
     DITIME_ACTUAL=0.0
     DION=1
 
+# initialize the display.
 def DI_INIT():
     global lcd
     lcd=rgb1602.RGB1602(16,2) #create LCD object,specify col and row
 
-def showPlayMenu()
+# show a specific symbol at the symbol position.
+def symbol(which):
+	global lcd
+	lcd.setCursor(0,0)
+	lcd.write(which)
+
 # show menu
-    global DIREF_UPARROW, DIREF_DOWNARROW, DIREF_LEFTARROW, DIREF_RIGHTARROW
-    global DIREF_PLAY, DIREF_PAUSE, DIREF_STOP, DIREF_REW, DIREF_FWD
+def showPlayMenu():
+	global DIREF_UPARROW, DIREF_DOWNARROW, DIREF_LEFTARROW, DIREF_RIGHTARROW
+	global DIREF_PLAY, DIREF_PAUSE, DIREF_STOP, DIREF_REW, DIREF_FWD
 	lcd.setCursor(0,1)
 	lcd.write(DIREF_UPARROW)
 	lcd.printout(":")
@@ -142,33 +156,33 @@ DISYM_LEFTARROW = [
 DIREF_STOP = 4
 DISYM_STOP = [
   0b00000,
-  0b11111,
-  0b10001,
-  0b10001,
-  0b10001,
-  0b11111,
+  0b11110,
+  0b11110,
+  0b11110,
+  0b11110,
+  0b11110,
   0b00000,
   0b00000
 ]
 DIREF_PAUSE = 5
 DISYM_PAUSE = [
   0b00000,
-  0b11011,
-  0b11011,
-  0b11011,
-  0b11011,
-  0b11011,
+  0b01010,
+  0b01010,
+  0b01010,
+  0b01010,
+  0b01010,
   0b00000,
   0b00000
 ]
 DIREF_PLAY = 6
 DISYM_PLAY = [
   0b00000,
-  0b11000,
-  0b11110,
-  0b11111,
-  0b11110,
-  0b11000,
+  0b01000,
+  0b01100,
+  0b01110,
+  0b01100,
+  0b01000,
   0b00000,
   0b00000
 ]

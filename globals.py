@@ -18,13 +18,15 @@ BTN_REW = PBTN_4
 
 #BTN_VOLUP = -10
 #BTN_VOLDOWN = -20
-BTN_REC = PBTN_1
-# BTN_MODECHANGE = PBTN_8  # change the mode, get to the menu etc,
+#BTN_REC = PBTN_1
+BTN_MODECHANGE = PBTN_1  # change the mode, get to the menu etc,
 # we need 7 buttons for direct access on the player
 # which are: playpause, stop, fwd, rew, rec, volup and voldown
 # it would be great if volup and voldown could be realized with a poti.
 # and with this 6th button we can change the mode
 # and then use those buttons for other stuff.
+
+# but there are only 5 buttons on the pad, so rec is modechange.
 
 # The button-is-pressed flags.
 PRESS_PP = 0 # play/pause
@@ -35,6 +37,8 @@ PRESS_STOP = 0
 
 PRESS_VOLDOWN = 0
 PRESS_VOLUP = 0
+
+PRESS_MODECHANGE = 0
 
 # global values for BURP
 
