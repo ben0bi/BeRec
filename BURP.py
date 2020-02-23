@@ -90,7 +90,7 @@ lcd = 0
 # initialize gpio and stuff.
 def BURP_Init():
 	D.DI_INIT()
-	D.color(0,63,0)
+	D.setcolor(0,0,128)
 	D.lcd.setCursor(1,0)
 	D.lcd.printout("Welcome to BURP")
 
@@ -308,7 +308,7 @@ def BURP_UPDATE():
 
 	# check if stop was pressed
 	if(st==globals.BUTTON_DOWN and globals.PRESS_STOP==0):
-		D.setcolor(0,128,0)
+		D.setcolor(128,0,0)
 		D.DI_ON()
 		globals.PRESS_STOP = 1
 		if(globals.BURP_STATE == globals.BURPSTATE_PLAY or globals.BURP_STATE == globals.BURPSTATE_PAUSE):
