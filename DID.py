@@ -1,3 +1,4 @@
+# DID DIsplay Driver
 # display driver for BURP
 # BURP + Benobis Universal Recorder & Player
 
@@ -38,6 +39,37 @@ def setcolor(red, green, blue):
 	DIB=blue
 	color(red,green,blue)
 
+# completely clear the display
+def clear()
+    global lcd
+	lcd.setCursor(0,0)
+	lcd.printout("                ")
+	lcd.setCursor(0,1)
+	lcd.printout("                ")
+	lcd.setPWM(0x02,0)
+	lcd.setPWM(0x03,0)
+	lcd.setPWM(0x04,0)
+
+# show a specific symbol at the symbol position.
+DI_SYMBOL = -1
+def symbol(which):
+    DI_SYMBOL = which
+	global lcd
+	lcd.setCursor(0,0)
+	lcd.write(which)
+
+# upper text parameters.
+DI_TITLE = "Welcome to BURP..123..TEST...123...900?"
+DI_TITLEPOSITION = 0
+DI_TITLEDIRECTION = 1
+
+# set the text on the upper line, it will scroll if it is longer.
+def uppertext(text):
+    global DI_TITLE, DI_TITLEPOSITION, DI_TITLEDIRECTION
+    DI_TITLE = text
+    DI_TITLEPOSITION = 0
+    DI_TITLEDIRECTION = 1
+
 # fade the display out after some time.
 DITIME = 5 # display time until it fades out, in seconds.
 DION = 1 # is the display on?
@@ -77,13 +109,26 @@ def DI_ON():
 def DI_INIT():
     global lcd
     lcd=rgb1602.RGB1602(16,2) #create LCD object,specify col and row
-
-# show a specific symbol at the symbol position.
-def symbol(which):
-	global lcd
-	lcd.setCursor(0,0)
-	lcd.write(which)
-
+    
+# update scrolling texts.
+def DI_UPDATE():
+    global DI_TITLE, DI_TITLEPOSITION, DI_TITLEDIRECTION
+    if(len(DI_TITLE>15)):
+        if(DI_TITLEPOSITION+15<len(DI_TITLE) and DI_TITLEPOSITION>0):
+            DI_TITLEPOSITON = DI_TITLEPOSITION + DI_TITLEDIRECTION
+        else
+            DI_TITLEDIRECTION = -DI_TITLEDIRECTION
+    # set the text
+    t = DI_TITLE[DI_TITLEPOSITION:]
+    setCursor(1,0)
+    lcd.printout(t)
+    # show the actual symbol over the text.
+    # should do nothing because the cursor was
+    # set to position 1 for the text and 0 for
+    # the symbol but....here you have it:
+    # uncomment this below.
+    #symbol(DI_SYMBOL)
+    
 # show menu
 def showPlayMenu():
 	global DIREF_UPARROW, DIREF_DOWNARROW, DIREF_LEFTARROW, DIREF_RIGHTARROW
@@ -189,22 +234,23 @@ DISYM_PLAY = [
 DIREF_REC = 7
 DISYM_REC = [
   0b00000,
-  0b00100,
   0b01110,
   0b11111,
+  0b11111,
+  0b11111,
   0b01110,
-  0b00100,
   0b00000,
   0b00000
 ]
+# warning: the display seems to support only 8 symbols at once.
 DIREF_RECPAUSE = 8
 DISYM_RECPAUSE = [
   0b00000,
-  0b00100,
-  0b01010,
+  0b01110,
   0b10001,
-  0b01010,
-  0b00100,
+  0b10001,
+  0b10001,
+  0b01110,
   0b00000,
   0b00000
 ]

@@ -15,7 +15,7 @@ import os, sys
 from os.path import isfile, join
 
 # display library.
-import BURPdi as D
+import DI as D
 
 # GPIO stuff.
 import RPi.GPIO as GPIO
@@ -76,7 +76,7 @@ for root, subdirs, fs in os.walk(globals.BURP_rootDir):
 		print('\t- file %s' % (filename))
 		# check if file can be played and maybe add it to the list.
 		#if(SP.canPlay(newpath)):
-		files.append(newpath)
+		files.append([filename,newpath])
 
 if len(files) <= 0:
 	BURP_Bebeep()
@@ -144,8 +144,9 @@ def BURP_checkForNextTrack(reverse = 0):
 		globals.BURP_STATE = globals.BURPSTATE_STOP
 	# get the song with the given idx and play it.
 	if globals.BURP_fileIDX >= 0:
-		print("Set Track to: "+files[globals.BURP_fileIDX])
-		globals.BURP_Song = SP(globals.BURP_actualDir+files[globals.BURP_fileIDX],1)
+		print("Set Track to: "+files[globals.BURP_fileIDX][0])
+        D.uppertext(files[globals.BURP_fileIDX][0])
+		globals.BURP_Song = SP(globals.BURP_actualDir+files[globals.BURP_fileIDX][1],1)
 
 # play the inserted track
 def BURP_Play():
@@ -376,6 +377,7 @@ def BURP_UPDATE():
 		globals.PRESS_REW = 0
 
 	# wait some time to save processor time.
+    D.DI_UPDATE()
 	sleep(0.1)
 	D.DI_FADE_OUT(0.1) # maybe fade out the display.
 
@@ -390,13 +392,7 @@ except KeyboardInterrupt:
 
 finally:
 	# clear display
-	D.lcd.setCursor(0,0)
-	D.lcd.printout("                ")
-	D.lcd.setCursor(0,1)
-	D.lcd.printout("                ")
-	D.lcd.setPWM(0x02,0)
-	D.lcd.setPWM(0x03,0)
-	D.lcd.setPWM(0x04,0)
+    D.clear()
 
 	GPIO.cleanup()
 	print("done")
