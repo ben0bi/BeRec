@@ -72,10 +72,28 @@ for root, subdirs, fs in os.walk(globals.BURP_rootDir):
 		newpath = newpath.replace('{','[')
 		newpath = newpath.replace('}',']')
 		# special characters which made the player crash:
+		newpath = newpath.replace('Ú', 'U')
+		newpath = newpath.replace('Ù', 'U')
 		newpath = newpath.replace('Ó', 'O')
+		newpath = newpath.replace('Ò', 'O')
+		newpath = newpath.replace('É', 'E')
+		newpath = newpath.replace('È', 'E')
+		newpath = newpath.replace('À', 'A')
+		newpath = newpath.replace('Á', 'A')
+		newpath = newpath.replace('ú', 'u')
+		newpath = newpath.replace('ù', 'u')
+		newpath = newpath.replace('ó', 'o')
+		newpath = newpath.replace('ò', 'o')
 		newpath = newpath.replace('é', 'e')
 		newpath = newpath.replace('è', 'e')
 		newpath = newpath.replace('à', 'a')
+		newpath = newpath.replace('á', 'a')
+		newpath = newpath.replace('ä', "ae")
+		newpath = newpath.replace('Ä', "Ae")
+		newpath = newpath.replace('ö', "oe")
+		newpath = newpath.replace('Ö', "Oe")
+		newpath = newpath.replace('ü', "ue")
+		newpath = newpath.replace('Ü', "Ue")
 		newfilename = newpath
 		newpath = os.path.join(root, newpath)
 		if(newpath!=fpath):
@@ -247,10 +265,10 @@ def BURP_UPDATE():
 	# check if modechange was pressed.
 	if(mc==globals.BUTTON_DOWN and globals.PRESS_MODECHANGE==0):
 		globals.PRESS_MODECHANGE=1
-        # show track title
-        if globals.BURP_fileIDX >= 0:
-            D.uppertext(files[globals.BURP_fileIDX][0])
-        # turn the display on.
+		# show track title
+		if globals.BURP_fileIDX >= 0:
+			D.uppertext(files[globals.BURP_fileIDX][0])
+		# turn the display on
 		D.DI_ON()
 
 	if(mc==globals.BUTTON_UP):
