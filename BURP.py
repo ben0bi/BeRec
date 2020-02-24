@@ -90,7 +90,9 @@ lcd = 0
 # initialize gpio and stuff.
 def BURP_Init():
 	D.DI_INIT()
-	D.setcolor(0,0,128)
+    # colours: welcome text is turkis, play is green, stop is red and pause is orange.
+    # when rec works, stop needs to have another color.
+	D.setcolor(0,64,128)
 	D.lcd.setCursor(1,0)
 	D.lcd.printout("Welcome to BURP")
 
