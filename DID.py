@@ -62,7 +62,6 @@ def symbol(which):
 DI_TITLE = "[Nothing]"
 DI_TITLEPOSITION = 0
 DI_TITLEDIRECTION = 1
-
 # set the text on the upper line, it will scroll if it is longer.
 def uppertext(text):
     global DI_TITLE, DI_TITLEPOSITION, DI_TITLEDIRECTION
@@ -114,13 +113,15 @@ def DI_INIT():
 def DI_UPDATE():
     global DI_TITLE, DI_TITLEPOSITION, DI_TITLEDIRECTION
     if(len(DI_TITLE)>15):
-        if(DI_TITLEPOSITION+15<len(DI_TITLE) and DI_TITLEPOSITION>0):
-            DI_TITLEPOSITON = DI_TITLEPOSITION + DI_TITLEDIRECTION
-        else:
+        DI_TITLEPOSITON = DI_TITLEPOSITION + DI_TITLEDIRECTION
+        if(DI_TITLEPOSITION>=len(DI_TITLE)-15 or DI_TITLEPOSITION<=0)
             DI_TITLEDIRECTION = -DI_TITLEDIRECTION
-            DI_TITLEPOSITON = DI_TITLEPOSITION + DI_TITLEDIRECTION
+    else:
+        DI_TITLEPOSITION = 0
+        DI_TITLEDIRECTION = 1
+
     # set the text
-    t = DI_TITLE[DI_TITLEPOSITION:len(DI_TITLE)-(DI_TITLEPOSITION+15)]
+    t = DI_TITLE[DI_TITLEPOSITION:14]
     lcd.setCursor(1,0)
     lcd.printout(t)
     # show the actual symbol over the text.
