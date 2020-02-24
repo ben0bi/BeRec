@@ -247,6 +247,10 @@ def BURP_UPDATE():
 	# check if modechange was pressed.
 	if(mc==globals.BUTTON_DOWN and globals.PRESS_MODECHANGE==0):
 		globals.PRESS_MODECHANGE=1
+        # show track title
+        if globals.BURP_fileIDX >= 0:
+            D.uppertext(files[globals.BURP_fileIDX][0])
+        # turn the display on.
 		D.DI_ON()
 
 	if(mc==globals.BUTTON_UP):
