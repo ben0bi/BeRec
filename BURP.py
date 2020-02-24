@@ -348,7 +348,6 @@ def BURP_UPDATE():
 	if(fw==globals.BUTTON_DOWN and rw!=globals.BUTTON_DOWN):
 		D.DI_ON()
 		print(">> FORWARD")
-		globals.PRESS_FWD = 1
 		# maybe stop song from playing
 		if(globals.PRESS_FWD==0 and globals.BURP_Song.isPlaying()):
 			globals.BURP_Song.stop()
