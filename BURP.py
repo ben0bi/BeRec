@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 # BURP
 # Benobis Universal Recorder & Player
 # * A music recorder behaving like an old tape recorder.
@@ -15,7 +18,7 @@ import os, sys
 from os.path import isfile, join
 
 # display library.
-import DI as D
+import DID as D
 
 # GPIO stuff.
 import RPi.GPIO as GPIO
@@ -68,15 +71,21 @@ for root, subdirs, fs in os.walk(globals.BURP_rootDir):
 		newpath = newpath.replace(')',']')
 		newpath = newpath.replace('{','[')
 		newpath = newpath.replace('}',']')
+		# special characters which made the player crash:
+		newpath = newpath.replace('Ó', 'O')
+		newpath = newpath.replace('é', 'e')
+		newpath = newpath.replace('è', 'e')
+		newpath = newpath.replace('à', 'a')
+		newfilename = newpath
 		newpath = os.path.join(root, newpath)
 		if(newpath!=fpath):
-			print "RENAMING "+filename+" TO "+newpath
+			print "RENAMING "+filename+" TO "+newfilename
 			os.rename(fpath, newpath)
 		#	fpath = newpath
-		print('\t- file %s' % (filename))
+		print('\t- file %s' % (newfilename))
 		# check if file can be played and maybe add it to the list.
 		#if(SP.canPlay(newpath)):
-		files.append([filename,newpath])
+		files.append([newfilename,newpath])
 
 if len(files) <= 0:
 	BURP_Bebeep()
@@ -122,7 +131,7 @@ def BURP_Init():
 	BURP_checkForNextTrack()
     # and then show the welcome message.
 	D.setcolor(0,64,128)
-    D.uppertext(globals.BURP_WELCOME)
+	D.uppertext(globals.BURP_WELCOME)
 	D.showPlayMenu()
 	D.DI_ON() # turn the display on for x seconds.
 	return
@@ -148,7 +157,7 @@ def BURP_checkForNextTrack(reverse = 0):
 	# get the song with the given idx and play it.
 	if globals.BURP_fileIDX >= 0:
 		print("Set Track to: "+files[globals.BURP_fileIDX][0])
-        D.uppertext(files[globals.BURP_fileIDX][0])
+		D.uppertext(files[globals.BURP_fileIDX][0])
 		globals.BURP_Song = SP(globals.BURP_actualDir+files[globals.BURP_fileIDX][1],1)
 
 # play the inserted track
@@ -380,7 +389,7 @@ def BURP_UPDATE():
 		globals.PRESS_REW = 0
 
 	# wait some time to save processor time.
-    D.DI_UPDATE()
+	D.DI_UPDATE()
 	sleep(0.1)
 	D.DI_FADE_OUT(0.1) # maybe fade out the display.
 
@@ -395,7 +404,7 @@ except KeyboardInterrupt:
 
 finally:
 	# clear display
-    D.clear()
-
+	D.clear()
+	# clear GPIO channels.
 	GPIO.cleanup()
-	print("done")
+	print("done. Thanks for using BURP.")
