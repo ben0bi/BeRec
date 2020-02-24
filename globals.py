@@ -1,3 +1,7 @@
+# Global Variables and Statics for BURP.
+
+BURP_WELCOME = "Welcome to BURP! http://masterbit.net"
+
 # Button BCM Values.
 # Define the ports for some unspecific buttons so you
 # can fiddle with the configuration without having to

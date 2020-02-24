@@ -92,9 +92,6 @@ def BURP_Init():
 	D.DI_INIT()
     # colours: welcome text is turkis, play is green, stop is red and pause is orange.
     # when rec works, stop needs to have another color.
-	D.setcolor(0,64,128)
-	D.lcd.setCursor(1,0)
-	D.lcd.printout("Welcome to BURP")
 
 # arrows
 	D.lcd.customSymbol(D.DIREF_UPARROW, D.DISYM_UPARROW)
@@ -111,9 +108,6 @@ def BURP_Init():
 # this one would be set to index 0 but DIREF_RECPAUSE is 8...
 #	lcd.customSymbol(globals.DIREF_RECPAUSE, globals.DISYM_RECPAUSE)
 
-	D.showPlayMenu()
-	D.DI_ON() # turn the display on for x seconds.
-
 # set gpios
 	GPIO.setmode(GPIO.BCM)
 	GPIO.setup(globals.PBTN_1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
@@ -124,6 +118,13 @@ def BURP_Init():
 #	GPIO.setup(globals.PBTN_6, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 #	GPIO.setup(globals.PBTN_7, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 #	GPIO.setup(globals.PBTN_8, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+    # get the first track...
+	BURP_checkForNextTrack()
+    # and then show the welcome message.
+	D.setcolor(0,64,128)
+    D.uppertext(globals.BURP_WELCOME)
+	D.showPlayMenu()
+	D.DI_ON() # turn the display on for x seconds.
 	return
 
 # get the next track if there is one.

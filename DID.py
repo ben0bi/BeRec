@@ -59,7 +59,7 @@ def symbol(which):
 	lcd.write(which)
 
 # upper text parameters.
-DI_TITLE = "Welcome to BURP..123..TEST...123...900?"
+DI_TITLE = "[Nothing]"
 DI_TITLEPOSITION = 0
 DI_TITLEDIRECTION = 1
 
