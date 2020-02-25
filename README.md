@@ -83,18 +83,20 @@ Ah yes, you may just need to copy this lcd1602.py file out of their folders.
 Download this repo onto your linux machine, into your home folder or somewhere you want:
 git clone https://github.com/ben0bi/BeRec.git
 
-then open rc.local, cd to your BeRec folder (you need to be in this folder) and
+then open rc.local, cd to your BeRec folder (you need to be in this folder) and..
 
+(    
 Open rc.local:    
-sudo nano /etc/rc.local
+sudo nano /etc/rc.local    
+)    
 
-Write this into it (on a raspbian):
+..write this into it (on a raspbian):    
 
-cd /home/pi/BeRec/
-sudo ./burpscreen.sh
+cd /home/pi/BeRec/    
+sudo ./burpscreen.sh    
 
-Ctrl-O, Ctrl-X, reboot - the player should now run.
-If not, check directories and permissions.
+Ctrl-O, Ctrl-X, reboot - the player should now run.    
+If not, check directories and permissions.    
 
 As said above, BURP may need to run in rootlevel-mode because
 of file/directory permissions when renaming the files.
