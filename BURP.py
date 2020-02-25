@@ -151,6 +151,7 @@ def BURP_Init():
 	D.setcolor(0,64,128)
 	D.uppertext(globals.BURP_WELCOME)
 	D.showPlayMenu()
+    D.symbol(DISYM_IAMFROMWORLDTHREE)
 	D.DI_ON() # turn the display on for x seconds.
 	return
 
@@ -182,7 +183,7 @@ def BURP_checkForNextTrack(reverse = 0):
 def BURP_Play():
 	try:
 		if(globals.BURP_Song != 0):
-			D.symbol(D.DIREF_PLAY)
+			D.symbol(D.DISYM_PLAY)
 			print("PLAY START")
 			globals.BURP_Song.play()
 			globals.BURP_STATE = globals.BURPSTATE_PLAY
@@ -196,7 +197,7 @@ def BURP_Play():
 # stop the inserted track.
 def BURP_Stop():
 	globals.BURP_STATE = globals.BURPSTATE_STOP
-	D.symbol(D.DIREF_STOP)
+	D.symbol(D.DISYM_STOP)
 	try:
 		if(globals.BURP_Song!=0):
 			if(globals.BURP_Song.isPlaying()):
@@ -285,7 +286,7 @@ def BURP_UPDATE():
 #			globals.BURP_STATE = globals.BURPSTATE_REC
 #			# TODO: record
 #			D.setcolor(128,0,0)
-#			D.symbol(D.DIREF_REC)
+#			D.symbol(D.DISYM_REC)
 #			print "TODO: o RECORD"
 #		else:
 #			# TODO: stop and save record
@@ -309,7 +310,7 @@ def BURP_UPDATE():
 		elif(globals.BURP_STATE==globals.BURPSTATE_RECPAUSE):
 			# TODO: continue record
 			print(":> CONTINUE RECORD")
-			D.symbol(D.DIREF_REC)
+			D.symbol(D.DISYM_REC)
 			globals.BURP_STATE=globals.BURPSTATE_REC
 		# pause play
 		elif(globals.BURP_STATE==globals.BURPSTATE_PLAY):
@@ -318,7 +319,7 @@ def BURP_UPDATE():
 				globals.BURP_Song.pause()
 				globals.BURP_STATE = globals.BURPSTATE_PAUSE
 				D.setcolor(128,64,0)
-				D.symbol(D.DIREF_PAUSE)
+				D.symbol(D.DISYM_PAUSE)
 			else:
 				# it's not playing so set mode to stop.
 				# this should never happen but...it could.
@@ -335,7 +336,7 @@ def BURP_UPDATE():
 				print(":> START PLAY")
 			elif(globals.BURP_STATE==globals.BURPSTATE_PAUSE):
 				globals.BURP_Song.resume()
-				D.symbol(D.DIREF_PLAY)
+				D.symbol(D.DISYM_PLAY)
 				print(":> RESUME PLAY")
 			globals.BURP_STATE=globals.BURPSTATE_PLAY
 	if(pp==globals.BUTTON_UP):

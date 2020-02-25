@@ -89,8 +89,11 @@ DI_SYMBOL = 0
 def symbol(which):
 	global lcd, DI_SYMBOL
 	DI_SYMBOL = which
+    if(DI_SYMBOL==0)
+        return
+    D.lcd.customSymbol(0, which)
 	lcd.setCursor(0,0)
-	lcd.write(which)
+	lcd.write(0)
 
 # upper text parameters.
 DI_TITLE = "[Nothing]"
@@ -166,9 +169,12 @@ def showPlayMenu():
 	lcd.write(DIREF_RIGHTARROW)
 
 # Display Symbols
+
+# symbol number 0 is reserved for direct access.
+
 # make some custom characters and their reference ids
 # for the display character table:
-DIREF_UPARROW = 0
+DIREF_UPARROW = 1
 DISYM_UPARROW = [
   0b00000,
   0b00100,
@@ -179,7 +185,7 @@ DISYM_UPARROW = [
   0b00000,
   0b00000
 ]
-DIREF_DOWNARROW = 1
+DIREF_DOWNARROW = 2
 DISYM_DOWNARROW = [
   0b00000,
   0b00100,
@@ -190,7 +196,7 @@ DISYM_DOWNARROW = [
   0b00000,
   0b00000
 ]
-DIREF_RIGHTARROW = 2
+DIREF_RIGHTARROW = 3
 DISYM_RIGHTARROW = [
   0b00000,
   0b00100,
@@ -201,7 +207,7 @@ DISYM_RIGHTARROW = [
   0b00000,
   0b00000
 ]
-DIREF_LEFTARROW = 3
+DIREF_LEFTARROW = 4
 DISYM_LEFTARROW = [
   0b00000,
   0b00100,
@@ -212,7 +218,7 @@ DISYM_LEFTARROW = [
   0b00000,
   0b00000
 ]
-DIREF_STOP = 4
+DIREF_STOP = 5
 DISYM_STOP = [
   0b00000,
   0b00000,
@@ -223,7 +229,7 @@ DISYM_STOP = [
   0b00000,
   0b00000
 ]
-DIREF_PAUSE = 5
+DIREF_PAUSE = 6
 DISYM_PAUSE = [
   0b00000,
   0b01010,
@@ -234,7 +240,7 @@ DISYM_PAUSE = [
   0b00000,
   0b00000
 ]
-DIREF_PLAY = 6
+DIREF_PLAY = 7
 DISYM_PLAY = [
   0b00000,
   0b01000,
@@ -245,7 +251,20 @@ DISYM_PLAY = [
   0b00000,
   0b00000
 ]
-DIREF_REC = 7
+
+# the welcome screen symbol.
+DISYM_IAMFROMWORLDTHREE = [
+  0b00000,
+  0b00100,
+  0b00100,
+  0b11110,
+  0b11111,
+  0b01110,
+  0b01100,
+  0b00000
+]
+
+# special symbols not used yet.
 DISYM_REC = [
   0b00000,
   0b01110,
@@ -268,3 +287,4 @@ DISYM_RECPAUSE = [
   0b00000,
   0b00000
 ]
+
