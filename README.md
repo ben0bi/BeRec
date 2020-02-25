@@ -1,8 +1,16 @@
 # BeRec a.k.a. BURP
 ## Benobis Universal Recorder & Player
 
-Updates: MP3 Player almost fully working.    
-Renames all files and directories for convenience (replaces spaces with _)     
+Updates: 
+-> MP3 Player almost fully working. No Buttons for Volume right now.    
+-> Renames all files and directories for convenience (replaces spaces with _ in directories,
+and much other characters like äàüè.)     
+
+-> Display Library DID.py  "for musicplayers", with icons and scrolling upper text.
+-> SoundPlayer library used and DFRobot-Displaydriver-Library used: All files put together here,
+	like in a trash can, no hassle with downloading the external stuff - 
+	just get this one and dive into the directories. Remember their licences. I don't. :)
+
 You need to:    
 
 sudo python BURP.py
@@ -13,6 +21,8 @@ sudo python BURP.py
 Working now with this display-button-HAT:    
 https://www.pi-shop.ch/iic-16x2-rgb-lcd-keypad-hat-v1-0    
 https://wiki.dfrobot.com/IIC_16X2_RGB_LCD_KeyPad_HAT_1.0)_SKU%3ADFR0514%2FDFR0603    
+
+also see the installation guide below.
 
 ## A digital music recorder behaving like an old music tape.    
 
@@ -64,3 +74,53 @@ http://www.python-exemplarisch.ch/raspi/de/sound.inc.php
 
 It's a wrapper for the SoX sound API.    
 Use setup.sh for installing it.
+
+Also it uses the lcd library, no idea how I installed it. It comes with the DFRobot stuff.
+Ah yes, you may just need to copy this lcd1602.py file out of their folders.
+
+# Installation (autoboot)
+
+Download this repo onto your linux machine, into your home folder or somewhere you want:
+git clone https://github.com/ben0bi/BeRec.git
+
+then open rc.local, cd to your BeRec folder (you need to be in this folder) and
+
+Open rc.local:    
+sudo nano /etc/rc.local
+
+Write this into it (on a raspbian):
+
+cd /home/pi/BeRec/
+sudo ./burpscreen.sh
+
+Ctrl-O, Ctrl-X, reboot - the player should now run.
+If not, check directories and permissions.
+
+As said above, BURP may need to run in rootlevel-mode because
+of file/directory permissions when renaming the files.
+This is way easier than checking all those permissions. :)
+Also, in a while, when the SD-card option will follow,
+the end user may have locked directories on the card which
+he doesn't even know about. (Mac to PC to Linux to Mac ;) )
+So better start BURP in root mode.
+
+You may need to change the directory to your sound files in the
+globals.py file.    
+
+If you want to edit something after autoboot, you can kill the
+BURP-screen before with the killscreen.sh-script.
+
+First, check the name of the screen:
+sudo screen -ls 
+
+It's sudo because the screen is on the root level.
+You should see a number.BURP screen here.
+
+Now just    
+sudo ./killscreen.sh XXX.BURP    
+
+where XXX is the number given above.    
+
+and then you can do your work. :)
+
+Hope this helps on your way.    

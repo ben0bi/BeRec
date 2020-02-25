@@ -19,6 +19,40 @@ DIAR = 0
 DIAG = 63
 DIAB = 0
 
+# update scrolling texts.
+def DI_UPDATE():
+	global DI_TITLE, DI_TITLEPOSITION, DI_TITLEDIRECTION
+	global DI_SYMBOL, DION
+	# return at begin to save processor time.
+	if(DION==0):
+		return
+
+	if(len(DI_TITLE)>15):
+        	DI_TITLEPOSITION = DI_TITLEPOSITION + DI_TITLEDIRECTION
+        	if(DI_TITLEPOSITION>=len(DI_TITLE)-12): # +3 waits some time at end.
+			DI_TITLEDIRECTION = -1
+		if(DI_TITLEPOSITION<=-3): # -3: this waits some time at start
+			DI_TITLEDIRECTION = 1
+	else:
+        	DI_TITLEPOSITION = 0
+        	DI_TITLEDIRECTION = 1
+
+	# constrain the waiting at the end.
+	dp=DI_TITLEPOSITION
+	if(dp>len(DI_TITLE)-15):
+		dp=len(DI_TITLE)-15
+
+	# set the text
+	t = DI_TITLE[dp:dp+15]
+	lcd.setCursor(1,0)
+	lcd.printout(t)
+	# show the actual symbol over the text.
+	# should do nothing because the cursor was
+	# set to position 1 for the text and 0 for
+	# the symbol but....here you have it:
+	# uncomment this below.
+	symbol(DI_SYMBOL)
+
 # set a specific color for the display
 # but leave the saved value as it is.
 def color(red, green, blue):
@@ -51,10 +85,10 @@ def clear():
 	lcd.setPWM(0x04,0)
 
 # show a specific symbol at the symbol position.
-DI_SYMBOL = -1
+DI_SYMBOL = 0
 def symbol(which):
+	global lcd, DI_SYMBOL
 	DI_SYMBOL = which
-	global lcd
 	lcd.setCursor(0,0)
 	lcd.write(which)
 
@@ -64,10 +98,10 @@ DI_TITLEPOSITION = 0
 DI_TITLEDIRECTION = 1
 # set the text on the upper line, it will scroll if it is longer.
 def uppertext(text):
-    global DI_TITLE, DI_TITLEPOSITION, DI_TITLEDIRECTION
-    DI_TITLE = text
-    DI_TITLEPOSITION = 0
-    DI_TITLEDIRECTION = 1
+	global DI_TITLE, DI_TITLEPOSITION, DI_TITLEDIRECTION
+	DI_TITLE = text
+	DI_TITLEPOSITION = 1
+	DI_TITLEDIRECTION = -1 # position 0 and direction -1 waits some time at startup.
 
 # fade the display out after some time.
 DITIME = 5 # display time until it fades out, in seconds.
@@ -108,28 +142,6 @@ def DI_ON():
 def DI_INIT():
     global lcd
     lcd=rgb1602.RGB1602(16,2) #create LCD object,specify col and row
-
-# update scrolling texts.
-def DI_UPDATE():
-    global DI_TITLE, DI_TITLEPOSITION, DI_TITLEDIRECTION
-    if(len(DI_TITLE)>15):
-        DI_TITLEPOSITON = DI_TITLEPOSITION + DI_TITLEDIRECTION
-        if(DI_TITLEPOSITION>=len(DI_TITLE)-15 or DI_TITLEPOSITION<=0):
-            DI_TITLEDIRECTION = -DI_TITLEDIRECTION
-    else:
-        DI_TITLEPOSITION = 0
-        DI_TITLEDIRECTION = 1
-
-    # set the text
-    t = DI_TITLE[DI_TITLEPOSITION:14]
-    lcd.setCursor(1,0)
-    lcd.printout(t)
-    # show the actual symbol over the text.
-    # should do nothing because the cursor was
-    # set to position 1 for the text and 0 for
-    # the symbol but....here you have it:
-    # uncomment this below.
-    #symbol(DI_SYMBOL)
 
 # show menu
 def showPlayMenu():
@@ -203,7 +215,7 @@ DISYM_LEFTARROW = [
 DIREF_STOP = 4
 DISYM_STOP = [
   0b00000,
-  0b11110,
+  0b00000,
   0b11110,
   0b11110,
   0b11110,

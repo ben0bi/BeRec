@@ -22,6 +22,10 @@ sudo apt-get install python-pip
 # install sox, mp3 for the soundplayer module.
 sudo apt-get install sox libsox-fmt-mp3
 
+# install screen for the autoboot option,
+# see installation instructions in the README.
+sudo apt-get install screen
+
 # GPIO library
 pip install RPi.GPIO
 pip install wiringpi
