@@ -6,8 +6,8 @@ Updates:
 -> Renames all files and directories for convenience (replaces spaces with _ in directories,
 and much other characters like äàüè.)     
 
--> Display Library DID.py  "for musicplayers", with icons and scrolling upper text.
--> SoundPlayer library used and DFRobot-Displaydriver-Library used: All files put together here,
+-> Display Library DID.py  "for musicplayers", with special features, see below Appendix A.    
+-> SoundPlayer library and DFRobot-Displaydriver-Library used: All files put together here,
 	like in a trash can, no hassle with downloading the external stuff - 
 	just get this one and dive into the directories. Remember their licences. I don't. :)
 
@@ -21,6 +21,7 @@ sudo python BURP.py
 Working now with this display-button-HAT:    
 https://www.pi-shop.ch/iic-16x2-rgb-lcd-keypad-hat-v1-0    
 https://wiki.dfrobot.com/IIC_16X2_RGB_LCD_KeyPad_HAT_1.0)_SKU%3ADFR0514%2FDFR0603    
+see Appendix A
 
 also see the installation guide below.
 
@@ -78,7 +79,7 @@ Use setup.sh for installing it.
 Also it uses the lcd library, no idea how I installed it. It comes with the DFRobot stuff.
 Ah yes, you may just need to copy this lcd1602.py file out of their folders.
 
-# Installation (autoboot)
+## Installation (autoboot)
 
 Download this repo onto your linux machine, into your home folder or somewhere you want:
 git clone https://github.com/ben0bi/BeRec.git
@@ -126,3 +127,35 @@ where XXX is the number given above.
 and then you can do your work. :)
 
 Hope this helps on your way.    
+
+## Appendix A: The Display Driver
+
+DID.py is the display driver used with the DFRobot 16x2 lcd display seen in the links above.
+It has some special features for music players:
+
+### Icon set
+The following icons are available:
+Play, Pause, Stop, Rec, Recpause, Smiley, Arrow in each direction.
+
+### Player menu
+The lower line can display a prebuilt player menu (icons in brackets) which looks like this.
+This icons must be initialized first on positions 1 through 7. Position 0 is for the direct icon
+and the display seems to support only 8 icons at once. You can use the DIREF_ variables for the
+positions of the icon set or the DISYM_ arrays for direct icons.
+
+[Uparrow]:[Play][Pause] [Downarrow]:[Stop] [Leftarrow]:[Leftarrow] [Rightarrow]:[Rightarrow]
+
+### Symbol
+In the upper left, a (direct, position 0) symbol will be displayed. Set it with:
+DID.symbol(symbol_array_name)
+
+### Scrolling text
+The upper line can have a scrolling text which will be updated with the
+DI_UPDATE-function. Call this function after some time, whereelse it would be to fast.
+
+### Fade-Out
+Last but not least, and this is the most useful function beneath the scrolltext: 
+The display fades out all colours in a step of 3/frame after 5 seconds. When it is black,
+the flag DION will be set to 0. If you turn the display back on with DI_ON(), 
+it will restart the counter. When the display is black, the scrolling will
+stop, too. Saves power and eye-attraction. :)

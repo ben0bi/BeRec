@@ -181,12 +181,16 @@ def BURP_checkForNextTrack(reverse = 0):
 
 # play the inserted track
 def BURP_Play():
+	global files
 	try:
 		if(globals.BURP_Song != 0):
 			D.symbol(D.DISYM_PLAY)
 			print("PLAY START")
 			globals.BURP_Song.play()
 			globals.BURP_STATE = globals.BURPSTATE_PLAY
+			# show track title
+			if globals.BURP_fileIDX >= 0:
+				D.uppertext(files[globals.BURP_fileIDX][0])
 		else:
 			print("ERROR: SONG IS null")
 			BURP_Stop()
@@ -266,9 +270,6 @@ def BURP_UPDATE():
 	# check if modechange was pressed.
 	if(mc==globals.BUTTON_DOWN and globals.PRESS_MODECHANGE==0):
 		globals.PRESS_MODECHANGE=1
-		# show track title
-		if globals.BURP_fileIDX >= 0:
-			D.uppertext(files[globals.BURP_fileIDX][0])
 		# turn the display on
 		D.DI_ON()
 
@@ -339,6 +340,7 @@ def BURP_UPDATE():
 				D.symbol(D.DISYM_PLAY)
 				print(":> RESUME PLAY")
 			globals.BURP_STATE=globals.BURPSTATE_PLAY
+
 	if(pp==globals.BUTTON_UP):
 		globals.PRESS_PP = 0
 
