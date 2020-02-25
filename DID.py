@@ -89,9 +89,9 @@ DI_SYMBOL = 0
 def symbol(which):
 	global lcd, DI_SYMBOL
 	DI_SYMBOL = which
-    if(DI_SYMBOL==0)
-        return
-    D.lcd.customSymbol(0, which)
+	if(DI_SYMBOL==0):
+		return
+	lcd.customSymbol(0, which)
 	lcd.setCursor(0,0)
 	lcd.write(0)
 
@@ -252,18 +252,6 @@ DISYM_PLAY = [
   0b00000
 ]
 
-# the welcome screen symbol.
-DISYM_IAMFROMWORLDTHREE = [
-  0b00000,
-  0b00100,
-  0b00100,
-  0b11110,
-  0b11111,
-  0b01110,
-  0b01100,
-  0b00000
-]
-
 # special symbols not used yet.
 DISYM_REC = [
   0b00000,
@@ -285,6 +273,18 @@ DISYM_RECPAUSE = [
   0b10001,
   0b01110,
   0b00000,
+  0b00000
+]
+
+# the welcome screen symbol.
+DISYM_IAMFROMWORLDTHREE = [
+  0b01110,
+  0b11111,
+  0b10101,
+  0b11111,
+  0b10001,
+  0b11011,
+  0b01110,
   0b00000
 ]
 

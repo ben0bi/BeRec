@@ -130,7 +130,7 @@ def BURP_Init():
 	D.lcd.customSymbol(D.DIREF_STOP, D.DISYM_STOP)
 	D.lcd.customSymbol(D.DIREF_PAUSE, D.DISYM_PAUSE)
 	D.lcd.customSymbol(D.DIREF_PLAY, D.DISYM_PLAY)
-	D.lcd.customSymbol(D.DIREF_REC, D.DISYM_REC)
+#	D.lcd.customSymbol(D.DIREF_REC, D.DISYM_REC)
 # there seems to be a maximum of 8 different symbols for this display,
 # this one would be set to index 0 but DIREF_RECPAUSE is 8...
 #	lcd.customSymbol(globals.DIREF_RECPAUSE, globals.DISYM_RECPAUSE)
@@ -151,7 +151,7 @@ def BURP_Init():
 	D.setcolor(0,64,128)
 	D.uppertext(globals.BURP_WELCOME)
 	D.showPlayMenu()
-    D.symbol(DISYM_IAMFROMWORLDTHREE)
+	D.symbol(D.DISYM_IAMFROMWORLDTHREE)
 	D.DI_ON() # turn the display on for x seconds.
 	return
 
