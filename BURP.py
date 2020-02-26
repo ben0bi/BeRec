@@ -72,6 +72,8 @@ for root, subdirs, fs in os.walk(globals.BURP_rootDir):
 		newpath = newpath.replace('{','[')
 		newpath = newpath.replace('}',']')
 		# special characters which made the player crash:
+		newpath = newpath.replace(chr(0xc3), 'C') # ç
+		newpath = newpath.replace('ç', 'c') # ç
 		newpath = newpath.replace('Ú', 'U')
 		newpath = newpath.replace('Ù', 'U')
 		newpath = newpath.replace('Ó', 'O')
@@ -94,6 +96,14 @@ for root, subdirs, fs in os.walk(globals.BURP_rootDir):
 		newpath = newpath.replace('Ö', "Oe")
 		newpath = newpath.replace('ü', "ue")
 		newpath = newpath.replace('Ü', "Ue")
+		newpath = newpath.replace('&', "and")
+		newpath = newpath.replace(chr(0xc4), 'i')
+		# some "very" special chars I don't know about.
+		newpath = newpath.replace(chr(0xb1),'')
+		newpath = newpath.replace(chr(0x87),'')
+		newpath = newpath.replace(chr(0xe2),'_')
+		newpath = newpath.replace(chr(0xa1),'_')
+		newpath = newpath.replace(chr(0x99),'_')
 		newfilename = newpath
 		newpath = os.path.join(root, newpath)
 		if(newpath!=fpath):
@@ -117,8 +127,8 @@ lcd = 0
 # initialize gpio and stuff.
 def BURP_Init():
 	D.DI_INIT()
-    # colours: welcome text is turkis, play is green, stop is red and pause is orange.
-    # when rec works, stop needs to have another color.
+	# colours: welcome text is turkis, play is green, stop is red and pause is orange.
+	# when rec works, stop needs to have another color.
 
 # arrows
 	D.lcd.customSymbol(D.DIREF_UPARROW, D.DISYM_UPARROW)
@@ -142,9 +152,6 @@ def BURP_Init():
 	GPIO.setup(globals.PBTN_3, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 	GPIO.setup(globals.PBTN_4, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 	GPIO.setup(globals.PBTN_5, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-#	GPIO.setup(globals.PBTN_6, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-#	GPIO.setup(globals.PBTN_7, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-#	GPIO.setup(globals.PBTN_8, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
     # get the first track...
 	BURP_checkForNextTrack()
     # and then show the welcome message.
@@ -210,7 +217,10 @@ def BURP_Stop():
 	except:
 		print("ERROR: COULD NOT STOP TRACK.")
 
+
+old_playmode = -291
 def BURP_UPDATE():
+	global old_playmode
 	# check if song is playing or get next one if play mode is set.
 	if(globals.BURP_Song != 0):
 		# its stopped but state is play, so song has ended.
@@ -370,23 +380,26 @@ def BURP_UPDATE():
 		D.DI_ON()
 		print(">> FORWARD")
 #new fwd code
-        # maybe stop song
-        if(globals.BURP_Song!=0):
-            if(globals.BURP_Song.isPlaying()):
-                globals.BURP_Song.stop()
-                sleep(0.5)
-                print("Song stopped..")
-        BURP_checkForNextTrack(0)
+		if(old_playmode==-291):
+			old_playmode = globals.BURP_STATE
+		# maybe stop song
+		if(globals.BURP_Song!=0):
+			if(globals.BURP_Song.isPlaying()):
+				BURP_Stop()
+				print("Song stopped..FWD")
+		BURP_checkForNextTrack(0)
 		BURP_Beep()
 		globals.PRESS_FWD = 1
 
     # maybe play the song.
 	if(fw==globals.BUTTON_UP):
-        if(globals.PRESS_FWD==1):
-            if(globals.BURP_STATE==globals.BURPSTATE_PLAY or globals.BURP_STATE==globals.BURPSTATE_PAUSE):
-                BURP_Play()
-            else:
-                BURP_Stop()
+		if(globals.PRESS_FWD==1):
+			if(old_playmode==globals.BURPSTATE_PLAY or old_playmode==globals.BURPSTATE_PAUSE):
+				D.setcolor(0,128,0)
+				BURP_Play()
+			else:
+				BURP_Stop()
+			old_playmode=-291
 		globals.PRESS_FWD = 0
 
 	# rewind button pressed
