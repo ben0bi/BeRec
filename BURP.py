@@ -369,24 +369,24 @@ def BURP_UPDATE():
 	if(fw==globals.BUTTON_DOWN and rw!=globals.BUTTON_DOWN):
 		D.DI_ON()
 		print(">> FORWARD")
-		# maybe stop song from playing
-		if(globals.PRESS_FWD==0 and globals.BURP_Song.isPlaying()):
-			globals.BURP_Song.stop()
-		# get next track
-		if(globals.PRESS_FWD == 0 or globals.BURP_STATE!=globals.BURPSTATE_PLAY):
-			BURP_checkForNextTrack(0)
-		# if state was play: play ;)
-		if(globals.PRESS_FWD == 0 and (globals.BURP_STATE==globals.BURPSTATE_PLAY or globals.BURP_STATE==globals.BURPSTATE_PAUSE)):
-			print("Try to play new track..")
-			BURP_Stop()
-			BURP_Play()
-		elif(globals.PRESS_FWD==1 and globals.BURP_STATE!=globals.BURPSTATE_PLAY and globals.BURP_STATE!=globals.BURPSTATE_PAUSE):
-			if(globals.BURP_STATE!=globals.BURPSTATE_REC and globals.BURP_STATE!=globals.BURPSTATE_RECPAUSE):
-				BURP_Stop()
-			BURP_Beep()
+#new fwd code
+        # maybe stop song
+        if(globals.BURP_Song!=0):
+            if(globals.BURP_Song.isPlaying()):
+                globals.BURP_Song.stop()
+                sleep(0.5)
+                print("Song stopped..")
+        BURP_checkForNextTrack(0)
+		BURP_Beep()
 		globals.PRESS_FWD = 1
 
+    # maybe play the song.
 	if(fw==globals.BUTTON_UP):
+        if(globals.PRESS_FWD==1):
+            if(globals.BURP_STATE==globals.BURPSTATE_PLAY or globals.BURP_STATE==globals.BURPSTATE_PAUSE):
+                BURP_Play()
+            else:
+                BURP_Stop()
 		globals.PRESS_FWD = 0
 
 	# rewind button pressed
