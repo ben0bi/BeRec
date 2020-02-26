@@ -130,21 +130,6 @@ def BURP_Init():
 	# colours: welcome text is turkis, play is green, stop is red and pause is orange.
 	# when rec works, stop needs to have another color.
 
-# arrows
-	D.lcd.customSymbol(D.DIREF_UPARROW, D.DISYM_UPARROW)
-	D.lcd.customSymbol(D.DIREF_DOWNARROW, D.DISYM_DOWNARROW)
-	D.lcd.customSymbol(D.DIREF_LEFTARROW, D.DISYM_LEFTARROW)
-	D.lcd.customSymbol(D.DIREF_RIGHTARROW, D.DISYM_RIGHTARROW)
-
-# play pause rec stop
-	D.lcd.customSymbol(D.DIREF_STOP, D.DISYM_STOP)
-	D.lcd.customSymbol(D.DIREF_PAUSE, D.DISYM_PAUSE)
-	D.lcd.customSymbol(D.DIREF_PLAY, D.DISYM_PLAY)
-#	D.lcd.customSymbol(D.DIREF_REC, D.DISYM_REC)
-# there seems to be a maximum of 8 different symbols for this display,
-# this one would be set to index 0 but DIREF_RECPAUSE is 8...
-#	lcd.customSymbol(globals.DIREF_RECPAUSE, globals.DISYM_RECPAUSE)
-
 # set gpios
 	GPIO.setmode(GPIO.BCM)
 	GPIO.setup(globals.PBTN_1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
@@ -209,6 +194,8 @@ def BURP_Play():
 def BURP_Stop():
 	globals.BURP_STATE = globals.BURPSTATE_STOP
 	D.symbol(D.DISYM_STOP)
+	globals.BURP_SecPart = 0.0
+	globals.BURP_ActualTime = 0
 	try:
 		if(globals.BURP_Song!=0):
 			if(globals.BURP_Song.isPlaying()):
@@ -252,34 +239,33 @@ def BURP_UPDATE():
 # button test
 #	print(pp,fw,rw,st,rc) #,vu,vd,md)
 
-# test
-	vu = globals.BUTTON_UP
-	vd = globals.BUTTON_UP
+#	# check if volup or voldown were pressed
+#	# volup
+#	if(vu==globals.BUTTON_DOWN and globals.PRESS_VOLUP == 0 and vd != globals.BUTTON_DOWN): # vd must be != vu !!!
+#		# TODO: volume up
+#		D.DI_ON()
+#		print("VOLUP")
+#		globals.PRESS_VOLUP = 1
 
-	# check if volup or voldown were pressed
-	# volup
-	if(vu==globals.BUTTON_DOWN and globals.PRESS_VOLUP == 0 and vd != globals.BUTTON_DOWN): # vd must be != vu !!!
-		# TODO: volume up
-		D.DI_ON()
-		print("VOLUP")
-		globals.PRESS_VOLUP = 1
+#	if(vu==globals.BUTTON_UP):
+#		globals.PRESS_VOLUP = 0
 
-	if(vu==globals.BUTTON_UP):
-		globals.PRESS_VOLUP = 0
+#	# voldown
+#	if(vd==globals.BUTTON_DOWN and globals.PRESS_VOLDOWN == 0 and vu != globals.BUTTON_DOWN): # vd must be != vu !!!
+#		D.DI_ON()
+#		# TODO: volume down
+#		print("VOLDOWN")
+#		globals.PRESS_VOLDOWN = 1
 
-	# voldown
-	if(vd==globals.BUTTON_DOWN and globals.PRESS_VOLDOWN == 0 and vu != globals.BUTTON_DOWN): # vd must be != vu !!!
-		D.DI_ON()
-		# TODO: volume down
-		print("VOLDOWN")
-		globals.PRESS_VOLDOWN = 1
-
-	if(vd==1):
-		globals.PRESS_VOLDOWN = 0
+#	if(vd==1):
+#		globals.PRESS_VOLDOWN = 0
 
 	# check if modechange was pressed.
 	if(mc==globals.BUTTON_DOWN and globals.PRESS_MODECHANGE==0):
 		globals.PRESS_MODECHANGE=1
+		# maybe update the time mark.
+		if(globals.BURP_STATE == globals.BURPSTATE_PLAY or globals.BURP_STATE == globals.BURPSTATE_REC):
+			D.showTimeMark(globals.BURP_ActualTime)
 		# turn the display on
 		D.DI_ON()
 
@@ -391,7 +377,7 @@ def BURP_UPDATE():
 		BURP_Beep()
 		globals.PRESS_FWD = 1
 
-    # maybe play the song.
+    	# fwd button up, maybe play the song.
 	if(fw==globals.BUTTON_UP):
 		if(globals.PRESS_FWD==1):
 			if(old_playmode==globals.BURPSTATE_PLAY or old_playmode==globals.BURPSTATE_PAUSE):
@@ -402,34 +388,54 @@ def BURP_UPDATE():
 			old_playmode=-291
 		globals.PRESS_FWD = 0
 
-	# rewind button pressed
-	if(rw==globals.BUTTON_DOWN and fw != globals.BUTTON_DOWN):
+	# forward button pressed
+	if(rw==globals.BUTTON_DOWN and fw!=globals.BUTTON_DOWN):
 		D.DI_ON()
 		print("<< REWIND")
-		if(globals.PRESS_REW == 0 and globals.BURP_Song.isPlaying()):
-			globals.BURP_Song.stop()
-		# get previous track
-		if(globals.PRESS_REW == 0 or globals.BURP_STATE!=globals.BURPSTATE_PLAY):
-			BURP_checkForNextTrack(1)
-		# if state was play: play ;)
-		if(globals.PRESS_REW == 0 and (globals.BURP_STATE==globals.BURPSTATE_PLAY or globals.BURP_STATE==globals.BURPSTATE_PAUSE)):
-			print("Try to play new track..")
-			BURP_Stop()
-			BURP_Play()
-		elif(globals.PRESS_REW==1 and globals.BURP_STATE!=globals.BURPSTATE_PLAY and globals.BURP_STATE!=globals.BURPSTATE_PAUSE):
-			if(globals.BURP_STATE!=globals.BURPSTATE_REC and globals.BURP_STATE!=globals.BURPSTATE_RECPAUSE):
+#new rew code
+		if(old_playmode==-291):
+			old_playmode = globals.BURP_STATE
+		# maybe stop song
+		if(globals.BURP_Song!=0):
+			if(globals.BURP_Song.isPlaying()):
 				BURP_Stop()
-			BURP_Beep()
+				print("Song stopped..REW")
+		BURP_checkForNextTrack(1)
+		BURP_Beep()
 		globals.PRESS_REW = 1
 
+    	# rew button up, maybe play the song.
 	if(rw==globals.BUTTON_UP):
+		if(globals.PRESS_REW==1):
+			if(old_playmode==globals.BURPSTATE_PLAY or old_playmode==globals.BURPSTATE_PAUSE):
+				D.setcolor(0,128,0)
+				BURP_Play()
+			else:
+				BURP_Stop()
+			old_playmode=-291
 		globals.PRESS_REW = 0
 
 	# wait some time to save processor time.
 	D.DI_UPDATE()
 	sleep(0.1)
+	# show time of actual song and
+	# modify the time values.
+	if(globals.BURP_STATE == globals.BURPSTATE_PLAY or globals.BURP_STATE==globals.BURPSTATE_REC):
+		globals.BURP_SecPart = globals.BURP_SecPart+0.1
+		if(globals.BURP_SecPart>=1.0):
+			globals.BURP_SecPart = 0.0
+			globals.BURP_ActualTime = globals.BURP_ActualTime+1
+			if(D.DION==1):
+				D.showTimeMark(globals.BURP_ActualTime) # only update display when necessary.
+		elif(globals.BURP_ActualTime<=0 and D.DION==1): # show first second, too
+			D.showTimeMark(0)
+	else:
+		D.showPlayMenu()
+
 	D.DI_FADE_OUT(0.1) # maybe fade out the display.
 
+
+# MAIN
 BURP_Init()
 
 try:

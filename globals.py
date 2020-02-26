@@ -86,3 +86,7 @@ BURP_Song = 0
 BURP_fileIDX = -1
 BURP_rootDir = "/var/www/html/MUSIC/FILESYS"
 BURP_actualDir = "/"
+
+# time in seconds.
+BURP_ActualTime = 0
+BURP_SecPart = 0.0

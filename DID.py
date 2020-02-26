@@ -148,8 +148,17 @@ def DI_INIT():
 
 # show menu
 def showPlayMenu():
+	global DISYM_UPARROW, DISYM_DOWNARROW, DISYM_LEFTARROW, DISYM_RIGHTARROW
+	global DISYM_PLAY, DISYM_PAUSE, DISYM_STOP, DISYM_REW, DISYM_FWD
 	global DIREF_UPARROW, DIREF_DOWNARROW, DIREF_LEFTARROW, DIREF_RIGHTARROW
 	global DIREF_PLAY, DIREF_PAUSE, DIREF_STOP, DIREF_REW, DIREF_FWD
+	lcd.customSymbol(DIREF_UPARROW, DISYM_UPARROW)
+	lcd.customSymbol(DIREF_DOWNARROW, DISYM_DOWNARROW)
+	lcd.customSymbol(DIREF_LEFTARROW, DISYM_LEFTARROW)
+	lcd.customSymbol(DIREF_RIGHTARROW, DISYM_RIGHTARROW)
+	lcd.customSymbol(DIREF_PLAY, DISYM_PLAY)
+	lcd.customSymbol(DIREF_PAUSE, DISYM_PAUSE)
+	lcd.customSymbol(DIREF_STOP, DISYM_STOP)
 	lcd.setCursor(0,1)
 	lcd.write(DIREF_UPARROW)
 	lcd.printout(":")
@@ -167,6 +176,31 @@ def showPlayMenu():
 	lcd.write(DIREF_RIGHTARROW)
 	lcd.printout(":")
 	lcd.write(DIREF_RIGHTARROW)
+
+# show a time mark in the lower right.
+def showTimeMark(seconds):
+	global lcd
+	global DISYM_WATCH
+	lcd.customSymbol(1,DISYM_WATCH)
+	minutes = 0
+	hours = 0
+	if(seconds>0):
+		minutes = int(seconds/60)
+		seconds = seconds%60
+	if(minutes>0):
+		hours=int(minutes/60)
+		minutes=minutes%60
+	t = str(seconds)
+	if(minutes>0 or hours>0):
+		t = str(minutes)+":"+t
+	if(hours>0):
+		t=str(hours)+":"+t
+	t=" "+t
+	lcd.setCursor(0,1)
+	lcd.printout("                ")
+	lcd.setCursor(15-len(t),1)
+	lcd.write(1)
+	lcd.printout(t)
 
 # Display Symbols
 
@@ -270,6 +304,18 @@ DISYM_RECPAUSE = [
   0b01110,
   0b10001,
   0b10001,
+  0b10001,
+  0b01110,
+  0b00000,
+  0b00000
+]
+
+# a litle watch
+DISYM_WATCH = [
+  0b00000,
+  0b01110,
+  0b10101,
+  0b10111,
   0b10001,
   0b01110,
   0b00000,
