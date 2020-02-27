@@ -191,11 +191,15 @@ def showTimeMark(seconds):
 		hours=int(minutes/60)
 		minutes=minutes%60
 	t = str(seconds)
+    if(len(t)==1)
+        t=' '+t
 	if(minutes>0 or hours>0):
-		t = str(minutes)+":"+t
+        m=str(minutes)
+        if(len(m)==1)
+            m=' '+m
+		t = m+":"+t
 	if(hours>0):
 		t=str(hours)+":"+t
-	t=" "+t
 	lcd.setCursor(0,1)
 	lcd.printout("                ")
 	lcd.setCursor(15-len(t),1)
