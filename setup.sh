@@ -27,6 +27,8 @@ sudo apt-get install sox libsox-fmt-mp3
 sudo apt-get install screen
 
 # GPIO library
+# Now here we have both because something uses wiringpi
+# and I myself used RPi.GPIO before.
 pip install RPi.GPIO
 pip install wiringpi
 
@@ -35,10 +37,13 @@ pip install wiringpi
 sudo pip install RPi.GPIO
 sudo pip install wiringpi
 
+# for proper time calcualtions we need numpy.
+pip install numpy
+sudo pip install numpy
+
 # ffmpeg bindings for python
 #pip install ffmpeg-python
 
 # using pydub for playing all sorts of sound files.
 #pip install pydub
 
-# using sounddevice for recording
