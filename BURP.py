@@ -27,6 +27,24 @@ from time import sleep
 
 import globals
 
+# for the deltatime calculation
+import numpy as np
+import datetime
+
+# get frametime
+FRAMETIME_OLD = 0.0
+deltatime = 0.0
+def frametime_init():
+	global FRAMETIME_OLD
+	FRAMETIME_OLD = np.datetime64(datetime.datetime.now(), 'ms')
+
+def frametime_tick():
+	global FRAMETIME_OLD, deltatime
+	fr = np.datetime64(datetime.datetime.now(), 'ms') # more precise than 'now' (?)
+	deltatime = fr - FRAMETIME_OLD
+	deltatime = deltatime.astype('int16')
+	FRAMETIME_OLD = fr
+
 # play a blocking beep sound.
 def BURP_Bebeep():
 	dev = 1
@@ -208,6 +226,8 @@ def BURP_Stop():
 old_playmode = -291
 def BURP_UPDATE():
 	global old_playmode
+	global deltatime
+
 	# check if song is playing or get next one if play mode is set.
 	if(globals.BURP_Song != 0):
 		# its stopped but state is play, so song has ended.
@@ -421,9 +441,9 @@ def BURP_UPDATE():
 	# show time of actual song and
 	# modify the time values.
 	if(globals.BURP_STATE == globals.BURPSTATE_PLAY or globals.BURP_STATE==globals.BURPSTATE_REC):
-		globals.BURP_SecPart = globals.BURP_SecPart+0.1
-		if(globals.BURP_SecPart>=1.0):
-			globals.BURP_SecPart = 0.0
+		globals.BURP_SecPart = globals.BURP_SecPart+deltatime
+		if(globals.BURP_SecPart>=1000):
+			globals.BURP_SecPart = globals.BURP_SecPart-1000
 			globals.BURP_ActualTime = globals.BURP_ActualTime+1
 			if(D.DION==1):
 				D.showTimeMark(globals.BURP_ActualTime) # only update display when necessary.
@@ -432,15 +452,18 @@ def BURP_UPDATE():
 	else:
 		D.showPlayMenu()
 
-	D.DI_FADE_OUT(0.1) # maybe fade out the display.
+	D.DI_FADE_OUT(deltatime) # maybe fade out the display.
 
 
 # MAIN
 BURP_Init()
+frametime_init()
 
 try:
         while True:
 		BURP_UPDATE()
+		frametime_tick()
+#		print(deltatime, deltatime.astype('int64'))
 
 except KeyboardInterrupt:
         print("User exit.")

@@ -27,6 +27,7 @@ def DI_UPDATE():
 	if(DION==0):
 		return
 
+	# maybe scroll the title
 	if(len(DI_TITLE)>15):
         	DI_TITLEPOSITION = DI_TITLEPOSITION + DI_TITLEDIRECTION
         	if(DI_TITLEPOSITION>=len(DI_TITLE)-12): # +3 waits some time at end.
@@ -34,6 +35,7 @@ def DI_UPDATE():
 		if(DI_TITLEPOSITION<=-3): # -3: this waits some time at start
 			DI_TITLEDIRECTION = 1
 	else:
+		# do not scroll
         	DI_TITLEPOSITION = 0
         	DI_TITLEDIRECTION = 1
 
@@ -47,10 +49,8 @@ def DI_UPDATE():
 	lcd.setCursor(1,0)
 	lcd.printout(t)
 	# show the actual symbol over the text.
-	# should do nothing because the cursor was
-	# set to position 1 for the text and 0 for
-	# the symbol but....here you have it:
-	# uncomment this below.
+	# text is shown on xpos 1 and symbol on xpos 0 either,
+	# but safe is safe.
 	symbol(DI_SYMBOL)
 
 # set a specific color for the display
@@ -107,29 +107,33 @@ def uppertext(text):
 	DI_TITLEDIRECTION = -1 # position 0 and direction -1 waits some time at startup.
 
 # fade the display out after some time.
-DITIME = 5 # display time until it fades out, in seconds.
+DITIME = 5000 # display time until it fades out, in seconds.
 DION = 1 # is the display on?
-DITIME_ACTUAL = 0.0
+DITIME_ACTUAL = 0
 def DI_FADE_OUT(frametime):
 	global DITIME, DITIME_ACTUAL, DION
 	global DIAR, DIAG, DIAB
 	if(DION==1):
 		DITIME_ACTUAL=DITIME_ACTUAL+frametime
 		if(DITIME_ACTUAL>=DITIME):
+			# decrease all colours
 			if(DIAR>0):
 				DIAR=DIAR-3
 			if(DIAG>0):
 				DIAG=DIAG-3
 			if(DIAB>0):
 				DIAB=DIAB-3
+			# maybe set them to 0
 			if(DIAR<0):
 				DIAR=0
 			if(DIAG<0):
 				DIAG=0
 			if(DIAB<0):
 				DIAB=0
+			# set the color but not the values.
 			color(DIAR,DIAG,DIAB)
 		if(DIAR<=0 and DIAG<=0 and DIAB<=0):
+			# finally turn off the display.
 			DION=0
 			DITIME_ACTUAL=0.0
 
