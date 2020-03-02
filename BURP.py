@@ -451,8 +451,9 @@ def BURP_UPDATE():
 				D.showTimeMark(globals.BURP_ActualTime) # only update display when necessary.
 		elif(globals.BURP_ActualTime<=0 and D.DION==1): # show first second, too
 			D.showTimeMark(0)
-	else:
-		D.showPlayMenu()
+	elif(globals.BURP_STATE!=globals.BURPSTATE_PAUSE and globals.BURP_STATE!=globals.BURPSTATE_RECPAUSE):
+		if(D.DION==1): #spt
+			D.showPlayMenu()
 
 	D.DI_FADE_OUT(deltatime) # maybe fade out the display.
 
