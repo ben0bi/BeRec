@@ -234,6 +234,7 @@ def BURP_UPDATE():
 		# get next one and play it.
 		if(not globals.BURP_Song.isPlaying() and globals.BURP_STATE == globals.BURPSTATE_PLAY):
 			print("PLAY MODE, SONG ENDED, GET NEXT..")
+			BURP_Stop()
 			BURP_checkForNextTrack()
 			BURP_Play()
 	else:
@@ -342,6 +343,7 @@ def BURP_UPDATE():
 				# this should never happen but...it could.
 				D.setcolor(0,128,0)
 				BURP_Stop()
+				BURP_checkForNextTrack(0)
 				BURP_Bebeep()
 			print(":> PAUSE PLAY")
 		# continue play
