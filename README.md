@@ -1,12 +1,16 @@
 # BeRec a.k.a. BURP
 ## Benobis Universal Recorder & Player
 
+See here:
+https://www.youtube.com/watch?v=fXjCIICesxU
+
 Updates: 
--> MP3 Player almost fully working. No Buttons for Volume right now.    
+-> MP3 Player almost fully working. No Buttons for Volume right now. Cannot read SDcard right now,
+it reads from a given (hardcoded) directory in the filesystem.   
 -> Renames all files and directories for convenience (replaces spaces with _ in directories,
 and much other characters like äàüè.)     
 
--> Display Library DID.py  "for musicplayers", with special features, see below Appendix A.    
+-> Display Library DID.py "for musicplayers", with special features, see below Appendix A.    
 -> SoundPlayer library and DFRobot-Displaydriver-Library used: All files put together here,
 	like in a trash can, no hassle with downloading the external stuff - 
 	just get this one and dive into the directories. Remember their licences. I don't. :)
@@ -135,13 +139,15 @@ It has some special features for music players:
 
 ### Icon set
 The following icons are available:
-Play, Pause, Stop, Rec, Recpause, Smiley, Arrow in each direction.
+Play, Pause, Stop, Rec, Recpause, Smiley, Clock, Arrow in each direction.
 
 ### Player menu
-The lower line can display a prebuilt player menu (icons in brackets) which looks like this.
+The lower line can display a prebuilt player menu (icons in brackets) which looks like this below.
 This icons must be initialized first on positions 1 through 7. Position 0 is for the direct icon
 and the display seems to support only 8 icons at once. You can use the DIREF_ variables for the
 positions of the icon set or the DISYM_ arrays for direct icons.
+
+Menu:    
 
 [Uparrow]:[Play][Pause] [Downarrow]:[Stop] [Leftarrow]:[Leftarrow] [Rightarrow]:[Rightarrow]
 
@@ -152,10 +158,29 @@ DID.symbol(symbol_array_name)
 ### Scrolling text
 The upper line can have a scrolling text which will be updated with the
 DI_UPDATE-function. Call this function after some time, whereelse it would be to fast.
+It starts at position 1 so the symbol will not be interfered.
+
+# Time
+In the lower right there can be a time display. It looks like this:    
+
+[Clock]MM:SS    
+or    
+[Clock]H:MM:SS    
+
+If the track was playing longer than a hour (>60 minutes), the hours will 
+be shown, too.    
+
+When the player is in play or pause mode, the track time will be shown.    
+In stop and welcome (after boot) mode, the player menu above will be shown.
+
+It does NOT count the track time from the file, so you cannot reverse the time right now.
+Sorry for that.
+The player just counts the frametime and makes it's own "time-marks".
 
 ### Fade-Out
 Last but not least, and this is the most useful function beneath the scrolltext: 
 The display fades out all colours in a step of 3/frame after 5 seconds. When it is black,
 the flag DION will be set to 0. If you turn the display back on with DI_ON(), 
 it will restart the counter. When the display is black, the scrolling will
-stop, too. Saves power and eye-attraction. :)
+stop, too. Also, the time-UI will not be updated anymore until DION==1.
+Saves power and eye-attraction. :)
