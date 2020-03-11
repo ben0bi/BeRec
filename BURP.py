@@ -6,16 +6,16 @@
 # * A music recorder behaving like an old tape recorder.
 # * and an MP3 Player
 # * reading data from additional SD-cards
-# by Oki Wan Ben0bi in 2020
 # https://github.com/ben0bi/BeRec.github
+# by Benedict "Oki Wan Benobi" Jäggi @ MMXX
 
 #from pydub import AudioSegment
 #from pydub.playback import play
 
 from soundplayer.soundplayer import SoundPlayer as SP
 
-import os, sys
-from os.path import isfile, join
+# file operations.
+import FOPS as F
 
 # display library.
 import DID as D
@@ -26,24 +26,6 @@ import RPi.GPIO as GPIO
 from time import sleep
 
 import globals
-
-# for the deltatime calculation
-import numpy as np
-import datetime
-
-# get frametime
-FRAMETIME_OLD = 0.0
-deltatime = 0.0
-def frametime_init():
-	global FRAMETIME_OLD
-	FRAMETIME_OLD = np.datetime64(datetime.datetime.now(), 'ms')
-
-def frametime_tick():
-	global FRAMETIME_OLD, deltatime
-	fr = np.datetime64(datetime.datetime.now(), 'ms') # more precise than 'now' (?)
-	deltatime = fr - FRAMETIME_OLD
-	deltatime = deltatime.astype('int16')
-	FRAMETIME_OLD = fr
 
 # play a blocking beep sound.
 def BURP_Bebeep():
@@ -64,86 +46,23 @@ def BURP_Beep():
 	dev = 1
 	SP.playTone(210, 0.025, True, dev)
 
-BURP_Bebeep2()
-
-print("Reading files..")
-files = []
-# get all files in the root dir and its sub dirs.
-for root, subdirs, fs in os.walk(globals.BURP_rootDir):
-	print('--\nroot = '+root)
-	for subdir in subdirs:
-		print('\t- subdir '+subdir)
-		sd = subdir.replace(' ', '_')
-		if(sd!=subdir):
-			print "RENAMING DIRECTORY "+subdir+" TO "+sd
-			od = os.path.join(root,subdir)
-			nd = os.path.join(root, sd)
-			print("("+od+" -> "+nd+")")
-			os.rename(od, nd)
-
-	for filename in fs:
-		fpath = os.path.join(root, filename)
-		# maybe rename the file
-		newpath = filename.replace(' ', '_')
-		newpath = newpath.replace('(','[')
-		newpath = newpath.replace(')',']')
-		newpath = newpath.replace('{','[')
-		newpath = newpath.replace('}',']')
-		# special characters which made the player crash:
-		newpath = newpath.replace(chr(0xc3), 'C') # ç
-		newpath = newpath.replace('ç', 'c') # ç
-		newpath = newpath.replace('Ú', 'U')
-		newpath = newpath.replace('Ù', 'U')
-		newpath = newpath.replace('Ó', 'O')
-		newpath = newpath.replace('Ò', 'O')
-		newpath = newpath.replace('É', 'E')
-		newpath = newpath.replace('È', 'E')
-		newpath = newpath.replace('À', 'A')
-		newpath = newpath.replace('Á', 'A')
-		newpath = newpath.replace('ú', 'u')
-		newpath = newpath.replace('ù', 'u')
-		newpath = newpath.replace('ó', 'o')
-		newpath = newpath.replace('ò', 'o')
-		newpath = newpath.replace('é', 'e')
-		newpath = newpath.replace('è', 'e')
-		newpath = newpath.replace('à', 'a')
-		newpath = newpath.replace('á', 'a')
-		newpath = newpath.replace('ä', "ae")
-		newpath = newpath.replace('Ä', "Ae")
-		newpath = newpath.replace('ö', "oe")
-		newpath = newpath.replace('Ö', "Oe")
-		newpath = newpath.replace('ü', "ue")
-		newpath = newpath.replace('Ü', "Ue")
-		newpath = newpath.replace('&', "and")
-		newpath = newpath.replace(chr(0xc4), 'i')
-		# some "very" special chars I don't know about.
-		newpath = newpath.replace(chr(0xb1),'')
-		newpath = newpath.replace(chr(0x87),'')
-		newpath = newpath.replace(chr(0xe2),'_')
-		newpath = newpath.replace(chr(0xa1),'_')
-		newpath = newpath.replace(chr(0x99),'_')
-		newfilename = newpath
-		newpath = os.path.join(root, newpath)
-		if(newpath!=fpath):
-			print "RENAMING "+filename+" TO "+newfilename
-			os.rename(fpath, newpath)
-		#	fpath = newpath
-		print('\t- file %s' % (newfilename))
-		# check if file can be played and maybe add it to the list.
-		#if(SP.canPlay(newpath)):
-		files.append([newfilename,newpath])
-
-if len(files) <= 0:
-	BURP_Bebeep()
-	print("!! NO FILES FOUND, CHECK DIRECTORIES !!")
-	print("Root directory: "+globals.BURP_rootDir)
-print("ENDOF Readfiles")
-BURP_Beep()
-BURP_Bebeep2()
-
 lcd = 0
 # initialize gpio and stuff.
 def BURP_Init():
+    sym = D.DISYM_SMILEY
+    # tell the user that the playerr has started.
+    BURP_Bebeep2()
+
+    # try to read all files.
+    if(F.mountSD()):
+        F.ReadFiles(globals.BURP_rootDir)
+    else:
+        sym = D.DISYM_NOCARD
+
+    # tell the user that all files are loaded.
+    BURP_Beep()
+    BURP_Bebeep2()
+
 	D.DI_INIT()
 	# colours: welcome text is turkis, play is green, stop is red and pause is orange.
 	# when rec works, stop needs to have another color.
@@ -161,37 +80,35 @@ def BURP_Init():
 	D.setcolor(0,64,128)
 	D.uppertext(globals.BURP_WELCOME)
 	D.showPlayMenu()
-	D.symbol(D.DISYM_IAMFROMWORLDTHREE)
+	D.symbol(sym)
 	D.DI_ON() # turn the display on for x seconds.
 	return
 
 # get the next track if there is one.
 def BURP_checkForNextTrack(reverse = 0):
-	global files
 	# increase or decrease
 	if reverse==0:
 		globals.BURP_fileIDX = globals.BURP_fileIDX + 1
 	else:
 		globals.BURP_fileIDX = globals.BURP_fileIDX - 1
 	# check if idx is in array or reset to 0
-	if globals.BURP_fileIDX >= len(files):
+	if globals.BURP_fileIDX >= len(F.files):
 		globals.BURP_fileIDX = 0
 	# and vice versa
 	if(globals.BURP_fileIDX < 0):
-		globals.BURP_fileIDX = len(files)-1
+		globals.BURP_fileIDX = len(F.files)-1
 	# check if array has members, anyway, and stop if not.
-	if len(files) <= 0:
+	if len(F.files) <= 0:
 		globals.BURP_fileIDX = -1
 		globals.BURP_STATE = globals.BURPSTATE_STOP
 	# get the song with the given idx and play it.
 	if globals.BURP_fileIDX >= 0:
-		print("Set Track to: "+files[globals.BURP_fileIDX][0])
-		D.uppertext(files[globals.BURP_fileIDX][0])
-		globals.BURP_Song = SP(globals.BURP_actualDir+files[globals.BURP_fileIDX][1],1)
+		print("Set Track to: "+F.files[globals.BURP_fileIDX][0])
+		D.uppertext(F.files[globals.BURP_fileIDX][0])
+		globals.BURP_Song = SP(globals.BURP_actualDir+F.files[globals.BURP_fileIDX][1],1)
 
 # play the inserted track
 def BURP_Play():
-	global files
 	try:
 		if(globals.BURP_Song != 0):
 			D.symbol(D.DISYM_PLAY)
@@ -200,7 +117,7 @@ def BURP_Play():
 			globals.BURP_STATE = globals.BURPSTATE_PLAY
 			# show track title
 			if globals.BURP_fileIDX >= 0:
-				D.uppertext(files[globals.BURP_fileIDX][0])
+				D.uppertext(F.files[globals.BURP_fileIDX][0])
 		else:
 			print("ERROR: SONG IS null")
 			BURP_Stop()
@@ -460,12 +377,12 @@ def BURP_UPDATE():
 
 # MAIN
 BURP_Init()
-frametime_init()
+D.frametime_init()
 
 try:
         while True:
 		BURP_UPDATE()
-		frametime_tick()
+		D.frametime_tick()
 #		print(deltatime, deltatime.astype('int64'))
 
 except KeyboardInterrupt:

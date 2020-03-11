@@ -1,6 +1,7 @@
 # DID DIsplay Driver
 # display driver for BURP
 # BURP + Benobis Universal Recorder & Player
+# by Benedict "Oki Wan Benobi" Jäggi @ MMXX
 
 # import the stuff for the display
 import sys
@@ -86,13 +87,15 @@ def clear():
 
 # show a specific symbol at the symbol position.
 DI_SYMBOL = 0
+DI_SYMBOL_X = 0
+DI_SYMBOL_Y = 0
 def symbol(which):
-	global lcd, DI_SYMBOL
+	global lcd, DI_SYMBOL, DI_SYMBOL_X, DI_SYMBOL_Y
 	DI_SYMBOL = which
 	if(DI_SYMBOL==0):
 		return
 	lcd.customSymbol(0, which)
-	lcd.setCursor(0,0)
+	lcd.setCursor(DI_SYMBOL_X,DI_SYMBOL_Y)
 	lcd.write(0)
 
 # upper text parameters.
@@ -101,16 +104,18 @@ DI_TITLEPOSITION = 0
 DI_TITLEDIRECTION = 1
 # set the text on the upper line, it will scroll if it is longer.
 def uppertext(text):
+    """ set a new text in the upper line. """
 	global DI_TITLE, DI_TITLEPOSITION, DI_TITLEDIRECTION
 	DI_TITLE = text
 	DI_TITLEPOSITION = 1
 	DI_TITLEDIRECTION = -1 # position 0 and direction -1 waits some time at startup.
 
 # fade the display out after some time.
-DITIME = 5000 # display time until it fades out, in seconds.
+DITIME = 5000 # display time until it fades out, in milliseconds.
 DION = 1 # is the display on?
 DITIME_ACTUAL = 0
 def DI_FADE_OUT(frametime):
+    """ fade out the display after some time. """
 	global DITIME, DITIME_ACTUAL, DION
 	global DIAR, DIAG, DIAB
 	if(DION==1):
@@ -139,6 +144,7 @@ def DI_FADE_OUT(frametime):
 
 # turn the display on with the actual color.
 def DI_ON():
+    """ turn on the display. """
     global DIR, DIG, DIB
     global DION, DITIME_ACTUAL
     color(DIR, DIG, DIB)
@@ -147,6 +153,7 @@ def DI_ON():
 
 # initialize the display.
 def DI_INIT():
+    """ initialize the display. """
     global lcd
     lcd=rgb1602.RGB1602(16,2) #create LCD object,specify col and row
 
@@ -183,6 +190,8 @@ def showPlayMenu():
 
 # show a time mark in the lower right.
 def showTimeMark(seconds):
+    """ show time in hours:minutes:seconds in the lower right.
+    if there are no hours, it only shows minutes:seconds """
 	global lcd
 	global DISYM_WATCH
 	lcd.customSymbol(1,DISYM_WATCH)
@@ -210,6 +219,27 @@ def showTimeMark(seconds):
 	lcd.setCursor(15-len(t),1)
 	lcd.write(1)
 	lcd.printout(t)
+
+# for the deltatime calculation
+import numpy as np
+import datetime
+
+# get frametime
+FRAMETIME_OLD = 0.0
+deltatime = 0.0
+def frametime_init():
+    """ Initialize the frametime counter so there will be no ruckeling. """
+	global FRAMETIME_OLD
+	FRAMETIME_OLD = np.datetime64(datetime.datetime.now(), 'ms')
+
+def frametime_tick():
+    """ call this every loop rotation. it gets the deltatime since the last rotation. """
+	global FRAMETIME_OLD, deltatime
+	fr = np.datetime64(datetime.datetime.now(), 'ms') # more precise than 'now' (?)
+	deltatime = fr - FRAMETIME_OLD
+	deltatime = deltatime.astype('int16')
+	FRAMETIME_OLD = fr
+
 
 # Display Symbols
 
@@ -250,6 +280,7 @@ DISYM_RIGHTARROW = [
   0b00000,
   0b00000
 ]
+
 DIREF_LEFTARROW = 4
 DISYM_LEFTARROW = [
   0b00000,
@@ -272,6 +303,7 @@ DISYM_STOP = [
   0b00000,
   0b00000
 ]
+
 DIREF_PAUSE = 6
 DISYM_PAUSE = [
   0b00000,
@@ -283,6 +315,7 @@ DISYM_PAUSE = [
   0b00000,
   0b00000
 ]
+
 DIREF_PLAY = 7
 DISYM_PLAY = [
   0b00000,
@@ -307,7 +340,6 @@ DISYM_REC = [
   0b00000
 ]
 # warning: the display seems to support only 8 symbols at once.
-DIREF_RECPAUSE = 8
 DISYM_RECPAUSE = [
   0b00000,
   0b01110,
@@ -319,7 +351,7 @@ DISYM_RECPAUSE = [
   0b00000
 ]
 
-# a litle watch
+# a little watch
 DISYM_WATCH = [
   0b00000,
   0b01110,
@@ -332,7 +364,7 @@ DISYM_WATCH = [
 ]
 
 # the welcome screen symbol.
-DISYM_IAMFROMWORLDTHREE = [
+DISYM_SMILEY = [
   0b01110,
   0b11111,
   0b10101,
@@ -343,3 +375,14 @@ DISYM_IAMFROMWORLDTHREE = [
   0b00000
 ]
 
+# No Card Inserted.
+DISYM_NOCARD = [
+  0b11111,
+  0b00001,
+  0b00110,
+  0b01010,
+  0b01100,
+  0b00000,
+  0b11111,
+  0b11111
+]
