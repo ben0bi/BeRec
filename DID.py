@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 # DID DIsplay Driver
 # display driver for BURP
 # BURP + Benobis Universal Recorder & Player
@@ -21,20 +24,27 @@ DIAG = 63
 DIAB = 0
 
 # update scrolling texts.
-def DI_UPDATE():
+DI_SCROLLWAITTIME = 200 # wait 200 ms until next processing.
+DI_SCROLLACTUALTIME = 0
+def DI_UPDATE(deltatime):
 	global DI_TITLE, DI_TITLEPOSITION, DI_TITLEDIRECTION
 	global DI_SYMBOL, DION
+	global DI_SCROLLWAITTIME
+	global DI_SCROLLACTUALTIME
 	# return at begin to save processor time.
 	if(DION==0):
 		return
 
 	# maybe scroll the title
 	if(len(DI_TITLE)>15):
-        	DI_TITLEPOSITION = DI_TITLEPOSITION + DI_TITLEDIRECTION
-        	if(DI_TITLEPOSITION>=len(DI_TITLE)-12): # +3 waits some time at end.
-			DI_TITLEDIRECTION = -1
-		if(DI_TITLEPOSITION<=-3): # -3: this waits some time at start
-			DI_TITLEDIRECTION = 1
+		DI_SCROLLACTUALTIME = DI_SCROLLACTUALTIME + deltatime
+		if(DI_SCROLLACTUALTIME>DI_SCROLLWAITTIME):
+			DI_SCROLLACTUALTIME=DI_SCROLLACTUALTIME % DI_SCROLLWAITTIME
+			DI_TITLEPOSITION = DI_TITLEPOSITION + DI_TITLEDIRECTION
+			if(DI_TITLEPOSITION>=len(DI_TITLE)-12): # +3 waits some time at end.
+				DI_TITLEDIRECTION = -1
+			if(DI_TITLEPOSITION<=-3): # -3: this waits some time at start
+				DI_TITLEDIRECTION = 1
 	else:
 		# do not scroll
         	DI_TITLEPOSITION = 0
@@ -104,7 +114,7 @@ DI_TITLEPOSITION = 0
 DI_TITLEDIRECTION = 1
 # set the text on the upper line, it will scroll if it is longer.
 def uppertext(text):
-    """ set a new text in the upper line. """
+	""" set a new text in the upper line. """
 	global DI_TITLE, DI_TITLEPOSITION, DI_TITLEDIRECTION
 	DI_TITLE = text
 	DI_TITLEPOSITION = 1
@@ -115,7 +125,7 @@ DITIME = 5000 # display time until it fades out, in milliseconds.
 DION = 1 # is the display on?
 DITIME_ACTUAL = 0
 def DI_FADE_OUT(frametime):
-    """ fade out the display after some time. """
+	""" fade out the display after some time. """
 	global DITIME, DITIME_ACTUAL, DION
 	global DIAR, DIAG, DIAB
 	if(DION==1):
@@ -190,8 +200,8 @@ def showPlayMenu():
 
 # show a time mark in the lower right.
 def showTimeMark(seconds):
-    """ show time in hours:minutes:seconds in the lower right.
-    if there are no hours, it only shows minutes:seconds """
+	""" show time in hours:minutes:seconds in the lower right.
+	if there are no hours, it only shows minutes:seconds """
 	global lcd
 	global DISYM_WATCH
 	lcd.customSymbol(1,DISYM_WATCH)
@@ -228,18 +238,17 @@ import datetime
 FRAMETIME_OLD = 0.0
 deltatime = 0.0
 def frametime_init():
-    """ Initialize the frametime counter so there will be no ruckeling. """
+	""" Initialize the frametime counter so there will be no ruckeling. """
 	global FRAMETIME_OLD
 	FRAMETIME_OLD = np.datetime64(datetime.datetime.now(), 'ms')
 
 def frametime_tick():
-    """ call this every loop rotation. it gets the deltatime since the last rotation. """
+	""" call this every loop rotation. it gets the deltatime since the last rotation. """
 	global FRAMETIME_OLD, deltatime
 	fr = np.datetime64(datetime.datetime.now(), 'ms') # more precise than 'now' (?)
 	deltatime = fr - FRAMETIME_OLD
 	deltatime = deltatime.astype('int16')
 	FRAMETIME_OLD = fr
-
 
 # Display Symbols
 
@@ -377,12 +386,12 @@ DISYM_SMILEY = [
 
 # No Card Inserted.
 DISYM_NOCARD = [
-  0b11111,
-  0b00001,
-  0b00110,
-  0b01010,
-  0b01100,
-  0b00000,
-  0b11111,
-  0b11111
+  0b11100,
+  0b01110,
+  0b00111,
+  0b10011,
+  0b11001,
+  0b11100,
+  0b11110,
+  0b00000
 ]

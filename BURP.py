@@ -49,19 +49,19 @@ def BURP_Beep():
 lcd = 0
 # initialize gpio and stuff.
 def BURP_Init():
-    sym = D.DISYM_SMILEY
-    # tell the user that the playerr has started.
-    BURP_Bebeep2()
+	sym = D.DISYM_SMILEY
+	# tell the user that the playerr has started.
+	BURP_Bebeep2()
 
-    # try to read all files.
-    if(F.mountSD()):
-        F.ReadFiles(globals.BURP_rootDir)
-    else:
-        sym = D.DISYM_NOCARD
+	# try to read all files.
+	if(F.mountSD()):
+		F.ReadFiles(globals.BURP_rootDir)
+	else:
+		sym = D.DISYM_NOCARD
 
-    # tell the user that all files are loaded.
-    BURP_Beep()
-    BURP_Bebeep2()
+	# tell the user that all files are loaded.
+	BURP_Beep()
+	BURP_Bebeep2()
 
 	D.DI_INIT()
 	# colours: welcome text is turkis, play is green, stop is red and pause is orange.
@@ -141,12 +141,14 @@ def BURP_Stop():
 
 
 old_playmode = -291
+sdmount_flag = 0
 def BURP_UPDATE():
 	global old_playmode
-	global deltatime
+	global sdmount_flag
 
 	# check if song is playing or get next one if play mode is set.
 	if(globals.BURP_Song != 0):
+		sdmount_flag = 0
 		# its stopped but state is play, so song has ended.
 		# get next one and play it.
 		if(not globals.BURP_Song.isPlaying() and globals.BURP_STATE == globals.BURPSTATE_PLAY):
@@ -154,49 +156,35 @@ def BURP_UPDATE():
 			BURP_Stop()
 			BURP_checkForNextTrack()
 			BURP_Play()
-	else:
+	elif(F.SDMOUNTED==1):
 		print("TRACK IS null, INSERTING...")
+		sdmount_flag=0
 		# there is no track inserted. try to load the next one.
 		# but do not play it.
 		BURP_checkForNextTrack()
 		if globals.BURP_STATE != globals.BURPSTATE_REC and globals.BURP_STATE != globals.BURPSTATE_RECPAUSE:
 			BURP_Stop()
+	elif(sdmount_flag==0):
+		sdmount_flag=1
+		print("*** NO CARD INSERTED ***")
+		D.setcolor(128,0,0)
+		D.uppertext(" *! NO CARD !* ")
+		D.symbol(D.DISYM_NOCARD)
+		D.DI_ON()
+#		return
+#	else:
+		# no card inserted and sd mount flag is 1
+#		return
 
-	# buttons are set to GND and have pull-up resistors.
-	# so, 0 is pressed and 1 is released!
+	# get all buttons.
 	pp=GPIO.input(globals.BTN_PLAYPAUSE)
 	fw=GPIO.input(globals.BTN_FWD)
 	rw=GPIO.input(globals.BTN_REW)
 	st=GPIO.input(globals.BTN_STOP)
-#	rc=GPIO.input(globals.BTN_REC)
-#	vu=GPIO.input(globals.BTN_VOLUP)
-#	vd=GPIO.input(globals.BTN_VOLDOWN)
 	mc=GPIO.input(globals.BTN_MODECHANGE)
-#	an=GPIO.input(globals.BTN_ANYTHING)
 
 # button test
 #	print(pp,fw,rw,st,rc) #,vu,vd,md)
-
-#	# check if volup or voldown were pressed
-#	# volup
-#	if(vu==globals.BUTTON_DOWN and globals.PRESS_VOLUP == 0 and vd != globals.BUTTON_DOWN): # vd must be != vu !!!
-#		# TODO: volume up
-#		D.DI_ON()
-#		print("VOLUP")
-#		globals.PRESS_VOLUP = 1
-
-#	if(vu==globals.BUTTON_UP):
-#		globals.PRESS_VOLUP = 0
-
-#	# voldown
-#	if(vd==globals.BUTTON_DOWN and globals.PRESS_VOLDOWN == 0 and vu != globals.BUTTON_DOWN): # vd must be != vu !!!
-#		D.DI_ON()
-#		# TODO: volume down
-#		print("VOLDOWN")
-#		globals.PRESS_VOLDOWN = 1
-
-#	if(vd==1):
-#		globals.PRESS_VOLDOWN = 0
 
 	# check if modechange was pressed.
 	if(mc==globals.BUTTON_DOWN and globals.PRESS_MODECHANGE==0):
@@ -209,6 +197,10 @@ def BURP_UPDATE():
 
 	if(mc==globals.BUTTON_UP):
 		globals.PRESS_MODECHANGE=0
+
+	# TODO: something other: break if no card.
+	if(F.SDMOUNTED==0):
+		return
 
 	# check if record was pressed.
 #	if(rc==globals.BUTTON_DOWN and globals.PRESS_REC==0):
@@ -354,13 +346,10 @@ def BURP_UPDATE():
 			old_playmode=-291
 		globals.PRESS_REW = 0
 
-	# wait some time to save processor time.
-	D.DI_UPDATE()
-	sleep(0.1)
 	# show time of actual song and
 	# modify the time values.
 	if(globals.BURP_STATE == globals.BURPSTATE_PLAY or globals.BURP_STATE==globals.BURPSTATE_REC):
-		globals.BURP_SecPart = globals.BURP_SecPart+deltatime
+		globals.BURP_SecPart = globals.BURP_SecPart+D.deltatime
 		if(globals.BURP_SecPart>=1000):
 			globals.BURP_SecPart = globals.BURP_SecPart-1000
 			globals.BURP_ActualTime = globals.BURP_ActualTime+1
@@ -372,9 +361,6 @@ def BURP_UPDATE():
 		if(D.DION==1): #spt
 			D.showPlayMenu()
 
-	D.DI_FADE_OUT(deltatime) # maybe fade out the display.
-
-
 # MAIN
 BURP_Init()
 D.frametime_init()
@@ -382,8 +368,12 @@ D.frametime_init()
 try:
         while True:
 		BURP_UPDATE()
+		sleep(0.1)
+		D.DI_UPDATE(D.deltatime)
+		D.DI_FADE_OUT(D.deltatime) # maybe fade out the display.
+		# wait some time to save processor time.
 		D.frametime_tick()
-#		print(deltatime, deltatime.astype('int64'))
+#		print(D.deltatime, D.deltatime.astype('int64'))
 
 except KeyboardInterrupt:
         print("User exit.")

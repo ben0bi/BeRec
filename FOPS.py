@@ -1,7 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 # FOPS File OPerationS
 # File Operations for BURP.
 # BURP + Benobis Universal Recorder & Player
-# by Benedict "Oki Wan Benobi" Jäggi @ MMXX
+# by Benedict "Oki Wan Benobi" Jaeggi @ MMXX
 
 import os, sys
 from os.path import isfile, join
@@ -13,12 +16,13 @@ files = []
 SDMOUNTED = 0
 # returns 0 on fail.
 def mountSD():
-    """ mount the sd card in slot one. """
-    global SDMOUNTED
-    if(SDMOUNTED==1)
-        unmountSD()
-    # mount here.
-    return 0
+	""" mount the sd card in slot one. """
+	global SDMOUNTED
+	if(SDMOUNTED==1):
+		unmountSD()
+	# mount here.
+	SDMOUNTED = 1
+	return 1
 
 def unmountSD():
     """ remove the sd card in slot one. """
