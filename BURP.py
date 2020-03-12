@@ -29,7 +29,7 @@ import globals
 
 # play a blocking beep sound.
 def BURP_Bebeep():
-    """ Play a double beep sound. """
+	""" Play a double beep sound. """
 	dev = 1
 	SP.playTone(420, 0.025, True, dev)
 	sleep(0.05)
@@ -37,7 +37,7 @@ def BURP_Bebeep():
 
 # play an unblocking beep sound.
 def BURP_Bebeep2():
-    """ play the same double beep sound the other way round. """
+	""" play the same double beep sound the other way round. """
 	dev = 1
 	SP.playTone(210, 0.1, True, dev)
 	sleep(0.05)
@@ -45,7 +45,7 @@ def BURP_Bebeep2():
 
 # play a normal beep sound.
 def BURP_Beep():
-    """ Play a normal beep sound. """
+	""" Play a normal beep sound. """
 	dev = 1
 	SP.playTone(210, 0.025, True, dev)
 
@@ -54,7 +54,7 @@ def BURP_CardLidClosed():
     """ check if the card lid is closed, try to mount or unmount devices. """
     F.mountSD()
     print "closed"
-    
+
 lcd = 0
 # initialize gpio and stuff.
 def BURP_Init():
@@ -64,10 +64,11 @@ def BURP_Init():
 
 	# try to read all files.
 # from internal directory.
-    if(globals.BURP_USE_INTERNAL_DRIVE>0):
-        F.ReadFiles(globals.BURP_rootDir)
-    else:
-        BURP_CardLidClosed()
+	if(globals.BURP_USE_INTERNAL_DRIVE>0):
+		F.ReadFiles(globals.BURP_rootDir)
+	else:
+# from sd cards.
+		BURP_CardLidClosed()
 
 	# tell the user that all files are loaded.
 	BURP_Beep()
@@ -166,7 +167,7 @@ def BURP_UPDATE():
 			BURP_Stop()
 			BURP_checkForNextTrack()
 			BURP_Play()
-	elif(F.SDMOUNTED==1):
+	else:
 		print("TRACK IS null, INSERTING...")
 		sdmount_flag=0
 		# there is no track inserted. try to load the next one.
@@ -174,13 +175,13 @@ def BURP_UPDATE():
 		BURP_checkForNextTrack()
 		if globals.BURP_STATE != globals.BURPSTATE_REC and globals.BURP_STATE != globals.BURPSTATE_RECPAUSE:
 			BURP_Stop()
-	elif(sdmount_flag==0):
-		sdmount_flag=1
-		print("*** NO CARD INSERTED ***")
-		D.setcolor(128,0,0)
-		D.uppertext(" *! NO CARD !* ")
-		D.symbol(D.DISYM_NOCARD)
-		D.DI_ON()
+#	elif(sdmount_flag==0):
+#		sdmount_flag=1
+#		print("*** NO CARD INSERTED ***")
+#		D.setcolor(128,0,0)
+#		D.uppertext(" *! NO CARD !* ")
+#		D.symbol(D.DISYM_NOCARD)
+#		D.DI_ON()
 #		return
 #	else:
 		# no card inserted and sd mount flag is 1
@@ -209,8 +210,8 @@ def BURP_UPDATE():
 		globals.PRESS_MODECHANGE=0
 
 	# TODO: something other: break if no card.
-	if(F.SDMOUNTED==0):
-		return
+#	if(F.SDMOUNTED==0):
+#		return
 
 	# check if record was pressed.
 #	if(rc==globals.BUTTON_DOWN and globals.PRESS_REC==0):

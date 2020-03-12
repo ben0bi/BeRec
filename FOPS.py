@@ -15,20 +15,19 @@ files = []
 
 def mountSD():
 	""" try to mount all the sd cards in the list. """
-    for sd in range(len(globals.BURP_SDdirs)):
-        # mount sd here.
-        sdx = globals.BURP_SDdirs[sd][0]
-        mntpnt = globals.BURP_SDdirs[sd][1]
-        globals.BURP_SDdirs[sd][2] = tryMounting(sdx, mntpnt)
+	for sd in range(len(globals.BURP_SDdirs)):
+		# mount sd here.
+		sdx = globals.BURP_SDdirs[sd][0]
+		mntpnt = globals.BURP_SDdirs[sd][1]
+		globals.BURP_SDdirs[sd][2] = tryMounting(sdx, mntpnt)
 
 def unmountSD():
 	""" try to unmount all the mounted sd cards in the list safely. """
-    for sd in range(len(globals.BURP_SDdirs)):
-        # mount sd here.
-        sdx = globals.BURP_SDdirs[sd][0]
-        mntpnt = globals.BURP_SDdirs[sd][1]
-        globals.BURP_SDdirs[sd][2] = tryUnmounting(sdx, mntpnt)
-
+	for sd in range(len(globals.BURP_SDdirs)):
+		# mount sd here.
+		sdx = globals.BURP_SDdirs[sd][0]
+		mntpnt = globals.BURP_SDdirs[sd][1]
+		globals.BURP_SDdirs[sd][2] = tryUnmounting(sdx, mntpnt)
 
 def tryMounting(dev, mntpnt, retest=False):
     """ try to mount a specific sd card """
@@ -52,7 +51,7 @@ def tryMounting(dev, mntpnt, retest=False):
             return tryMounting(dev, mntpnt, True)
 
     print ('Drive '+dev+' mounted at '+mntpnt)
-    return 1        
+    return 1
 
 def tryUnmounting(dev, mntpnt, retest=False):
     """ try to unmount a specific sd card """
@@ -65,7 +64,7 @@ def tryUnmounting(dev, mntpnt, retest=False):
         else:
             print("Unmount for "+dev+" did not work, be aware!")
             return 1
-            
+
     except subprocess.CalledProcessError:
         print ('Drive '+dev+' not mounted anymore!')
         return 0
@@ -87,7 +86,7 @@ def ReadFiles(directory):
                 nd = os.path.join(root, sd)
                 print("("+od+" -> "+nd+")")
                 os.rename(od, nd)
-    
+
         # also check if all files have the right naming convention.
         # else rename the stuff. Player could crash elsewhere.
         for filename in fs:
