@@ -153,12 +153,15 @@ def DI_FADE_OUT(frametime):
 			DITIME_ACTUAL=0.0
 
 # turn the display on with the actual color.
+PLAYMENUSHOW = 0
 def DI_ON():
     """ turn on the display. """
     global DIR, DIG, DIB
     global DION, DITIME_ACTUAL
+    global PLAYMENUSHOW
     color(DIR, DIG, DIB)
     DITIME_ACTUAL=0.0
+    PLAYMENUSHOW = 0
     DION=1
 
 # initialize the display.
@@ -173,6 +176,11 @@ def showPlayMenu():
 	global DISYM_PLAY, DISYM_PAUSE, DISYM_STOP, DISYM_REW, DISYM_FWD
 	global DIREF_UPARROW, DIREF_DOWNARROW, DIREF_LEFTARROW, DIREF_RIGHTARROW
 	global DIREF_PLAY, DIREF_PAUSE, DIREF_STOP, DIREF_REW, DIREF_FWD
+    global PLAYMENUSHOW
+    # only show it once a time.
+    if(PLAYMENUSHOW==1)
+        return
+    PLAYMENUSHOW = 1
 	lcd.customSymbol(DIREF_UPARROW, DISYM_UPARROW)
 	lcd.customSymbol(DIREF_DOWNARROW, DISYM_DOWNARROW)
 	lcd.customSymbol(DIREF_LEFTARROW, DISYM_LEFTARROW)
@@ -393,5 +401,29 @@ DISYM_NOCARD = [
   0b11001,
   0b11100,
   0b11110,
+  0b00000
+]
+
+# Random: not symbol
+DISYM_RND_STRAIGHT = [
+  0b00000,
+  0b00100,
+  0b00010,
+  0b00100,
+  0b00000,
+  0b11111,
+  0b00000,
+  0b00000
+]
+
+# Random: yes symbol
+DISYM_RND_RANDOM = [
+  0b00000,
+  0b00100,
+  0b00010,
+  0b00100,
+  0b00010,
+  0b10101,
+  0b01000,
   0b00000
 ]
