@@ -61,6 +61,8 @@ BUTTON_UP = 0
 # FT also is the MP3 Player which reads full files from the SD-cards.
 # FT mode does not recognize the ET file and
 # ET mode ONLY recognizes the ET file.
+
+# NOT USED YET
 BURPMODE_ET = 0
 BURPMODE_FT = 1
 
@@ -82,9 +84,24 @@ BURP_STATE = BURPSTATE_STOP
 # the actual track.
 BURP_Song = 0
 
+# if this is 1, it will NOT try to mount the SD cards 
+# with the belowish values and instead use BURP_rootDir.
+BURP_USE_INTERNAL_DRIVE = 1
+BURP_rootDir = "/var/www/html/MUSIC/FILESYS"
+
+# array with the drives and mount points 
+# for all your sd card devices.
+# first value is the drive in /dev,
+# second value is the mount point.
+# third value is if the sd is mounted or not and 
+# will be changed by program. 
+# You need to set it to 0 here!
+BURP_SDdirs = [
+    ["sda1", "/media/sdcard1", 0]
+]
+
 # the index of the filename in the list for the actual track.
 BURP_fileIDX = -1
-BURP_rootDir = "/var/www/html/MUSIC/FILESYS"
 BURP_actualDir = "/"
 
 # time in seconds.

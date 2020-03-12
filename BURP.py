@@ -29,6 +29,7 @@ import globals
 
 # play a blocking beep sound.
 def BURP_Bebeep():
+    """ Play a double beep sound. """
 	dev = 1
 	SP.playTone(420, 0.025, True, dev)
 	sleep(0.05)
@@ -36,6 +37,7 @@ def BURP_Bebeep():
 
 # play an unblocking beep sound.
 def BURP_Bebeep2():
+    """ play the same double beep sound the other way round. """
 	dev = 1
 	SP.playTone(210, 0.1, True, dev)
 	sleep(0.05)
@@ -43,9 +45,16 @@ def BURP_Bebeep2():
 
 # play a normal beep sound.
 def BURP_Beep():
+    """ Play a normal beep sound. """
 	dev = 1
 	SP.playTone(210, 0.025, True, dev)
 
+# Card lid closed, try to mount the sd cards.
+def BURP_CardLidClosed():
+    """ check if the card lid is closed, try to mount or unmount devices. """
+    F.mountSD()
+    print "closed"
+    
 lcd = 0
 # initialize gpio and stuff.
 def BURP_Init():
@@ -54,10 +63,11 @@ def BURP_Init():
 	BURP_Bebeep2()
 
 	# try to read all files.
-	if(F.mountSD()):
-		F.ReadFiles(globals.BURP_rootDir)
-	else:
-		sym = D.DISYM_NOCARD
+# from internal directory.
+    if(globals.BURP_USE_INTERNAL_DRIVE>0):
+        F.ReadFiles(globals.BURP_rootDir)
+    else:
+        BURP_CardLidClosed()
 
 	# tell the user that all files are loaded.
 	BURP_Beep()

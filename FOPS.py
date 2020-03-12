@@ -13,21 +13,62 @@ import globals
 
 files = []
 
-SDMOUNTED = 0
-# returns 0 on fail.
 def mountSD():
-	""" mount the sd card in slot one. """
-	global SDMOUNTED
-	if(SDMOUNTED==1):
-		unmountSD()
-	# mount here.
-	SDMOUNTED = 1
-	return 1
+	""" try to mount all the sd cards in the list. """
+    for sd in range(len(globals.BURP_SDdirs)):
+        # mount sd here.
+        sdx = globals.BURP_SDdirs[sd][0]
+        mntpnt = globals.BURP_SDdirs[sd][1]
+        globals.BURP_SDdirs[sd][2] = tryMounting(sdx, mntpnt)
 
 def unmountSD():
-    """ remove the sd card in slot one. """
-    global SDMOUNTED
-    SDMOUNTED = 0
+	""" try to unmount all the mounted sd cards in the list safely. """
+    for sd in range(len(globals.BURP_SDdirs)):
+        # mount sd here.
+        sdx = globals.BURP_SDdirs[sd][0]
+        mntpnt = globals.BURP_SDdirs[sd][1]
+        globals.BURP_SDdirs[sd][2] = tryUnmounting(sdx, mntpnt)
+
+
+def tryMounting(dev, mntpnt, retest=False):
+    """ try to mount a specific sd card """
+    try:
+        sda = subprocess.check_output(['mount | grep '+dev], shell=True)
+
+    except subprocess.CalledProcessError:
+        if retest == True:
+            # You may not want this error?
+            print (' ')
+            print ('#############################')
+            print ('!!!  No flash drive found !!!')
+            print (dev, mntpnt)
+            print ('#############################')
+
+            time.sleep(3)
+            return 0
+        else:
+            print ('No drive found, trying to mount '+dev+'...')
+            os.system('sudo mount /dev/'+dev+' '+mntpnt+' -o umask=000')
+            return tryMounting(dev, mntpnt, True)
+
+    print ('Drive '+dev+' mounted at '+mntpnt)
+    return 1        
+
+def tryUnmounting(dev, mntpnt, retest=False):
+    """ try to unmount a specific sd card """
+    try:
+        sda = subprocess.check_output(['mount | grep '+dev], shell=True)
+        if(retest==False):
+            print ('Drive found, trying to unmount '+dev+'...')
+            os.system('sudo umount '+mntpnt)
+            return tryUnmounting(dev, mntpnt, True)
+        else:
+            print("Unmount for "+dev+" did not work, be aware!")
+            return 1
+            
+    except subprocess.CalledProcessError:
+        print ('Drive '+dev+' not mounted anymore!')
+        return 0
 
 def ReadFiles(directory):
     """ get all files and fill the list with their names. """

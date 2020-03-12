@@ -47,3 +47,5 @@ sudo pip install numpy
 # using pydub for playing all sorts of sound files.
 #pip install pydub
 
+# finally create the mount device paths
+sudo mkdir /media/sdcard1
