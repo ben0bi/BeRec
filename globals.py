@@ -2,7 +2,7 @@
 
 BURP_WELCOME = "Welcome to BURP! http://masterbit.net"
 
-# if this is 1, it will NOT try to mount the SD cards 
+# if this is 1, it will NOT try to mount the SD cards
 # with the belowish values and instead use BURP_rootDir.
 BURP_USE_INTERNAL_DRIVE = 1
 BURP_rootDir = "/var/www/html/MUSIC/FILESYS"
@@ -11,13 +11,12 @@ BURP_rootDir = "/var/www/html/MUSIC/FILESYS"
 # for all your sd card devices.
 # first value is the drive in /dev,
 # second value is the mount point.
-# third value is if the sd is mounted or not and 
-# will be changed by program. 
+# third value is if the sd is mounted or not
+# and will be changed by program.
 # You need to set it to 0 here!
 BURP_SDdirs = [
     ["sda1", "/media/sdcard1", 0]
 ]
-
 
 # Button BCM Values.
 # Define the ports for some unspecific buttons so you

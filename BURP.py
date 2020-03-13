@@ -202,6 +202,7 @@ def BURP_UPDATE():
 		globals.PRESS_MODECHANGE=1
 		# maybe update the time mark.
 		if(globals.BURP_STATE == globals.BURPSTATE_PLAY or globals.BURP_STATE == globals.BURPSTATE_REC):
+			D.showPlayMenu()
 			D.showTimeMark(globals.BURP_ActualTime)
 		# turn the display on
 		D.DI_ON()
@@ -365,13 +366,16 @@ def BURP_UPDATE():
 			globals.BURP_SecPart = globals.BURP_SecPart-1000
 			globals.BURP_ActualTime = globals.BURP_ActualTime+1
 			if(D.DION==1):
+				D.DI_CLEARBOTTOM()
 				D.showPlayMenu()
 				D.showTimeMark(globals.BURP_ActualTime) # only update display when necessary.
 		elif(globals.BURP_ActualTime<=0 and D.DION==1): # show first second, too
+			D.DI_CLEARBOTTOM()
 			D.showPlayMenu()
 			D.showTimeMark(0)
 	elif(globals.BURP_STATE!=globals.BURPSTATE_PAUSE and globals.BURP_STATE!=globals.BURPSTATE_RECPAUSE):
 		if(D.DION==1 and D.PLAYMENUSHOWED==0): #spt
+			D.DI_CLEARBOTTOM()
 			D.showPlayMenu()
 			D.PLAYMENUSHOWED=1
 

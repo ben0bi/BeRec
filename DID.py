@@ -11,6 +11,9 @@ import sys
 sys.path.append('./')
 import rgb1602
 
+# only used for the menu status.
+import globals
+
 # the display driver itself.
 lcd = 0
 
@@ -22,6 +25,52 @@ DIB = 0
 DIAR = 0
 DIAG = 63
 DIAB = 0
+
+# show menu
+# previous menu consisted of arrows showing what which button does.
+# now it shows if sd cards are mounted and if random play is active.
+# symbols are in brackets, all other chars are WYSIWIG including spaces!
+# Using Internal drive:
+# [sd1_status][sd2_status][etc..] [random_status]
+# where card (sdx) has 2 symbols: "no card" and "card"
+# and random has 2 symbols: random and straight
+# previous menu, just for your consideration, which was only visible in stop mode:
+# [uparrow]:[play][pause] [downarrow]:[stop] [leftarrow]:[leftarrow] [rightarrow]:[rightarrow]
+def showPlayMenu():
+	""" show a menu on the lower line """
+	global lcd
+#	global DISYM_UPARROW, DISYM_DOWNARROW, DISYM_LEFTARROW, DISYM_RIGHTARROW
+#	global DISYM_PLAY, DISYM_PAUSE, DISYM_STOP, DISYM_REW, DISYM_FWD
+	global DISYM_CARD, DISYM_NOCARD, DISYM_INTERNAL_DRIVE
+	global DISYM_RND_STRAIGHT, DISYM_RND_RANDOM
+# draw menu
+# we can use 6 custom symbols at once:
+# 0 is reserved for the symbol function
+# 7 is reserved for the watch symbol in play mode.
+# all symbols need to be set before an lcd operation is done.
+	lcd.customSymbol(1, DISYM_INTERNAL_DRIVE)
+	lcd.customSymbol(2, DISYM_NOCARD)
+	lcd.customSymbol(3, DISYM_CARD)
+	lcd.customSymbol(4, DISYM_RND_STRAIGHT)
+	lcd.customSymbol(5, DISYM_RND_RANDOM)
+	lcd.setCursor(0,1)
+	if(globals.BURP_USE_INTERNAL_DRIVE>0):
+		# show symbol for internal drive
+		lcd.write(1)
+	else:
+		for d in globals.BURP_SDdirs:
+			if(d[2]==0):
+				# it is not mounted.
+				lcd.write(2)
+			else:
+				# it is mounted.
+				lcd.write(3)
+# show status of random play flag.
+	lcd.printout(" ")
+	if globals.BURP_ISRANDOM<=0:
+		lcd.write(4)
+	else:
+		lcd.write(5)
 
 # update scrolling texts.
 DI_SCROLLWAITTIME = 200 # wait 200 ms until next processing.
@@ -170,48 +219,10 @@ def DI_INIT():
 	global lcd
 	lcd=rgb1602.RGB1602(16,2) #create LCD object,specify col and row
 
-# show menu
-# previous menu consisted of arrows showing what which button does.
-# now it shows if sd cards are mounted and if random play is active.
-# symbols are in brackets, all other chars are WYSIWIG including spaces!
-# Using Internal drive:
-# [sd1_status][sd2_status][etc..] [random_status]
-# where card (sdx) has 2 symbols: "no card" and "card"
-# and random has 2 symbols: random and straight
-# previous menu, just for your consideration, which was only visible in stop mode:
-# [uparrow]:[play][pause] [downarrow]:[stop] [leftarrow]:[leftarrow] [rightarrow]:[rightarrow]
-def showPlayMenu():
-	""" show a menu on the lower line """
-	global DISYM_UPARROW, DISYM_DOWNARROW, DISYM_LEFTARROW, DISYM_RIGHTARROW
-	global DISYM_PLAY, DISYM_PAUSE, DISYM_STOP, DISYM_REW, DISYM_FWD
-	global DISYM_NOCARD, DISYM_RND_STRAIGHT, DISYM_RND_RANDOM
-# draw menu
-# we can use 6 custom symbols at once:
-# 0 is reserved for the symbol function
-# 7 is reserved for the watch symbol in play mode.
+# clear the bottom line
+def DI_CLEARBOTTOM():
 	lcd.setCursor(0,1)
-	if globals.BURP_USE_INTERNAL_DRIVE>0:
-		# show symbol for internal drive
-		lcd.customSymbol(1, DISYM_INTERNAL_DRIVE)
-		lcd.write(1)
-	else:
-		# show sd card status for each registered drive.
-		lcd.customSymbol(1, DISYM_NOCARD)
-		lcd.customSymbol(2, DISYM_CARD)
-		for d in globals.BURP_SDdirs:
-			if d[2]==0:
-				# it is not mounted.
-				lcd.write(1)
-			else:
-				# it is mounted.
-				lcd.write(2)
-# show status of random play flag.
-	if globals.BURP_ISRANDOM<=0:
-		lcd.customSymbol(3,DISYM_RND_STRAIGHT)
-	else:
-		lcd.customSymbol(3,DISYM_RND_RANDOM)
-	lcd.printout(" ")
-	lcd.write(3)
+	lcd.printout("                ")
 
 # show a time mark in the lower right.
 def showTimeMark(seconds):
@@ -239,8 +250,6 @@ def showTimeMark(seconds):
 	t = str(minutes)+":"+t
 	if(hours>0):
 		t=str(hours)+":"+t
-	lcd.setCursor(0,1)
-	lcd.printout("                ")
 	lcd.setCursor(15-len(t),1)
 	lcd.write(7)
 	lcd.printout(t)
@@ -418,8 +427,8 @@ DISYM_CARD = [
 # Internal Drive
 DISYM_INTERNAL_DRIVE = [
   0b00000,
-  0b00000,
   0b10110,
+  0b10101,
   0b10101,
   0b10101,
   0b10110,
