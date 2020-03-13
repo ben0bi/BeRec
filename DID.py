@@ -190,15 +190,22 @@ def showPlayMenu():
 # 0 is reserved for the symbol function
 # 7 is reserved for the watch symbol in play mode.
 	lcd.setCursor(0,1)
-	if globals.BURP_USE_INTERNAL_DRIVE<=0:
+	if globals.BURP_USE_INTERNAL_DRIVE>0:
+		# show symbol for internal drive
+		lcd.customSymbol(1, DISYM_INTERNAL_DRIVE)
+		lcd.write(1)
+	else:
 		# show sd card status for each registered drive.
 		lcd.customSymbol(1, DISYM_NOCARD)
 		lcd.customSymbol(2, DISYM_CARD)
 		for d in globals.BURP_SDdirs:
 			if d[2]==0:
-				lcd.printout(1)
+				# it is not mounted.
+				lcd.write(1)
 			else:
-				lcd.printout(2)
+				# it is mounted.
+				lcd.write(2)
+# show status of random play flag.
 	if globals.BURP_ISRANDOM<=0:
 		lcd.customSymbol(3,DISYM_RND_STRAIGHT)
 	else:
@@ -407,6 +414,19 @@ DISYM_CARD = [
   0b11111,
   0b00000
 ]
+
+# Internal Drive
+DISYM_INTERNAL_DRIVE = [
+  0b00000,
+  0b00000,
+  0b10110,
+  0b10101,
+  0b10101,
+  0b10110,
+  0b00000,
+  0b00000
+]
+
 # Random: not symbol
 DISYM_RND_STRAIGHT = [
   0b00000,
