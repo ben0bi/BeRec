@@ -153,59 +153,58 @@ def DI_FADE_OUT(frametime):
 			DITIME_ACTUAL=0.0
 
 # turn the display on with the actual color.
-PLAYMENUSHOWED = 0
+PLAYMENUSHOWED=0
 def DI_ON():
-    """ turn on the display. """
-    global DIR, DIG, DIB
-    global DION, DITIME_ACTUAL
-    global PLAYMENUSHOWED
-    color(DIR, DIG, DIB)
-    DITIME_ACTUAL=0.0
-    PLAYMENUSHOWED = 0
-    DION=1
+	""" turn on the display. """
+	global DIR, DIG, DIB
+	global DION, DITIME_ACTUAL
+	global PLAYMENUSHOWED
+	color(DIR, DIG, DIB)
+	DITIME_ACTUAL=0.0
+	PLAYMENUSHOWED = 0
+	DION=1
 
 # initialize the display.
 def DI_INIT():
-    """ initialize the display. """
-    global lcd
-    lcd=rgb1602.RGB1602(16,2) #create LCD object,specify col and row
+	""" initialize the display. """
+	global lcd
+	lcd=rgb1602.RGB1602(16,2) #create LCD object,specify col and row
 
 # show menu
+# previous menu consisted of arrows showing what which button does.
+# now it shows if sd cards are mounted and if random play is active.
+# symbols are in brackets, all other chars are WYSIWIG including spaces!
+# Using Internal drive:
+# [sd1_status][sd2_status][etc..] [random_status]
+# where card (sdx) has 2 symbols: "no card" and "card"
+# and random has 2 symbols: random and straight
+# previous menu, just for your consideration, which was only visible in stop mode:
+# [uparrow]:[play][pause] [downarrow]:[stop] [leftarrow]:[leftarrow] [rightarrow]:[rightarrow]
 def showPlayMenu():
+	""" show a menu on the lower line """
 	global DISYM_UPARROW, DISYM_DOWNARROW, DISYM_LEFTARROW, DISYM_RIGHTARROW
 	global DISYM_PLAY, DISYM_PAUSE, DISYM_STOP, DISYM_REW, DISYM_FWD
-	global DIREF_UPARROW, DIREF_DOWNARROW, DIREF_LEFTARROW, DIREF_RIGHTARROW
-	global DIREF_PLAY, DIREF_PAUSE, DIREF_STOP, DIREF_REW, DIREF_FWD
-	global PLAYMENUSHOWED
-	# only show it once a time.
-	if(PLAYMENUSHOWED==1):
-		return
-	PLAYMENUSHOWED = 1
-
-	lcd.customSymbol(DIREF_UPARROW, DISYM_UPARROW)
-	lcd.customSymbol(DIREF_DOWNARROW, DISYM_DOWNARROW)
-	lcd.customSymbol(DIREF_LEFTARROW, DISYM_LEFTARROW)
-	lcd.customSymbol(DIREF_RIGHTARROW, DISYM_RIGHTARROW)
-	lcd.customSymbol(DIREF_PLAY, DISYM_PLAY)
-	lcd.customSymbol(DIREF_PAUSE, DISYM_PAUSE)
-	lcd.customSymbol(DIREF_STOP, DISYM_STOP)
+	global DISYM_NOCARD, DISYM_RND_STRAIGHT, DISYM_RND_RANDOM
+# draw menu
+# we can use 6 custom symbols at once:
+# 0 is reserved for the symbol function
+# 7 is reserved for the watch symbol in play mode.
 	lcd.setCursor(0,1)
-	lcd.write(DIREF_UPARROW)
-	lcd.printout(":")
-	lcd.write(DIREF_PLAY)
-	lcd.write(DIREF_PAUSE)
+	if globals.BURP_USE_INTERNAL_DRIVE<=0:
+		# show sd card status for each registered drive.
+		lcd.customSymbol(1, DISYM_NOCARD)
+		lcd.customSymbol(2, DISYM_CARD)
+		for d in globals.BURP_SDdirs:
+			if d[2]==0:
+				lcd.printout(1)
+			else:
+				lcd.printout(2)
+	if globals.BURP_ISRANDOM<=0:
+		lcd.customSymbol(3,DISYM_RND_STRAIGHT)
+	else:
+		lcd.customSymbol(3,DISYM_RND_RANDOM)
 	lcd.printout(" ")
-	lcd.write(DIREF_DOWNARROW)
-	lcd.printout(":")
-	lcd.write(DIREF_STOP)
-	lcd.printout(" ")
-	lcd.write(DIREF_LEFTARROW)
-	lcd.printout(":")
-	lcd.write(DIREF_LEFTARROW)
-	lcd.printout(" ")
-	lcd.write(DIREF_RIGHTARROW)
-	lcd.printout(":")
-	lcd.write(DIREF_RIGHTARROW)
+	lcd.write(3)
 
 # show a time mark in the lower right.
 def showTimeMark(seconds):
@@ -213,7 +212,7 @@ def showTimeMark(seconds):
 	if there are no hours, it only shows minutes:seconds """
 	global lcd
 	global DISYM_WATCH
-	lcd.customSymbol(1,DISYM_WATCH)
+	lcd.customSymbol(7,DISYM_WATCH)
 	minutes = 0
 	hours = 0
 	if(seconds>0):
@@ -236,7 +235,7 @@ def showTimeMark(seconds):
 	lcd.setCursor(0,1)
 	lcd.printout("                ")
 	lcd.setCursor(15-len(t),1)
-	lcd.write(1)
+	lcd.write(7)
 	lcd.printout(t)
 
 # for the deltatime calculation
@@ -261,11 +260,8 @@ def frametime_tick():
 
 # Display Symbols
 
-# symbol number 0 is reserved for direct access.
-
-# make some custom characters and their reference ids
-# for the display character table:
-DIREF_UPARROW = 1
+# make some custom characters  for the display character table:
+# symbol number 0 is reserved for the symbol function, leaves 7 to use directly.
 DISYM_UPARROW = [
   0b00000,
   0b00100,
@@ -276,7 +272,6 @@ DISYM_UPARROW = [
   0b00000,
   0b00000
 ]
-DIREF_DOWNARROW = 2
 DISYM_DOWNARROW = [
   0b00000,
   0b00100,
@@ -287,7 +282,6 @@ DISYM_DOWNARROW = [
   0b00000,
   0b00000
 ]
-DIREF_RIGHTARROW = 3
 DISYM_RIGHTARROW = [
   0b00000,
   0b00100,
@@ -299,7 +293,6 @@ DISYM_RIGHTARROW = [
   0b00000
 ]
 
-DIREF_LEFTARROW = 4
 DISYM_LEFTARROW = [
   0b00000,
   0b00100,
@@ -310,7 +303,7 @@ DISYM_LEFTARROW = [
   0b00000,
   0b00000
 ]
-DIREF_STOP = 5
+
 DISYM_STOP = [
   0b00000,
   0b00000,
@@ -322,7 +315,6 @@ DISYM_STOP = [
   0b00000
 ]
 
-DIREF_PAUSE = 6
 DISYM_PAUSE = [
   0b00000,
   0b01010,
@@ -334,7 +326,6 @@ DISYM_PAUSE = [
   0b00000
 ]
 
-DIREF_PLAY = 7
 DISYM_PLAY = [
   0b00000,
   0b01000,
@@ -405,6 +396,17 @@ DISYM_NOCARD = [
   0b00000
 ]
 
+# Card Inserted.
+DISYM_CARD = [
+  0b11100,
+  0b10010,
+  0b10001,
+  0b10001,
+  0b10001,
+  0b10001,
+  0b11111,
+  0b00000
+]
 # Random: not symbol
 DISYM_RND_STRAIGHT = [
   0b00000,

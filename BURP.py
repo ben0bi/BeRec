@@ -365,12 +365,15 @@ def BURP_UPDATE():
 			globals.BURP_SecPart = globals.BURP_SecPart-1000
 			globals.BURP_ActualTime = globals.BURP_ActualTime+1
 			if(D.DION==1):
+				D.showPlayMenu()
 				D.showTimeMark(globals.BURP_ActualTime) # only update display when necessary.
 		elif(globals.BURP_ActualTime<=0 and D.DION==1): # show first second, too
+			D.showPlayMenu()
 			D.showTimeMark(0)
 	elif(globals.BURP_STATE!=globals.BURPSTATE_PAUSE and globals.BURP_STATE!=globals.BURPSTATE_RECPAUSE):
-		if(D.DION==1): #spt
+		if(D.DION==1 and D.PLAYMENUSHOWED==0): #spt
 			D.showPlayMenu()
+			D.PLAYMENUSHOWED=1
 
 # MAIN
 BURP_Init()
