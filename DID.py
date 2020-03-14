@@ -67,7 +67,7 @@ def showPlayMenu():
 				lcd.write(3)
 # show status of random play flag.
 	lcd.printout(" ")
-	if globals.BURP_ISRANDOM<=0:
+	if globals.BURP_ISRANDOMPLAY<=0:
 		lcd.write(4)
 	else:
 		lcd.write(5)

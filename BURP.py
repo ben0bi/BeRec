@@ -152,14 +152,14 @@ def BURP_Stop():
 
 
 old_playmode = -291
-sdmount_flag = 0
+#sdmount_flag = 0
 def BURP_UPDATE():
 	global old_playmode
-	global sdmount_flag
+#	global sdmount_flag
 
 	# check if song is playing or get next one if play mode is set.
 	if(globals.BURP_Song != 0):
-		sdmount_flag = 0
+#		sdmount_flag = 0
 		# its stopped but state is play, so song has ended.
 		# get next one and play it.
 		if(not globals.BURP_Song.isPlaying() and globals.BURP_STATE == globals.BURPSTATE_PLAY):
@@ -169,7 +169,7 @@ def BURP_UPDATE():
 			BURP_Play()
 	else:
 		print("TRACK IS null, INSERTING...")
-		sdmount_flag=0
+#		sdmount_flag=0
 		# there is no track inserted. try to load the next one.
 		# but do not play it.
 		BURP_checkForNextTrack()
@@ -298,8 +298,10 @@ def BURP_UPDATE():
 			BURP_Stop()
 			BURP_Bebeep2()
 		else:
-			# already stopped, beep
+			# already stopped, reverse random flag
+			globals.BURP_ISRANDOMPLAY = 1-BURP_ISRANDOMPLAY
 			BURP_Bebeep()
+			
 	if(st==globals.BUTTON_UP):
 		globals.PRESS_STOP = 0
 

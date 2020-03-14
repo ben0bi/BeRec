@@ -109,4 +109,4 @@ BURP_ActualTime = 0
 BURP_SecPart = 0.0
 
 # is the player in random or straight mode?
-BURP_ISRANDOM = 0
+BURP_ISRANDOMPLAY = 0
