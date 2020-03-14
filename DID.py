@@ -11,6 +11,9 @@ import sys
 sys.path.append('./')
 import rgb1602
 
+# for the deltatime calculation
+import numpy as np
+import datetime
 # only used for the menu status.
 import globals
 
@@ -253,10 +256,6 @@ def showTimeMark(seconds):
 	lcd.setCursor(15-len(t),1)
 	lcd.write(7)
 	lcd.printout(t)
-
-# for the deltatime calculation
-import numpy as np
-import datetime
 
 # get frametime
 FRAMETIME_OLD = 0.0

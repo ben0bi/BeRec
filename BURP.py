@@ -12,7 +12,11 @@
 #from pydub import AudioSegment
 #from pydub.playback import play
 
+# the sox sound player library
 from soundplayer.soundplayer import SoundPlayer as SP
+
+# numpy is used for random track selection here
+import numpy as np
 
 # file operations.
 import FOPS as F
@@ -86,7 +90,7 @@ def BURP_Init():
 	GPIO.setup(globals.PBTN_4, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 	GPIO.setup(globals.PBTN_5, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
     # get the first track...
-	BURP_checkForNextTrack()
+	BURP_checkForNextTrack(0)
     # and then show the welcome message.
 	D.setcolor(0,64,128)
 	D.uppertext(globals.BURP_WELCOME)
@@ -99,8 +103,15 @@ def BURP_Init():
 def BURP_checkForNextTrack(reverse = 0):
 	# increase or decrease
 	if reverse==0:
-		globals.BURP_fileIDX = globals.BURP_fileIDX + 1
+		if globals.BURP_ISRANDOMPLAY<=0:
+			# get next track or...
+			globals.BURP_fileIDX = globals.BURP_fileIDX + 1
+		else:
+			# get random track
+			globals.BURP_fileIDX = np.random.randint(0,len(F.files))
+		
 	else:
+		# get previous track.
 		globals.BURP_fileIDX = globals.BURP_fileIDX - 1
 	# check if idx is in array or reset to 0
 	if globals.BURP_fileIDX >= len(F.files):
@@ -299,7 +310,7 @@ def BURP_UPDATE():
 			BURP_Bebeep2()
 		else:
 			# already stopped, reverse random flag
-			globals.BURP_ISRANDOMPLAY = 1-BURP_ISRANDOMPLAY
+			globals.BURP_ISRANDOMPLAY = 1-globals.BURP_ISRANDOMPLAY
 			BURP_Bebeep()
 			
 	if(st==globals.BUTTON_UP):
