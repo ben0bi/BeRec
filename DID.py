@@ -435,26 +435,26 @@ DISYM_INTERNAL_DRIVE = [
   0b00000
 ]
 
-# Random: not symbol
-DISYM_RND_STRAIGHT = [
+# Random: random symbol
+DISYM_RND_RANDOM = [
   0b00000,
-  0b00100,
-  0b00010,
-  0b00100,
   0b00000,
-  0b11111,
+  0b10101,
+  0b01010,
+  0b10101,
+  0b00000,
   0b00000,
   0b00000
 ]
 
-# Random: yes symbol
-DISYM_RND_RANDOM = [
+# Random: straight symbol
+DISYM_RND_STRAIGHT = [
   0b00000,
-  0b00100,
-  0b00010,
-  0b00100,
-  0b00010,
-  0b10101,
-  0b01000,
+  0b00000,
+  0b11111,
+  0b00000,
+  0b11111,
+  0b00000,
+  0b00000,
   0b00000
 ]
