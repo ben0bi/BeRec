@@ -129,6 +129,8 @@ def ReadFiles(directory):
             newpath = newpath.replace(chr(0x87),'')
             newpath = newpath.replace(chr(0xe2),'')
             newpath = newpath.replace(chr(0xa1),'')
+		# 0xa4 with a C before = ä
+            newpath = newpath.replace(chr(0xa4),'')
             newpath = newpath.replace(chr(0x99),'')
             newfilename = newpath
             newpath = os.path.join(root, newpath)
