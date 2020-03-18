@@ -100,11 +100,11 @@ def DI_UPDATE(deltatime):
 	else:
 		# do not scroll
         	DI_TITLEPOSITION = 0
-        	DI_TITLEDIRECTION = 1
+        	DI_TITLEDIRECTION = 0
 
 	# constrain the waiting at the end.
 	dp=DI_TITLEPOSITION
-	if(dp>len(DI_TITLE)-15):
+	if(len(DI_TITLE)>15 and dp>len(DI_TITLE)-15):
 		dp=len(DI_TITLE)-15
 
 	# set the text

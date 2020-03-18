@@ -9,7 +9,6 @@
 import os, sys
 import subprocess
 from os.path import isfile, join
-from time import sleep
 
 import globals
 
@@ -59,8 +58,6 @@ def tryMounting(dev, mntpnt, retest=False):
             print ('!!!  No flash drive found !!!')
             print (dev, mntpnt)
             print ('#############################')
-
-            sleep(3)
             return 0
         else:
             print ('No drive found, trying to mount '+dev+'...')

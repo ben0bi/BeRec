@@ -19,7 +19,8 @@ BURP_rootDir = "/var/www/html/MUSIC/FILESYS"
 # Check device name with lsblk
 
 BURP_SDdirs = [
-    ["sdb1", "/media/sdcard1", 0]
+    ["sdb1", "/media/sdcard1", 0],
+    ["sdb2", "/media/sdcard2", 0]
 ]
 
 # Button BCM Values.

@@ -168,11 +168,9 @@ show_nofiles_flag=0
 def BURP_UPDATE():
 	global old_playmode
 	global show_nofiles_flag
-#	global sdmount_flag
 
 	# check if song is playing or get next one if play mode is set.
 	if(globals.BURP_Song != 0):
-#		sdmount_flag = 0
 		# its stopped but state is play, so song has ended.
 		# get next one and play it.
 		if(not globals.BURP_Song.isPlaying() and globals.BURP_STATE == globals.BURPSTATE_PLAY):
@@ -190,18 +188,9 @@ def BURP_UPDATE():
 			BURP_Stop()
 	elif(show_nofiles_flag==0):
 		show_nofiles_flag=1
+		D.uppertext(" *! NO DATA !*")
+		D.setcolor(128,0,0)
 		print("NO FILES FOUND!")
-#	elif(sdmount_flag==0):
-#		sdmount_flag=1
-#		print("*** NO CARD INSERTED ***")
-#		D.setcolor(128,0,0)
-#		D.uppertext(" *! NO CARD !* ")
-#		D.symbol(D.DISYM_NOCARD)
-#		D.DI_ON()
-#		return
-#	else:
-		# no card inserted and sd mount flag is 1
-#		return
 
 	# get all buttons.
 	pp=GPIO.input(globals.BTN_PLAYPAUSE)
@@ -227,8 +216,8 @@ def BURP_UPDATE():
 		globals.PRESS_MODECHANGE=0
 
 	# TODO: something other: break if no card.
-#	if(F.SDMOUNTED==0):
-#		return
+	if(show_nofiles_flag>0):
+		return
 
 	# check if record was pressed.
 #	if(rc==globals.BUTTON_DOWN and globals.PRESS_REC==0):
