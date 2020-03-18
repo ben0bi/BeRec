@@ -54,7 +54,7 @@ def BURP_Beep():
 	SP.playTone(210, 0.025, True, dev)
 
 # Card lid closed, try to mount the sd cards.
-def BURP_CardLidClosed():
+def BURP_IsCardLidClosed():
     """ check if the card lid is closed, try to mount or unmount devices. """
     F.mountSD()
     print "closed"
@@ -72,7 +72,7 @@ def BURP_Init():
 		F.ReadFiles(globals.BURP_rootDir)
 	else:
 # from sd cards.
-		BURP_CardLidClosed()
+		BURP_IsCardLidClosed()
 
 	# tell the user that all files are loaded.
 	BURP_Beep()
@@ -109,7 +109,7 @@ def BURP_checkForNextTrack(reverse = 0):
 		else:
 			# get random track
 			globals.BURP_fileIDX = np.random.randint(0,len(F.files))
-		
+
 	else:
 		# get previous track.
 		globals.BURP_fileIDX = globals.BURP_fileIDX - 1
@@ -164,8 +164,10 @@ def BURP_Stop():
 
 old_playmode = -291
 #sdmount_flag = 0
+show_nofiles_flag=0
 def BURP_UPDATE():
 	global old_playmode
+	global show_nofiles_flag
 #	global sdmount_flag
 
 	# check if song is playing or get next one if play mode is set.
@@ -178,7 +180,7 @@ def BURP_UPDATE():
 			BURP_Stop()
 			BURP_checkForNextTrack()
 			BURP_Play()
-	else:
+	elif(len(F.files)>0):
 		print("TRACK IS null, INSERTING...")
 #		sdmount_flag=0
 		# there is no track inserted. try to load the next one.
@@ -186,6 +188,9 @@ def BURP_UPDATE():
 		BURP_checkForNextTrack()
 		if globals.BURP_STATE != globals.BURPSTATE_REC and globals.BURP_STATE != globals.BURPSTATE_RECPAUSE:
 			BURP_Stop()
+	elif(show_nofiles_flag==0):
+		show_nofiles_flag=1
+		print("NO FILES FOUND!")
 #	elif(sdmount_flag==0):
 #		sdmount_flag=1
 #		print("*** NO CARD INSERTED ***")
@@ -312,7 +317,7 @@ def BURP_UPDATE():
 			# already stopped, reverse random flag
 			globals.BURP_ISRANDOMPLAY = 1-globals.BURP_ISRANDOMPLAY
 			BURP_Bebeep()
-			
+
 	if(st==globals.BUTTON_UP):
 		globals.PRESS_STOP = 0
 
@@ -414,4 +419,5 @@ finally:
 	D.clear()
 	# clear GPIO channels.
 	GPIO.cleanup()
+	F.unmountSD()
 	print("done. Thanks for using BURP.")

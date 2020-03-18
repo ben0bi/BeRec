@@ -7,7 +7,9 @@
 # by Benedict "Oki Wan Benobi" Jaeggi @ MMXX
 
 import os, sys
+import subprocess
 from os.path import isfile, join
+from time import sleep
 
 import globals
 
@@ -15,19 +17,34 @@ files = []
 
 def mountSD():
 	""" try to mount all the sd cards in the list. """
+	# first, clear the files list.
+	ClearFiles()
+	# try to mount all the sd cards.
 	for sd in range(len(globals.BURP_SDdirs)):
 		# mount sd here.
 		sdx = globals.BURP_SDdirs[sd][0]
 		mntpnt = globals.BURP_SDdirs[sd][1]
-		globals.BURP_SDdirs[sd][2] = tryMounting(sdx, mntpnt)
+		if(globals.BURP_SDdirs[sd][2]<=0):
+			globals.BURP_SDdirs[sd][2] = tryMounting(sdx, mntpnt)
+		else:
+			print("Device "+sdx+" already mounted at "+mntpnt)
+
+		# and read the files here.
+		if(globals.BURP_SDdirs[sd][2]>0):
+			ReadFiles(globals.BURP_SDdirs[sd][1])
+		else:
+			print("Mounting did not work for device "+sdx)
 
 def unmountSD():
 	""" try to unmount all the mounted sd cards in the list safely. """
+	# clear all files for safety purposes.
+	ClearFiles()
 	for sd in range(len(globals.BURP_SDdirs)):
-		# mount sd here.
+		# unmount sd here.
 		sdx = globals.BURP_SDdirs[sd][0]
 		mntpnt = globals.BURP_SDdirs[sd][1]
-		globals.BURP_SDdirs[sd][2] = tryUnmounting(sdx, mntpnt)
+		if(globals.BURP_SDdirs[sd][2]>0):
+			globals.BURP_SDdirs[sd][2] = tryUnmounting(sdx, mntpnt)
 
 def tryMounting(dev, mntpnt, retest=False):
     """ try to mount a specific sd card """
@@ -43,7 +60,7 @@ def tryMounting(dev, mntpnt, retest=False):
             print (dev, mntpnt)
             print ('#############################')
 
-            time.sleep(3)
+            sleep(3)
             return 0
         else:
             print ('No drive found, trying to mount '+dev+'...')
