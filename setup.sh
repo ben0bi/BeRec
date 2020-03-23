@@ -13,7 +13,11 @@
 # I am a lazy guy so I won't write an extra 3 behind each command.
 # if python without 3 is using python-3 then I will switch, too. :)
 
-# pip
+# create the mount device paths
+sudo mkdir /media/sdcard1
+sudo mkdir /media/sdcard2
+
+# pip is used for loading modules for python.
 sudo apt-get install python-pip
 
 # ffmpeg not used because we're using sox right now.
@@ -29,6 +33,7 @@ sudo apt-get install screen
 # GPIO library
 # Now here we have both because something uses wiringpi
 # and I myself used RPi.GPIO before.
+# there may be a clean update later only using wiringpi.
 pip install RPi.GPIO
 pip install wiringpi
 
@@ -38,6 +43,7 @@ sudo pip install RPi.GPIO
 sudo pip install wiringpi
 
 # for proper time calcualtions we need numpy.
+# also, numpy can be used for recording, later.
 pip install numpy
 sudo pip install numpy
 
@@ -46,6 +52,3 @@ sudo pip install numpy
 
 # using pydub for playing all sorts of sound files.
 #pip install pydub
-
-# finally create the mount device paths
-sudo mkdir /media/sdcard1
