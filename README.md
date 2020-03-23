@@ -5,10 +5,17 @@ See here:
 https://www.youtube.com/watch?v=fXjCIICesxU
 
 Updates: 
--> MP3 Player almost fully working. No Buttons for Volume right now. Cannot read SDcard right now,
-it reads from a given (hardcoded) directory in the filesystem.   
--> Renames all files and directories for convenience (replaces spaces with _ in directories,
-and much other characters like äàüè.)     
+-> You can switch between INTERNAL DIRECTORY or SD CARDS now.
+	-> It will try to mount sdb1 to /media/sdcard1 and sdb2 to /media/sdcard2
+	-> you can change those values in the globals.py
+	-> Including DID.py update for showing SD-cards mounted or not, or ID for internal drive.
+-> MP3 Player fully working. 
+	Maybe almost, there may be some errors but I tried to eliminate all upcoming bugs like
+	"wrong file format, i will crash now" -> only loading mp3s, wavs, oggs, and flacs now.
+	No Buttons for Volume right now.   
+-> Renames all (relevant) files and directories for convenience 
+	(replaces spaces with _ in directories,
+	and much other characters like äàüè in the filenames.)     
 
 -> Display Library DID.py "for musicplayers", with special features, see below Appendix A.    
 -> SoundPlayer library and DFRobot-Displaydriver-Library used: All files put together here,
@@ -145,11 +152,19 @@ Play, Pause, Stop, Rec, Recpause, Smiley, Clock, Arrow in each direction.
 The lower line can display a prebuilt player menu (icons in brackets) which looks like this below.
 This icons must be initialized first on positions 1 through 7. Position 0 is for the direct icon
 and the display seems to support only 8 icons at once. You can use the DIREF_ variables for the
-positions of the icon set or the DISYM_ arrays for direct icons.
+positions of the icon set or the DISYM_ arrays for direct icon.
 
 Menu:    
 
-[Uparrow]:[Play][Pause] [Downarrow]:[Stop] [Leftarrow]:[Leftarrow] [Rightarrow]:[Rightarrow]
+[ID] [RND]
+
+or
+
+[SD1][SD2] [RND]
+
+where ID = INTERNAL DRIVE symbol,
+RND = RANDOM or STRAIGHT symbol,
+SD1, SD2 = SD_MOUNTED or SD_EMPTY symbols, in the number of sdcards defined in the globals.py.
 
 ### Symbol
 In the upper left, a (direct, position 0) symbol will be displayed. Set it with:
