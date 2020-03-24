@@ -101,66 +101,66 @@ def ReadFiles(directory):
 				print("("+od+" -> "+nd+")")
 				os.rename(od, nd)
 
-        # also check if all files have the right naming convention.
-        # else rename the stuff. Player could crash elsewhere.
-        for filename in fs:
-		# eliminate non sound files.
-		if not filename.lower().endswith(('.mp3','.wav','.wave','.ogg','.flac')):
-			continue
+	        # also check if all files have the right naming convention.
+        	# else rename the stuff. Player could crash elsewhere.
+		for filename in fs:
+			# eliminate non sound files.
+			if not filename.lower().endswith(('.mp3','.wav','.wave','.ogg','.flac')):
+				continue
 
-		fpath = os.path.join(root, filename)
-		# maybe rename the file
-		newpath = filename.replace(' ', '_')
+			fpath = os.path.join(root, filename)
+			# maybe rename the file
+			newpath = filename.replace(' ', '_')
 
-		newpath = newpath.replace('(','[')
-		newpath = newpath.replace(')',']')
-		newpath = newpath.replace('{','[')
-		newpath = newpath.replace('}',']')
-		# special characters which made the player crash:
-		newpath = newpath.replace(chr(0xc3), 'C') # ç
-		newpath = newpath.replace('ç', 'c') # ç
-		newpath = newpath.replace('Ú', 'U')
-		newpath = newpath.replace('Ù', 'U')
-		newpath = newpath.replace('Ó', 'O')
-		newpath = newpath.replace('Ò', 'O')
-		newpath = newpath.replace('É', 'E')
-		newpath = newpath.replace('È', 'E')
-		newpath = newpath.replace('À', 'A')
-		newpath = newpath.replace('Á', 'A')
-		newpath = newpath.replace('ú', 'u')
-		newpath = newpath.replace('ù', 'u')
-		newpath = newpath.replace('ó', 'o')
-		newpath = newpath.replace('ò', 'o')
-		newpath = newpath.replace('é', 'e')
-		newpath = newpath.replace('è', 'e')
-		newpath = newpath.replace('à', 'a')
-		newpath = newpath.replace('á', 'a')
-		newpath = newpath.replace('ä', "ae")
-		newpath = newpath.replace('Ä', "Ae")
-		newpath = newpath.replace('ö', "oe")
-		newpath = newpath.replace('Ö', "Oe")
-		newpath = newpath.replace('ü', "ue")
-		newpath = newpath.replace('Ü', "Ue")
-		newpath = newpath.replace('&', "and")
-		newpath = newpath.replace(chr(0xc4), 'i')
-		# some "very" special chars I don't know about.
-		newpath = newpath.replace(chr(0xb1),'')
-		newpath = newpath.replace(chr(0x87),'')
-		newpath = newpath.replace(chr(0xe2),'')
-		newpath = newpath.replace(chr(0xa1),'')
-		# 0xa4 with a C before = ä
-		newpath = newpath.replace(chr(0xa4),'')
-		newpath = newpath.replace(chr(0x99),'')
+			newpath = newpath.replace('(','[')
+			newpath = newpath.replace(')',']')
+			newpath = newpath.replace('{','[')
+			newpath = newpath.replace('}',']')
+			# special characters which made the player crash:
+			newpath = newpath.replace(chr(0xc3), 'C') # ç
+			newpath = newpath.replace('ç', 'c') # ç
+			newpath = newpath.replace('Ú', 'U')
+			newpath = newpath.replace('Ù', 'U')
+			newpath = newpath.replace('Ó', 'O')
+			newpath = newpath.replace('Ò', 'O')
+			newpath = newpath.replace('É', 'E')
+			newpath = newpath.replace('È', 'E')
+			newpath = newpath.replace('À', 'A')
+			newpath = newpath.replace('Á', 'A')
+			newpath = newpath.replace('ú', 'u')
+			newpath = newpath.replace('ù', 'u')
+			newpath = newpath.replace('ó', 'o')
+			newpath = newpath.replace('ò', 'o')
+			newpath = newpath.replace('é', 'e')
+			newpath = newpath.replace('è', 'e')
+			newpath = newpath.replace('à', 'a')
+			newpath = newpath.replace('á', 'a')
+			newpath = newpath.replace('ä', "ae")
+			newpath = newpath.replace('Ä', "Ae")
+			newpath = newpath.replace('ö', "oe")
+			newpath = newpath.replace('Ö', "Oe")
+			newpath = newpath.replace('ü', "ue")
+			newpath = newpath.replace('Ü', "Ue")
+			newpath = newpath.replace('&', "and")
+			newpath = newpath.replace(chr(0xc4), 'i')
+			# some "very" special chars I don't know about.
+			newpath = newpath.replace(chr(0xb1),'')
+			newpath = newpath.replace(chr(0x87),'')
+			newpath = newpath.replace(chr(0xe2),'')
+			newpath = newpath.replace(chr(0xa1),'')
+			# 0xa4 with a C before = ä
+			newpath = newpath.replace(chr(0xa4),'')
+			newpath = newpath.replace(chr(0x99),'')
 
-		newfilename = newpath
-		newpath = os.path.join(root, newpath)
-		if(newpath!=fpath):
-			print "RENAMING "+filename+" TO "+newfilename
-			os.rename(fpath, newpath)
-		# fpath = newpath
-		print('\t- file %s' % (newfilename))
-		# add the file to the list.
-		files.append([newfilename,newpath])
+			newfilename = newpath
+			newpath = os.path.join(root, newpath)
+			if(newpath!=fpath):
+				print "RENAMING "+filename+" TO "+newfilename
+				os.rename(fpath, newpath)
+			# fpath = newpath
+			print('\t- file %s' % (newfilename))
+			# add the file to the list.
+			files.append([newfilename,newpath])
 
 	if len(files) <= 0:
 		BURP_Bebeep()
