@@ -94,7 +94,7 @@ def ReadFiles(directory):
 		for subdir in subdirs:
 			print('\t- subdir '+subdir)
 			sd = subdir.replace(' ', '_')
-			if(sd!=subdir):
+			if(sd!=subdir and sd!="System_Volume_Information"):
 				print "RENAMING DIRECTORY "+subdir+" TO "+sd
 				od = os.path.join(root,subdir)
 				nd = os.path.join(root, sd)
@@ -151,6 +151,14 @@ def ReadFiles(directory):
 			# 0xa4 with a C before = ä
 			newpath = newpath.replace(chr(0xa4),'')
 			newpath = newpath.replace(chr(0x99),'')
+
+			# new try: all over 128 get an Y
+			for a in range(128, 255):
+				newpath = newpath.replace(chr(a),'Y')
+
+
+			# there may be some ? left
+			newpath = newpath.replace('?','X')
 
 			newfilename = newpath
 			newpath = os.path.join(root, newpath)

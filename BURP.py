@@ -245,19 +245,20 @@ def BURP_UPDATE():
 		D.DI_ON()
 		globals.PRESS_PP = 1
 		# pause record
-		if(globals.BURP_STATE==globals.BURPSTATE_REC):
+#		if(globals.BURP_STATE==globals.BURPSTATE_REC):
 			# TODO: pause record
-			print(":> PAUSE RECORD")
-			globals.BURP_STATE = globals.BURPSTATE_RECPAUSE
-			BURP_Bebeep2()
+#			print(":> PAUSE RECORD")
+#			globals.BURP_STATE = globals.BURPSTATE_RECPAUSE
+#			BURP_Bebeep2()
 		# continue record
-		elif(globals.BURP_STATE==globals.BURPSTATE_RECPAUSE):
+#		elif(globals.BURP_STATE==globals.BURPSTATE_RECPAUSE):
 			# TODO: continue record
-			print(":> CONTINUE RECORD")
-			D.symbol(D.DISYM_REC)
-			globals.BURP_STATE=globals.BURPSTATE_REC
+#			print(":> CONTINUE RECORD")
+#			D.symbol(D.DISYM_REC)
+#			globals.BURP_STATE=globals.BURPSTATE_REC
 		# pause play
-		elif(globals.BURP_STATE==globals.BURPSTATE_PLAY):
+#		elif(globals.BURP_STATE==globals.BURPSTATE_PLAY):
+		if(globals.BURP_STATE==globals.BURPSTATE_PLAY):
 			# pause play
 			if(globals.BURP_Song.isPlaying()):
 				globals.BURP_Song.pause()
@@ -305,6 +306,7 @@ def BURP_UPDATE():
 		else:
 			# already stopped, reverse random flag
 			globals.BURP_ISRANDOMPLAY = 1-globals.BURP_ISRANDOMPLAY
+			print "RND is "+str(globals.BURP_ISRANDOMPLAY)
 			BURP_Bebeep()
 
 	if(st==globals.BUTTON_UP):
