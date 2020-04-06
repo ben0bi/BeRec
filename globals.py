@@ -35,6 +35,9 @@ PBTN_3 = 18
 PBTN_4 = 19
 PBTN_5 = 20
 
+#             # 2@17
+#     4@19 #     # 5@20?      # 1@16
+#        3@18 #
 # BURP buttons: The standard tape buttons.
 BTN_PLAYPAUSE = BTN_PP = PBTN_2
 BTN_STOP = PBTN_3
@@ -115,3 +118,5 @@ BURP_SecPart = 0.0
 
 # is the player in random or straight mode?
 BURP_ISRANDOMPLAY = 0
+BURP_RANDOMTRACKLIST = []
+

@@ -31,6 +31,32 @@ from time import sleep
 
 import globals
 
+def BURP_INITRND():
+	""" Initialize the random track list. """
+	print("INIT RANDOM")
+	np.random.seed()
+	globals.BURP_RANDOMTRACKLIST = []
+	for a in range(0, len(F.files)):
+		globals.BURP_RANDOMTRACKLIST.append(a)
+
+def BURP_GETNEXTRNDTRACKINDEX():
+	""" Get the next track in the Random list. """
+	a = 0
+	if(len(globals.BURP_RANDOMTRACKLIST)==1):
+		# get last track and then create new random track list.
+		a = globals.BURP_RANDOMTRACKLIST[0]
+		BURP_INITRND()
+	else:
+		b = np.random.randint(0,len(globals.BURP_RANDOMTRACKLIST))
+		a = globals.BURP_RANDOMTRACKLIST[b]
+		rtl = []
+		# remove the given entry.
+		for q in range(0, len(globals.BURP_RANDOMTRACKLIST)):
+			if q != b:
+				rtl.append(globals.BURP_RANDOMTRACKLIST[q])
+		globals.BURP_RANDOMTRACKLIST = rtl
+	return a
+
 # play a blocking beep sound.
 def BURP_Bebeep():
 	""" Play a double beep sound. """
@@ -55,9 +81,9 @@ def BURP_Beep():
 
 # Card lid closed, try to mount the sd cards.
 def BURP_IsCardLidClosed():
-    """ check if the card lid is closed, try to mount or unmount devices. """
-    F.mountSD()
-    print "closed"
+	""" check if the card lid is closed, try to mount or unmount devices. """
+	F.mountSD()
+	print "closed"
 
 lcd = 0
 # initialize gpio and stuff.
@@ -89,9 +115,9 @@ def BURP_Init():
 	GPIO.setup(globals.PBTN_3, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 	GPIO.setup(globals.PBTN_4, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 	GPIO.setup(globals.PBTN_5, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-    # get the first track...
+	# get the first track...
 	BURP_checkForNextTrack(0)
-    # and then show the welcome message.
+	# and then show the welcome message.
 	D.setcolor(0,64,128)
 	D.uppertext(globals.BURP_WELCOME)
 	D.showPlayMenu()
@@ -108,7 +134,7 @@ def BURP_checkForNextTrack(reverse = 0):
 			globals.BURP_fileIDX = globals.BURP_fileIDX + 1
 		else:
 			# get random track
-			globals.BURP_fileIDX = np.random.randint(0,len(F.files))
+			globals.BURP_fileIDX = BURP_GETNEXTRNDTRACKINDEX() # np.random.randint(0,len(F.files))
 
 	else:
 		# get previous track.
@@ -168,6 +194,7 @@ show_nofiles_flag=0
 def BURP_UPDATE():
 	global old_playmode
 	global show_nofiles_flag
+	global g_rndTrackList
 
 	# check if song is playing or get next one if play mode is set.
 	if(globals.BURP_Song != 0):
@@ -219,45 +246,11 @@ def BURP_UPDATE():
 	if(show_nofiles_flag>0):
 		return
 
-	# check if record was pressed.
-#	if(rc==globals.BUTTON_DOWN and globals.PRESS_REC==0):
-#		globals.PRESS_REC = 1
-#		# maybe stop the actual song from playing.
-#		if(globals.BURP_Song.isPlaying()):
-#			globals.BURP_Song.stop()
-#		# record
-#		if(globals.BURP_STATE!=globals.BURPSTATE_REC and globals.BURP_STATE!=globals.BURPSTATE_RECPAUSE):
-#			globals.BURP_STATE = globals.BURPSTATE_REC
-#			# TODO: record
-#			D.setcolor(128,0,0)
-#			D.symbol(D.DISYM_REC)
-#			print "TODO: o RECORD"
-#		else:
-#			# TODO: stop and save record
-#			D.setcolor(0,128,0)
-#			BURP_Stop()
-#			print "TODO: o STOP RECORD"
-#	if(rc==globals.BUTTON_UP):
-#		globals.PRESS_REC = 0
-
 	# check if playpause was pressed.
 	if(pp==globals.BUTTON_DOWN and globals.PRESS_PP==0):
 		D.DI_ON()
 		globals.PRESS_PP = 1
-		# pause record
-#		if(globals.BURP_STATE==globals.BURPSTATE_REC):
-			# TODO: pause record
-#			print(":> PAUSE RECORD")
-#			globals.BURP_STATE = globals.BURPSTATE_RECPAUSE
-#			BURP_Bebeep2()
-		# continue record
-#		elif(globals.BURP_STATE==globals.BURPSTATE_RECPAUSE):
-			# TODO: continue record
-#			print(":> CONTINUE RECORD")
-#			D.symbol(D.DISYM_REC)
-#			globals.BURP_STATE=globals.BURPSTATE_REC
 		# pause play
-#		elif(globals.BURP_STATE==globals.BURPSTATE_PLAY):
 		if(globals.BURP_STATE==globals.BURPSTATE_PLAY):
 			# pause play
 			if(globals.BURP_Song.isPlaying()):
@@ -306,6 +299,7 @@ def BURP_UPDATE():
 		else:
 			# already stopped, reverse random flag
 			globals.BURP_ISRANDOMPLAY = 1-globals.BURP_ISRANDOMPLAY
+			BURP_INITRND()
 			print "RND is "+str(globals.BURP_ISRANDOMPLAY)
 			BURP_Bebeep()
 
@@ -329,7 +323,7 @@ def BURP_UPDATE():
 		BURP_Beep()
 		globals.PRESS_FWD = 1
 
-    	# fwd button up, maybe play the song.
+	# fwd button up, maybe play the song.
 	if(fw==globals.BUTTON_UP):
 		if(globals.PRESS_FWD==1):
 			if(old_playmode==globals.BURPSTATE_PLAY or old_playmode==globals.BURPSTATE_PAUSE):
@@ -356,7 +350,7 @@ def BURP_UPDATE():
 		BURP_Beep()
 		globals.PRESS_REW = 1
 
-    	# rew button up, maybe play the song.
+	# rew button up, maybe play the song.
 	if(rw==globals.BUTTON_UP):
 		if(globals.PRESS_REW==1):
 			if(old_playmode==globals.BURPSTATE_PLAY or old_playmode==globals.BURPSTATE_PAUSE):
@@ -393,7 +387,7 @@ BURP_Init()
 D.frametime_init()
 
 try:
-        while True:
+	while True:
 		BURP_UPDATE()
 		sleep(0.1)
 		D.DI_UPDATE(D.deltatime)
@@ -403,7 +397,7 @@ try:
 #		print(D.deltatime, D.deltatime.astype('int64'))
 
 except KeyboardInterrupt:
-        print("User exit.")
+	print("User exit.")
 
 finally:
 	# clear display

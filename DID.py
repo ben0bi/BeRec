@@ -99,8 +99,8 @@ def DI_UPDATE(deltatime):
 				DI_TITLEDIRECTION = 1
 	else:
 		# do not scroll
-        	DI_TITLEPOSITION = 0
-        	DI_TITLEDIRECTION = 0
+		DI_TITLEPOSITION = 0
+		DI_TITLEDIRECTION = 0
 
 	# constrain the waiting at the end.
 	dp=DI_TITLEPOSITION
