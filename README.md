@@ -1,14 +1,16 @@
 # BeRec a.k.a. BURP
 ## Benobis Universal Recorder & Player
 
+An Offline MP3 Player, Music Player, Music Recorder, and maybe TV-Remote and other stuff.
+
 See here:
 https://www.youtube.com/watch?v=fXjCIICesxU
 
 Updates: 
--> You can switch between INTERNAL DIRECTORY or SD CARDS now.
+-> You can switch between INTERNAL DIRECTORY or (CF/SD) CARDS now.
 	-> It will try to mount sdb1 to /media/sdcard1 and sdb2 to /media/sdcard2
 	-> you can change those values in the globals.py
-	-> Including DID.py update for showing SD-cards mounted or not, or ID for internal drive.
+	-> Including DID.py update for showing CF-cards mounted or not, or ID for internal drive.
 -> MP3 Player fully working. 
 	Maybe almost, there may be some errors but I tried to eliminate all upcoming bugs like
 	"wrong file format, i will crash now" -> only loading mp3s, wavs, oggs, and flacs now.
@@ -40,7 +42,8 @@ also see the installation guide below.
 
 I miss the times when we put in a cassette, listen to the radio and when we liked a song,
 we just pressed on the record button and got it for ourselves. Then we used another tape
-in our 2-tape-deck and made a mixtape for our beloved girlfriends. You know what? I never had a girlfriend then but now - I cannot make a mixtape anymore. It's not the same if you
+in our 2-tape-deck and made a mixtape for our beloved girlfriends. You know what? I never had a
+girlfriend then but now - I cannot make a mixtape anymore. It's not the same if you
 say, "Hey girl, I bought you some music on spotify." or "Hey girl, here is my mix for you on this
 MP3-player but I want it back because it was expensive." or "Hey girl, I have some music on 
 my server for you but you need to have a 500$ computer to copy it to your 20 bucks MP3-player."
@@ -52,16 +55,19 @@ BURP shall guide us out of this digital mess.
 That said, BURP should record not several files but at several positions
 in the same file. The recording is digital but it behaves like an analog recording.
 
-Also, a BURP-Player should have at least one (normal) SD-card slot. NOT microSD. You can put
-your microSD into an SD-converter but not vice-versa. And you cannot write that much on a microSD. Also, not on an SD but I could not find a bigger medium which is broadly accepted, digital,
-rewritable and stabil. Some old camera-cards should have done the job but I could not find those, either. So I decided to use SD-cards as new "Cassettes".
+Also, a BURP-Player should have at least one (normal) CF-card slot. NOT microSD and NOT SD but CF.
+You can put your microSD into an SD-converter and this one in a CF-converter but not vice-versa.
+And you cannot write that much with a pen on a microSD. Also, not on an SD but at least something
+like "MIX TPE", so I choose CF because it's broadly accepted in the Foto Industry, rewritable and 
+stabil. I finally decided to use CF-cards as new "Cassettes".
 
-A "good" BURP-player should have two SD-card slots so you can copy music and ET-files without the
-need of a computer. That sounds fantastic? But why? A standard Nikon camera has 2 SD-card-slots
-and no one gives a shit. I think, there it is really not of use because you will edit your
+A "good" BURP-player should have two CF-card slots so you can copy music and ET-files without the
+need of a computer. In this configuration, it also should be useable as card reader because computers
+normally have SD or microSD-card slots but not CFs. A standard Nikon camera has 2 SD-card-slots
+and no one gives a shit, but I think, there it is really not of use because you will edit your
 images on a computer anyway. But this does not count for music. You do not have to edit your
 music after you got it (as whole MP3-file, not as recording), like an image with Lightroom.
-So, two SD-cards on an MP3-player are way more logical than in a camera. 
+So, two (CF-)cards on an MP3-player are way more logical than in a camera. 
 But...tell that the industry.
 
 ## Working Mode:
@@ -113,7 +119,7 @@ If not, check directories and permissions.
 As said above, BURP may need to run in rootlevel-mode because
 of file/directory permissions when renaming the files.
 This is way easier than checking all those permissions. :)
-Also, in a while, when the SD-card option will follow,
+Also, in a while, when the CF-card option will follow,
 the end user may have locked directories on the card which
 he doesn't even know about. (Mac to PC to Linux to Mac ;) )
 So better start BURP in root mode.
@@ -160,11 +166,11 @@ Menu:
 
 or
 
-[SD1][SD2] [RND]
+[CF1][CF2] [RND]
 
 where ID = INTERNAL DRIVE symbol,
 RND = RANDOM or STRAIGHT symbol,
-SD1, SD2 = SD_MOUNTED or SD_EMPTY symbols, in the number of sdcards defined in the globals.py.
+CF1, CF2 = CF_MOUNTED or CF_EMPTY symbols, in the number of CFcards defined in the globals.py.
 
 ### Symbol
 In the upper left, a (direct, position 0) symbol will be displayed. Set it with:
