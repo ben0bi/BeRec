@@ -1,6 +1,6 @@
 # Global Variables and Statics for BURP.
 
-BURP_WELCOME = "Welcome to BURP! http://masterbit.net"
+BURP_WELCOME = "Welcome to the BENIplayer! https://github.com/ben0bi/BeRec"
 
 # if this is 1, it will NOT try to mount the SD cards
 # with the belowish values and instead use BURP_rootDir.

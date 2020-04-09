@@ -1,5 +1,8 @@
-# BeRec a.k.a. BURP
+# BENIplayer a.k.a BeRec a.k.a. BURP
 ## Benobis Universal Recorder & Player
+
+BENIplayer = Benobis Environment for No Internet - Player    
+a.k.a Beni Empfiehlt: No Internet - Player    
 
 An Offline MP3 Player, Music Player, Music Recorder, and maybe TV-Remote and other stuff.
 
