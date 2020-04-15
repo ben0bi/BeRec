@@ -16,6 +16,11 @@
 # create the mount device paths
 sudo mkdir /media/sdcard1
 sudo mkdir /media/sdcard2
+# new: for usb sticks (not used yet)
+sudo mkdir /media/usb1
+sudo mkdir /media/usb2
+
+ls /media
 
 # pip is used for loading modules for python.
 sudo apt-get install python-pip

@@ -28,13 +28,14 @@ import DID as D
 import RPi.GPIO as GPIO
 
 from time import sleep
+from time import time
 
 import globals
 
 def BURP_INITRND():
 	""" Initialize the random track list. """
 	print("INIT RANDOM")
-	np.random.seed()
+	np.random.seed(int(time()))
 	globals.BURP_RANDOMTRACKLIST = []
 	for a in range(0, len(F.files)):
 		globals.BURP_RANDOMTRACKLIST.append(a)
@@ -91,6 +92,9 @@ def BURP_Init():
 	sym = D.DISYM_SMILEY
 	# tell the user that the playerr has started.
 	BURP_Bebeep2()
+
+	# first random seed.
+	BURP_INITRND()
 
 	# try to read all files.
 # from internal directory.
