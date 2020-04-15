@@ -119,6 +119,25 @@ sudo ./burpscreen.sh
 Ctrl-O, Ctrl-X, reboot - the player should now run.    
 If not, check directories and permissions.    
 
+Maybe you need to set the usb sound card. 
+First disable the internal one:
+
+cd /etc/modprobe.d
+sudo nano alsa_blacklist.conf
+
+blacklist snd_bcm2835
+
+[ctrl-o][ctrl-x]
+
+..install alsa stuff
+
+#nope sudo apt-get install libasound2-plugin-equal
+sudo apt-get install alsa-utils
+
+dann: alsamixer -D hw:1 
+
+sudo reboot
+
 As said above, BURP may need to run in rootlevel-mode because
 of file/directory permissions when renaming the files.
 This is way easier than checking all those permissions. :)
