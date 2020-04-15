@@ -23,17 +23,17 @@ sudo mkdir /media/usb2
 ls /media
 
 # pip is used for loading modules for python.
-sudo apt-get install python-pip
+sudo apt-get install python-pip -y
 
 # ffmpeg not used because we're using sox right now.
 #sudo apt-get install ffmpeg libavcodec-extra
 
 # install sox, mp3 for the soundplayer module.
-sudo apt-get install sox libsox-fmt-mp3
+sudo apt-get install sox libsox-fmt-mp3 -y
 
 # install screen for the autoboot option,
 # see installation instructions in the README.
-sudo apt-get install screen
+sudo apt-get install screen -y
 
 # GPIO library
 # Now here we have both because something uses wiringpi

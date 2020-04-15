@@ -29,6 +29,45 @@ DIAR = 0
 DIAG = 63
 DIAB = 0
 
+# the actual set symbols for faster resetting.
+DI_SYM_0 = -1
+DI_SYM_1 = -1
+DI_SYM_2 = -1
+DI_SYM_3 = -1
+DI_SYM_4 = -1
+DI_SYM_5 = -1
+DI_SYM_6 = -1
+DI_SYM_7 = -1
+
+# set a symbol only when it is not already set. That saves alot of processing time.
+def setSymbol(slot, symbol):
+	global lcd
+	global DI_SYM_0, DI_SYM_1, DI_SYM_2, DI_SYM_3, DI_SYM_4, DI_SYM_5, DI_SYM_6, DI_SYM_7
+	if(slot==0 and DI_SYM_0!=symbol):
+		lcd.customSymbol(0,symbol)
+		DI_SYM_0 = symbol
+	elif(slot==1 and DI_SYM_1!=symbol):
+		lcd.customSymbol(1,symbol)
+		DI_SYM_1=symbol
+	elif(slot==2 and DI_SYM_2!=symbol):
+		lcd.customSymbol(2,symbol)
+		DI_SYM_2=symbol
+	elif(slot==3 and DI_SYM_3!=symbol):
+		lcd.customSymbol(3,symbol)
+		DI_SYM_3=symbol
+	elif(slot==4 and DI_SYM_4!=symbol):
+		lcd.customSymbol(4,symbol)
+		DI_SYM_4=symbol
+	elif(slot==5 and DI_SYM_5!=symbol):
+		lcd.customSymbol(5,symbol)
+		DI_SYM_5=symbol
+	elif(slot==6 and DI_SYM_6!=symbol):
+		lcd.customSymbol(6,symbol)
+		DI_SYM_6=symbol
+	elif(slot==7 and DI_SYM_7!=symbol):
+		lcd.customSymbol(7,symbol)
+		DI_SYM_7=symbol
+
 # show menu
 # previous menu consisted of arrows showing what which button does.
 # now it shows if sd cards are mounted and if random play is active.
@@ -39,6 +78,8 @@ DIAB = 0
 # and random has 2 symbols: random and straight
 # previous menu, just for your consideration, which was only visible in stop mode:
 # [uparrow]:[play][pause] [downarrow]:[stop] [leftarrow]:[leftarrow] [rightarrow]:[rightarrow]
+
+# set this to 0 if there are other symbols loaded.
 def showPlayMenu():
 	""" show a menu on the lower line """
 	global lcd
@@ -46,16 +87,17 @@ def showPlayMenu():
 #	global DISYM_PLAY, DISYM_PAUSE, DISYM_STOP, DISYM_REW, DISYM_FWD
 	global DISYM_CARD, DISYM_NOCARD, DISYM_INTERNAL_DRIVE
 	global DISYM_RND_STRAIGHT, DISYM_RND_RANDOM
+	global DI_SYM_1, DI_SYM_2, DI_SYM_3, DI_SYM_4, DI_SYM_5
 # draw menu
 # we can use 6 custom symbols at once:
 # 0 is reserved for the symbol function
 # 7 is reserved for the watch symbol in play mode.
 # all symbols need to be set before an lcd operation is done.
-	lcd.customSymbol(1, DISYM_INTERNAL_DRIVE)
-	lcd.customSymbol(2, DISYM_NOCARD)
-	lcd.customSymbol(3, DISYM_CARD)
-	lcd.customSymbol(4, DISYM_RND_STRAIGHT)
-	lcd.customSymbol(5, DISYM_RND_RANDOM)
+	setSymbol(1, DISYM_INTERNAL_DRIVE)
+	setSymbol(2, DISYM_NOCARD)
+	setSymbol(3, DISYM_CARD)
+	setSymbol(4, DISYM_RND_STRAIGHT)
+	setSymbol(5, DISYM_RND_RANDOM)
 	lcd.setCursor(0,1)
 	if(globals.BURP_USE_INTERNAL_DRIVE>0):
 		# show symbol for internal drive
@@ -152,11 +194,12 @@ DI_SYMBOL = 0
 DI_SYMBOL_X = 0
 DI_SYMBOL_Y = 0
 def symbol(which):
-	global lcd, DI_SYMBOL, DI_SYMBOL_X, DI_SYMBOL_Y
-	DI_SYMBOL = which
-	if(DI_SYMBOL==0):
+	global lcd, DI_SYMBOL_X, DI_SYMBOL_Y
+	if(which==0):
+		DI_SYMBOL = 0
 		return
-	lcd.customSymbol(0, which)
+	setSymbol(0, which)
+	DI_SYMBOL = which
 	lcd.setCursor(DI_SYMBOL_X,DI_SYMBOL_Y)
 	lcd.write(0)
 
@@ -233,7 +276,7 @@ def showTimeMark(seconds):
 	if there are no hours, it only shows minutes:seconds """
 	global lcd
 	global DISYM_WATCH
-	lcd.customSymbol(7,DISYM_WATCH)
+	setSymbol(7,DISYM_WATCH)
 	minutes = 0
 	hours = 0
 	if(seconds>0):
