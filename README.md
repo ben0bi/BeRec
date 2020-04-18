@@ -1,8 +1,27 @@
 # BENIplayer a.k.a BeRec a.k.a. BURP
 ## Benobis Universal Recorder & Player
 
-BENIplayer = Benobis Environment for No Internet - Player    
-a.k.a Beni Empfiehlt: No Internet - Player    
+## First things First: Benis Design Principles
+1. EVERYTHING must can-be repaired or exchanged by     
+	the absolute end user.    
+1.1 so, NO SOLDERING if possible. Make the cable     
+	connections with cable bricks to be used with a screwdriver.    
+1.2 Enduser should only BUY the parts, STICK them together like Lego,    
+	make "some" cable connections (only power and some USB if possible)    
+	and install the software, maybe including the OS, maybe not.    
+1.3 Enduser must can-do everything with the manuals lying by.    
+	1.3.1 Each install step from the factory should be explained and such.    
+
+2. NO PLASTIC if possible (mostly concerning the case.)     
+	you can use: Wood like from tobacco cases, Metal, Fabric, Stone,    
+	even Ropes :), but please stop making plastic cases.    
+3. NO TOUCH SCREEN! Benis like haptic stuff, so buttons and switch-buttons are     
+     favourised over touchscreens with laggy software made by not myself. :)    
+4. Please let it look really nice, like a high class DIY stereo amplifier or something...     
+	4.1 With metal buttons and potis and stuff, you know...     
+
+BENIplayer = Benobis Environment for No Internet: the player    
+a.k.a Beni Empfiehlt: No Internet: The Offline Player    
 
 An Offline MP3 Player, Music Player, Music Recorder, and maybe TV-Remote and other stuff.
 
@@ -10,7 +29,7 @@ See here:
 https://www.youtube.com/watch?v=fXjCIICesxU
 
 Updates: 
--> You can switch between INTERNAL DIRECTORY or (CF/SD) CARDS now.
+-> You can switch between INTERNAL DIRECTORY or (CF/SD) CARDS now. (in the globals.py file)
 	-> It will try to mount sdb1 to /media/sdcard1 and sdb2 to /media/sdcard2
 	-> you can change those values in the globals.py
 	-> Including DID.py update for showing CF-cards mounted or not, or ID for internal drive.
@@ -18,6 +37,8 @@ Updates:
 	Maybe almost, there may be some errors but I tried to eliminate all upcoming bugs like
 	"wrong file format, i will crash now" -> only loading mp3s, wavs, oggs, and flacs now.
 	No Buttons for Volume right now.   
+	There will be a function menu on button 5 where you can set the volume and stuff "virtually", 
+	so, no extra buttons needed.
 -> Renames all (relevant) files and directories for convenience 
 	(replaces spaces with _ in directories,
 	and much other characters like äàüè in the filenames.)     
