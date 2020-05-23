@@ -13,7 +13,7 @@
 #from pydub.playback import play
 
 # the sox sound player library
-from soundplayer.soundplayer import SoundPlayer as SP
+from soundplayer.soundplayer3 import SoundPlayer3 as SP
 
 # numpy is used for random track selection here
 import numpy as np
@@ -84,7 +84,7 @@ def BURP_Beep():
 def BURP_IsCardLidClosed():
 	""" check if the card lid is closed, try to mount or unmount devices. """
 	F.mountSD()
-	print "closed"
+	print("closed")
 
 lcd = 0
 # initialize gpio and stuff.
@@ -304,7 +304,7 @@ def BURP_UPDATE():
 			# already stopped, reverse random flag
 			globals.BURP_ISRANDOMPLAY = 1-globals.BURP_ISRANDOMPLAY
 			BURP_INITRND()
-			print "RND is "+str(globals.BURP_ISRANDOMPLAY)
+			print("RND is "+str(globals.BURP_ISRANDOMPLAY))
 			BURP_Bebeep()
 
 	if(st==globals.BUTTON_UP):
@@ -367,6 +367,7 @@ def BURP_UPDATE():
 
 	# show time of actual song and
 	# modify the time values.
+	# WARNING: THIS IS FAULTY, it counts even in PAUSE MODE, don't know why.
 	if(globals.BURP_STATE == globals.BURPSTATE_PLAY or globals.BURP_STATE==globals.BURPSTATE_REC):
 		globals.BURP_SecPart = globals.BURP_SecPart+D.deltatime
 		if(globals.BURP_SecPart>=1000):
@@ -393,12 +394,12 @@ D.frametime_init()
 try:
 	while True:
 		BURP_UPDATE()
+		# wait some time to save processor time.
 		sleep(0.1)
 		D.DI_UPDATE(D.deltatime)
 		D.DI_FADE_OUT(D.deltatime) # maybe fade out the display.
-		# wait some time to save processor time.
+		# only tick in play mode.
 		D.frametime_tick()
-#		print(D.deltatime, D.deltatime.astype('int64'))
 
 except KeyboardInterrupt:
 	print("User exit.")

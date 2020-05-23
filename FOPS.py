@@ -95,7 +95,7 @@ def ReadFiles(directory):
 			print('\t- subdir '+subdir)
 			sd = subdir.replace(' ', '_')
 			if(sd!=subdir and sd!="System_Volume_Information"):
-				print "RENAMING DIRECTORY "+subdir+" TO "+sd
+				print("RENAMING DIRECTORY "+subdir+" TO "+sd)
 				od = os.path.join(root,subdir)
 				nd = os.path.join(root, sd)
 				print("("+od+" -> "+nd+")")
@@ -163,7 +163,7 @@ def ReadFiles(directory):
 			newfilename = newpath
 			newpath = os.path.join(root, newpath)
 			if(newpath!=fpath):
-				print "RENAMING "+filename+" TO "+newfilename
+				print("RENAMING "+filename+" TO "+newfilename)
 				os.rename(fpath, newpath)
 			# fpath = newpath
 			print('\t- file %s' % (newfilename))

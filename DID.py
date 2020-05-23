@@ -4,6 +4,8 @@
 # DID DIsplay Driver
 # display driver for BURP
 # BURP + Benobis Universal Recorder & Player
+# a.k.a BENIPlayer
+# = Benobis Environment for No Internet (BENI) Player
 # by Benedict "Oki Wan Benobi" Jäggi @ MMXX
 
 # import the stuff for the display
@@ -120,6 +122,7 @@ def showPlayMenu():
 # update scrolling texts.
 DI_SCROLLWAITTIME = 200 # wait 200 ms until next processing.
 DI_SCROLLACTUALTIME = 0
+DI_PRINTEDSPACES = 0
 def DI_UPDATE(deltatime):
 	global DI_TITLE, DI_TITLEPOSITION, DI_TITLEDIRECTION
 	global DI_SYMBOL, DION
@@ -131,6 +134,7 @@ def DI_UPDATE(deltatime):
 
 	# maybe scroll the title
 	if(len(DI_TITLE)>15):
+		DI_PRINTEDSPACES = 0
 		DI_SCROLLACTUALTIME = DI_SCROLLACTUALTIME + deltatime
 		if(DI_SCROLLACTUALTIME>DI_SCROLLWAITTIME):
 			DI_SCROLLACTUALTIME=DI_SCROLLACTUALTIME % DI_SCROLLWAITTIME
@@ -143,6 +147,11 @@ def DI_UPDATE(deltatime):
 		# do not scroll
 		DI_TITLEPOSITION = 0
 		DI_TITLEDIRECTION = 0
+		if(DI_PRINTEDSPACES==0):
+			lcd.setCursor(1,0)
+			lcd.printout("               ")
+			DI_PRINTEDSPACES = 1
+							
 
 	# constrain the waiting at the end.
 	dp=DI_TITLEPOSITION
